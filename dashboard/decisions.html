@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Decisões · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Decisões</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Documentos do projeto">
+      <p class="side-label">Documentação</p>
+      <a href="open_questions.html">Questões abertas</a>
+      <a href="experiments.html">Experimentos</a>
+      <a href="decisions.html">Decisões</a>
+      <a href="methodology.html">Metodologia</a>
+      <a href="assumptions.html">Pressupostos</a>
+      <a href="data_dictionary.html">Dicionário de dados</a>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="decisões">Decisões</h1>
+<p>Decisões mantêm IDs <code>D-...</code> mesmo quando forem substituídas. Status possíveis: <code>PROVISIONAL</code>, <code>ADOPTED</code>, <code>SUPERSEDED</code>. Uma mudança deve acrescentar a nova decisão e marcar a antiga como <code>SUPERSEDED</code>, com vínculo entre elas.</p>
+<h2 id="d-001--organizar-código-e-produtos-por-análise">D-001 · Organizar código e produtos por análise</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-18</li>
+<li><strong>Status:</strong> <code>ADOPTED</code></li>
+<li><strong>Questão:</strong> como localizar o código responsável por cada produto sem criar arquitetura prematura?</li>
+<li><strong>Alternativas consideradas:</strong> diretórios genéricos compartilhados ou uma estrutura profunda antecipada; nenhuma foi testada empiricamente nesta etapa.</li>
+<li><strong>Evidência disponível:</strong> a análise exploratória possui uma etapa de caracterização estrutural e outra de visualização, cada uma com produtos reproduzíveis; a organização simples atende ao estado atual e à preferência expressa para o projeto.</li>
+<li><strong>Decisão atual:</strong> manter <code>scripts/&lt;analise&gt;/</code> ↔︎ <code>outputs/&lt;analise&gt;/</code>; criar subdiretórios somente quando existir análise e produto correspondentes.</li>
+<li><strong>Justificativa:</strong> a correspondência permite rastrear resultados com poucos elementos e sem abstrações ociosas.</li>
+<li><strong>Experimentos relacionados:</strong> nenhum; trata-se de uma decisão estrutural inicial.</li>
+<li><strong>Revisar se:</strong> o uso efetivo mostrar duplicação ou dificuldade de localização que a estrutura atual não resolva.</li>
+</ul>
+<h2 id="d-002--usar-o-ciclone-como-unidade-de-análise">D-002 · Usar o ciclone como unidade de análise</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-19</li>
+<li><strong>Status:</strong> <code>ADOPTED</code></li>
+<li><strong>Questão:</strong> qual unidade deve orientar contagens, inferência e validação?</li>
+<li><strong>Evidência disponível:</strong> o conjunto de dados inclui <code>track_id</code>, definido como identificador do ciclone no catálogo; a caracterização encontrou 1.781 valores distintos. Cada ciclone contribui com muitas linhas espaciais e temporais.</li>
+<li><strong>Decisão atual:</strong> usar o ciclone, identificado por <code>track_id</code>, como unidade fundamental de análise quando aplicável. O número principal apresentado no dashboard é a contagem de <code>track_id</code> únicos.</li>
+<li><strong>Justificativa:</strong> linhas de pontos de grade do mesmo ciclone não devem ser tratadas como unidades independentes.</li>
+<li><strong>Questão relacionada:</strong> <a href="open_questions.html#q-001--qual-é-a-unidade-de-uma-linha-e-como-ela-se-vincula-a-um-ciclone">Q-001</a>.</li>
+<li><strong>Experimentos relacionados:</strong> nenhum; a decisão segue a estrutura documentada do dado e a definição científica do projeto.</li>
+<li><strong>Revisar se:</strong> a chave do catálogo mudar, forem detectados <code>track_id</code> reutilizados ou uma análise específica exigir outra unidade claramente declarada.</li>
+</ul>
+<h2 id="d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003 · Agrupar rótulos <code>phase 2</code> nas figuras exploratórias</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-19</li>
+<li><strong>Status:</strong> <code>PROVISIONAL</code></li>
+<li><strong>Questão:</strong> como representar de forma legível as fases de um segundo ciclo na mesma track?</li>
+<li><strong>Alternativas consideradas:</strong> mostrar as oito categorias literalmente ou reunir os rótulos <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code> às respectivas fases principais.</li>
+<li><strong>Evidência disponível:</strong> o sufixo <code>2</code> marca um segundo ciclo de vida na mesma track. A definição operacional das fases e da transição para esse segundo ciclo ainda não foi recuperada em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>.</li>
+<li><strong>Decisão atual:</strong> agrupar os rótulos com sufixo <code>2</code> apenas nas figuras e resumos exploratórios. Preservar os valores originais no conjunto de dados e no resumo estrutural. Manter <code>residual</code> e ausências separados.</li>
+<li><strong>Justificativa:</strong> o agrupamento permite aplicar a paleta de fases solicitada e mantém os gráficos legíveis, sem modificar o dado-fonte.</li>
+<li><strong>Experimentos relacionados:</strong> nenhum; é uma escolha provisória de apresentação.</li>
+<li><strong>Revisar se:</strong> a definição operacional do catálogo exigir que os ciclos sejam comparados separadamente ou que a transição entre ciclos seja preservada nas figuras.</li>
+</ul>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/decisions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+    </main>
+  </div>
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>

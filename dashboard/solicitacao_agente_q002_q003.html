@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Respostas sobre Q-002 e Q-003 · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Respostas sobre Q-002 e Q-003</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Documentos do projeto">
+      <p class="side-label">Documentação</p>
+      <a href="open_questions.html">Questões abertas</a>
+      <a href="experiments.html">Experimentos</a>
+      <a href="decisions.html">Decisões</a>
+      <a href="methodology.html">Metodologia</a>
+      <a href="assumptions.html">Pressupostos</a>
+      <a href="data_dictionary.html">Dicionário de dados</a>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="solicitação-de-esclarecimentos-sobre-a-geração-do-parquet">Solicitação de esclarecimentos sobre a geração do parquet</h1>
+<h2 id="objetivo">Objetivo</h2>
+<p>Responder às questões Q-002 e Q-003 do projeto <strong>cyclofex-br</strong> usando o código, os arquivos intermediários e a documentação que efetivamente geraram:</p>
+<ul>
+<li><code>data/cyclone_exceedances_by_track_2010_2020_p90.parquet</code></li>
+<li><code>data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></li>
+</ul>
+<p>Precisamos reconstruir o procedimento com precisão suficiente para reproduzi-lo e documentá-lo. Não faça inferências apenas pelos nomes das colunas. Para cada resposta, cite o arquivo, função, trecho de código, configuração ou fonte que fornece a evidência. Se algo não puder ser determinado, escreva explicitamente <strong>NÃO LOCALIZADO</strong> e diga o que falta.</p>
+<p>Não faça uma nova análise científica e não altere o parquet. O objetivo é documentar como o dado existente foi construído.</p>
+<blockquote>
+<p><strong>Nota de origem (preenchida na resposta).</strong> Os três scripts citados abaixo vivem em <code>$ROOT = /home/publico/vendaval-ciclone</code> (máquina 9, <code>irbrerd09</code>). Os caminhos <code>data/...</code> do enunciado correspondem, na origem, a <code>$ROOT/outputs/parquet/</code>. Nada no parquet foi alterado para responder a este documento; todas as contagens vêm de leitura.</p>
+</blockquote>
+<h2 id="contexto-já-confirmado">Contexto já confirmado</h2>
+<ul>
+<li>A unidade de análise é o ciclone, identificado por <code>track_id</code>.</li>
+<li>O parquet contém 1.781 <code>track_id</code> únicos, 17.182.983 linhas e 17 colunas.</li>
+<li>Uma linha representa um ponto de grade espacial associado a um ciclone e instante.</li>
+<li><code>time</code> é documentado como o instante do campo ERA5 em UTC, com passo de 6 h.</li>
+<li><code>wind_speed</code> é documentado como vento a 10 m no ponto, em m/s.</li>
+<li><code>exceeded_15_6</code>, <code>exceeded_20_0</code> e <code>exceeded_25_0</code> representam limiares fixos em m/s.</li>
+<li><code>exceeded_q90</code>, <code>exceeded_q95</code> e <code>exceeded_q99</code> representam excedência de percentis locais do ponto.</li>
+<li>Os percentis atuais foram calculados experimentalmente com os dez anos de dados baixados para o período das tracks usadas no recorte atual. → <strong>Correção: são onze anos civis completos, 2010–2020</strong> (<code>calculate_local_percentiles.py</code> L33, <code>years = range(2010, 2021)</code>). Ver Q-002.2.1.</li>
+<li>Após o download das tracks completas de 1979–2020, os percentis serão recalculados com o período ampliado.</li>
+<li>O parquet observado cobre <code>2010-01-02 18:00</code> a <code>2020-12-31 18:00</code>. Confirme o intervalo exato chamado de "dez anos", pois o nome e os extremos observados atravessam os anos civis de 2010 a 2020. → <strong>Confirmado e respondido em Q-002.2.1.</strong> A referência dos percentis é 2010-01-01 00:00 a 2020-12-31 18:00 UTC (16.072 campos). O primeiro instante do parquet é 2010-01-02 18:00 apenas porque é a primeira hora de track com excedência, não um limite de janela.</li>
+<li>Há 13.404 linhas com <code>exceeded_q90 = false</code>, embora o arquivo seja descrito como um recorte p90. → <strong>Mecanismo explicado e verificado em Q-002.4.2.</strong></li>
+<li>Há 509.788 linhas com <code>phase</code> ausente. → <strong>Explicado no item A.</strong></li>
+<li>O maior identificador observado é <code>track_id = 20210007</code>, embora o maior <code>time</code> observado pertença a 2020. Não interprete o prefixo do ID como ano sem verificar sua regra. → <strong>Regra verificada no item B.</strong></li>
+</ul>
+<hr />
+<h1 id="q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002 · Como foram gerados <code>wind_speed</code> e os indicadores de excedência?</h1>
+<h2 id="perguntas-obrigatórias">Perguntas obrigatórias</h2>
+<h3 id="q-0021--campo-de-vento">Q-002.1 · Campo de vento</h3>
+<ol type="1">
+<li>Qual produto, variável e versão do ERA5 foram usados?</li>
+<li><code>wind_speed</code> foi obtido diretamente ou calculado a partir de componentes como <code>u10</code> e <code>v10</code>?</li>
+<li>Se foi calculado, informe a fórmula exata, unidades de entrada e tratamento de valores ausentes.</li>
+<li>Houve interpolação temporal ou espacial, regrid, arredondamento ou conversão de longitude?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li>Produto: CDS <code>reanalysis-era5-single-levels</code>, <code>product_type: ["reanalysis"]</code>; variáveis <code>10m_u_component_of_wind</code> e <code>10m_v_component_of_wind</code>; horários <code>00:00/06:00/12:00/18:00</code>; área <code>[0, -180, -90, 180]</code> (Hemisfério Sul inteiro); grade nativa 0,25°. Evidência: <code>scripts/download/download_historical.py</code> L15–33. Os arquivos foram entregues em GRIB e convertidos para NetCDF por <code>cfgrib-0.9.15.1/ecCodes-2.42.0</code> (atributo <code>history</code> dos <code>.nc</code>, datado de 2026-06-10). <strong>Versão/reprocessamento do ERA5 (ERA5 x ERA5.1, <code>expver</code>): NÃO LOCALIZADO</strong> — o atributo não está nos arquivos e não há log do pedido ao CDS guardado no repositório. Para fechar, falta o recibo do CDS (request id) ou um <code>grib_ls -p expver</code> do GRIB original, que não foi preservado.</li>
+<li>Calculado a partir de <code>u10</code> e <code>v10</code>. Nunca vem pronto do produto.</li>
+<li><code>wind_speed = sqrt(u10² + v10²)</code>, entrada em m s⁻¹ (<code>units</code> das duas variáveis), saída em m s⁻¹. Evidência: <code>scripts/analysis/exceedances_by_track.py</code> L91 (parquet) e <code>scripts/climatology/calculate_local_percentiles.py</code> L98 (percentis). Valores ausentes: <strong>não há tratamento porque não há ausência</strong> — <code>u10</code>/<code>v10</code> são float32 densos, sem <code>_FillValue</code> efetivo no domínio (verificado: 0 NaN no campo; 0 NaN em <code>q90</code>; 0 NaN em <code>wind_speed</code> nas 17.182.983 linhas).</li>
+<li><strong>Sem interpolação espacial e sem regrid.</strong> O campo é usado na grade nativa; o recorte é <code>sel(latitude=slice(-10,-65), longitude=slice(-85,-15))</code> (<code>exceedances_by_track.py</code> L54), com <code>assert</code> de que a grade resultante bate 1:1 com <code>local_percentiles.nc</code> (L55). <strong>Sem interpolação temporal do campo</strong>: o que se aproxima é a posição da track, casada com o campo mais próximo (Q-003.1.3). Longitude: o ERA5 já vem em [−180, 179.75]; as tracks são convertidas com <code>((lon + 180) % 360) - 180</code> (L48). Arredondamento: as colunas numéricas são gravadas em float32 (L119–127) — <code>wind_speed</code> já era float32 na origem, <code>distance_km</code> é calculada em float64 e truncada para float32 na escrita.</li>
+</ol>
+<h3 id="q-0022--amostra-de-referência-dos-percentis">Q-002.2 · Amostra de referência dos percentis</h3>
+<ol type="1">
+<li>Quais datas inicial e final entraram no cálculo atual? Informe timestamps ou anos inclusivos exatos.</li>
+<li>A referência usa todos os campos de 6 h do período, apenas instantes associados a tracks ou algum outro subconjunto?</li>
+<li>O percentil foi calculado separadamente em cada ponto <code>lat/lon</code>?</li>
+<li>Os dados foram agrupados por mês, estação, hora UTC ou outra estratificação, ou todos os tempos foram combinados?</li>
+<li>Terra e oceano receberam o mesmo tratamento?</li>
+<li>Confirme como a referência futura de 1979–2020 deverá diferir da atual.</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><strong>2010-01-01 00:00 UTC a 2020-12-31 18:00 UTC</strong>, anos civis 2010 a 2020 <strong>inclusive — onze anos, não dez</strong>. Evidência: <code>calculate_local_percentiles.py</code> L33 (<code>years = range(2010, 2021)</code>) e o atributo do arquivo (<code>description: ... sobre o período histórico 2010-2020</code>). Tamanho da amostra por ponto, medido: <strong>16.072 campos</strong> de 6 h (1.460 por ano, 1.464 nos bissextos 2012/2016/2020).</li>
+<li><strong>Todos os campos de 6 h do período.</strong> Sem filtro por track, por evento, por estação ou por hora. Evidência: o laço L88–98 percorre todos os <code>valid_time</code> de cada ano antes do <code>np.percentile</code>.</li>
+<li><strong>Sim, ponto a ponto.</strong> <code>np.percentile(band_ws, p, axis=0)</code> com <code>axis=0</code> = tempo, preservando a grade 221 × 281 (L103–106). O domínio é lat −10 a −65 e lon −85 a −15 (L40–41), processado em faixas de 20 linhas de latitude (L29) só por memória — não muda o resultado.</li>
+<li><strong>Nenhuma estratificação.</strong> Todos os tempos combinados numa única série por ponto.</li>
+<li><strong>Mesmo tratamento.</strong> Não há máscara terra/oceano em nenhuma etapa. A diferenciação é implícita: o q90 local de um ponto continental abrigado é muito menor que o de oceano aberto (q90 observado vai de <strong>1,04 a 17,26 m/s</strong>, média 10,65).</li>
+<li>Diferenças esperadas com 1979–2020: (a) a amostra por ponto passa de 16.072 para ~61.400 campos de 6 h (42 anos), ~3,8×; (b) os limiares mudam de valor — direção e magnitude <strong>não medidas</strong>, dependem de como 2010–2020 se compara ao restante do período; (c) como o critério de seleção de linha usa <code>min(15,6 ; q90)</code>, <strong>muda também quais linhas entram no parquet</strong>, não só as flags. Consequência operacional em C.4.</li>
+</ol>
+<h3 id="q-0023--implementação-dos-quantis">Q-002.3 · Implementação dos quantis</h3>
+<ol type="1">
+<li>Qual biblioteca e função calcularam q90, q95 e q99?</li>
+<li>Qual método de interpolação/definição de quantil foi usado?</li>
+<li>Como valores ausentes, infinitos e empates foram tratados?</li>
+<li>As comparações são estritamente <code>wind_speed &gt; quantil</code> ou usam <code>&gt;=</code>?</li>
+<li>Qual precisão numérica foi usada para thresholds e comparação?</li>
+<li>Os thresholds por ponto foram persistidos em algum arquivo? Se sim, informe caminho, esquema e versão.</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><code>numpy.percentile</code> (NumPy 2.0.2), chamadas em <code>calculate_local_percentiles.py</code> L103 (q50), L104 (q90), L105 (q95), L106 (q99); <code>max</code> por <code>band_ws.max(axis=0)</code> L107.</li>
+<li><strong>Método default do NumPy: <code>linear</code></strong> (interpolação linear entre ordens estatísticas; equivalente ao tipo 7 de Hyndman–Fan). O parâmetro <code>method=</code> não foi passado em nenhuma das chamadas.</li>
+<li>Ausentes: não ocorrem (item Q-002.1.3) — não há <code>nanpercentile</code> no código, e não seria necessário. Infinitos: não ocorrem. Empates: irrelevantes para a definição linear. <code>overwrite_input=True</code> (L103–106) só permite reordenar o buffer de entrada; não altera resultado.</li>
+<li><strong>Estritamente <code>&gt;</code> em todos os seis indicadores</strong> e também no critério de entrada: <code>ws &gt; limiar_entrada</code> (<code>exceedances_by_track.py</code> L106), <code>ws_pt &gt; 15.6 / 20.0 / 25.0</code> (L124–125), <code>ws_pt &gt; q90[..] / q95[..] / q99[..]</code> (L126–127). O único <code>&lt;=</code> do fluxo é o raio: <code>dist &lt;= RADIUS_KM</code> (L106).</li>
+<li>Campo de vento em <strong>float32</strong>; limiares lidos de <code>local_percentiles.nc</code> em <strong>float64</strong>; a comparação é promovida a float64 pelo NumPy. As colunas gravadas no parquet são float32 (vento, distância, coordenadas) e bool (flags).</li>
+<li><strong>Sim:</strong> <code>$ROOT/data/local_percentiles.nc</code>. Esquema: dimensões <code>latitude</code> (221, descendente, −10 → −65) × <code>longitude</code> (281, ascendente, −85 → −15); variáveis <code>q50</code>, <code>q90</code>, <code>q95</code>, <code>q99</code>, <code>max</code>, todas float64; atributos <code>description</code> e <code>spatial_resolution = 0.25 x 0.25 degrees</code>. <strong>Versão formal: NÃO LOCALIZADO</strong> — o arquivo não carrega campo de versão, hash nem data de geração. O que existe são dois backups datados no mesmo diretório (<code>local_percentiles.nc.bak.20260819</code>, <code>.bak.20260819b</code>) e o mtime. Para fechar, falta gravar versão/proveniência como atributo no NetCDF.</li>
+</ol>
+<h3 id="q-0024--construção-e-seleção-das-linhas">Q-002.4 · Construção e seleção das linhas</h3>
+<ol type="1">
+<li>Qual condição exata selecionou uma linha para o parquet final?</li>
+<li>Por que há 13.404 linhas com <code>exceeded_q90 = false</code> em um arquivo descrito como recorte p90?</li>
+<li>Esses casos representam arredondamento, junção espacial, borda temporal, valores ausentes de threshold, mudança de versão ou outro mecanismo?</li>
+<li>Uma posição ausente do parquet significa <code>false</code>, "não avaliada" ou apenas "não selecionada"?</li>
+<li>As flags de limiar fixo e quantil foram calculadas antes ou depois do recorte?</li>
+<li>Há alguma condição em que as flags possam ser inconsistentes com <code>wind_speed</code> por construção?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><p>Condição exata, avaliada para cada ponto da grade recortada, para cada par (ciclone, instante ERA5):</p>
+<pre><code>(distance_km &lt;= 1100.0)  AND  (wind_speed &gt; min(15.6 , q90_local_do_ponto))</code></pre>
+<p>Evidência: <code>exceedances_by_track.py</code> L31 (<code>limiar_entrada = np.minimum(15.6, q90)</code>) e L106 (<code>m = (dist &lt;= RADIUS_KM) &amp; (ws &gt; limiar_entrada)</code>).</p></li>
+<li><p>Porque o limiar de entrada é o <strong>mínimo</strong> entre 15,6 m/s e o q90 local. Onde o q90 local é <strong>maior</strong> que 15,6, um ponto pode entrar pelo limiar fixo sem exceder o próprio percentil. Verificado nas 13.404 linhas: em <strong>100%</strong> delas o q90 local é &gt; 15,6 m/s, e em <strong>100%</strong> o vento está no intervalo <code>15,6 &lt; wind_speed &lt;= q90_local</code> (mínimo 15,60, máximo 17,26 m/s — o teto é exatamente o maior q90 do domínio).</p></li>
+<li><p><strong>Outro mecanismo: é o critério de entrada, por desenho.</strong> Não é arredondamento, não é junção espacial, não é borda temporal, não é threshold ausente e não é mudança de versão. Em termos de área, o caso só existe nos 1.687 pontos de grade (2,7% dos 62.101 do domínio) onde q90 &gt; 15,6 m/s.</p></li>
+<li><p><strong>"Não selecionada"</strong>, com uma exceção: dentro do círculo e dentro do domínio dos percentis, ausência significa que o ponto não passou do limiar de entrada — é <code>false</code> no sentido forte. <strong>Fora do domínio</strong> (lat &gt; −10, lat &lt; −65, lon &lt; −85, lon &gt; −15) significa <strong>"não avaliada"</strong>: não há grade nem percentil ali, e parte do círculo de alguns ciclones cai nessa região (Q-003.2.5).</p></li>
+<li><p><strong>Depois do recorte</strong>, sobre o vetor de pontos já mascarados (L110–127). É equivalente a calcular antes: as flags são funções ponto a ponto de <code>wind_speed</code> e dos limiares do mesmo ponto, sem dependência de vizinhança.</p></li>
+<li><p><strong>Uma só, e é a do item 2:</strong> <code>exceeded_q90 = false</code> coexistindo com a descrição "recorte p90", nas 13.404 linhas. Fora isso, as seis flags são determinísticas em <code>wind_speed</code> e nos limiares daquele <code>lat/lon</code>, calculadas no mesmo instante e com os mesmos arrays — não há caminho de código que as dessincronize. As relações de implicação valem sempre: <code>exceeded_25_0 ⊂ exceeded_20_0 ⊂ exceeded_15_6</code> e <code>exceeded_q99 ⊂ exceeded_q95 ⊂ exceeded_q90</code>.</p></li>
+</ol>
+<h2 id="resposta-de-q-002">Resposta de Q-002</h2>
+<h3 id="síntese-reproduzível">Síntese reproduzível</h3>
+<p>Do dado bruto até as seis flags, em linha reta:</p>
+<ol type="1">
+<li><strong>Download.</strong> <code>scripts/download/download_historical.py</code> pede ao CDS o <code>reanalysis-era5-single-levels</code>, variáveis <code>10m_u_component_of_wind</code> e <code>10m_v_component_of_wind</code>, horários 00/06/12/18 UTC, área <code>[0,-180,-90,180]</code>, 2010–2020 — um arquivo por ano em <code>data/era5_wind_southern_hemisphere_{ano}.nc</code>, grade nativa 0,25°, entregue em GRIB e convertido para NetCDF por cfgrib.</li>
+<li><strong>Climatologia local.</strong> <code>scripts/climatology/calculate_local_percentiles.py</code> recorta o domínio lat −10/−65 e lon −85/−15, empilha <strong>todos</strong> os 16.072 campos de 6 h dos 11 anos, calcula <code>wind_speed = sqrt(u10²+v10²)</code> e aplica <code>np.percentile(..., axis=0)</code> por ponto de grade, método <code>linear</code>. Salva <code>q50/q90/q95/q99/max</code> em <code>data/local_percentiles.nc</code> (221 × 281, float64). Sem estratificação, sem máscara terra/oceano.</li>
+<li><strong>Excedências por ciclone.</strong> <code>scripts/analysis/exceedances_by_track.py</code> percorre ano a ano, recalcula <code>wind_speed</code> do mesmo jeito, e para cada par (ciclone, instante ERA5) seleciona os pontos com <code>dist &lt;= 1100 km</code> e <code>ws &gt; min(15,6 ; q90_local)</code>. Para os pontos selecionados grava as seis flags por comparação estrita <code>&gt;</code> contra 15,6 / 20,0 / 25,0 m/s e contra q90/q95/q99 daquele ponto. Saída em Parquet, zstd nível 9.</li>
+</ol>
+<h3 id="fórmulas-e-pseudocódigo">Fórmulas e pseudocódigo</h3>
+<pre class="text"><code># 1) campo de vento (idêntico nas duas etapas)
+wind_speed(t, y, x) = sqrt( u10(t, y, x)^2 + v10(t, y, x)^2 )          # m/s, float32
+
+# 2) climatologia local, por ponto de grade (y, x), sobre 2010-2020
+serie(y, x)   = [ wind_speed(t, y, x) for t in TODOS os 16.072 campos de 6h ]
+q90(y, x)     = numpy.percentile(serie(y, x), 90, method=&quot;linear&quot;)      # idem q95, q99
+# persistido em data/local_percentiles.nc (float64)
+
+# 3) limiar de entrada, por ponto de grade
+limiar_entrada(y, x) = min( 15.6 , q90(y, x) )
+
+# 4) seleção de linha, para cada (ciclone c, instante ERA5 t)
+para cada ponto (y, x) do domínio:
+    dist = haversine( (lat[y], lon[x]) , (lat_center(c,t), lon_center(c,t)) )   # R = 6371 km
+    SE dist &lt;= 1100.0 E wind_speed(t,y,x) &gt; limiar_entrada(y,x):
+        emite linha
+
+# 5) flags da linha emitida (comparação estrita)
+exceeded_15_6 = wind_speed &gt;  15.6
+exceeded_20_0 = wind_speed &gt;  20.0
+exceeded_25_0 = wind_speed &gt;  25.0
+exceeded_q90  = wind_speed &gt;  q90(y, x)
+exceeded_q95  = wind_speed &gt;  q95(y, x)
+exceeded_q99  = wind_speed &gt;  q99(y, x)</code></pre>
+<h3 id="evidências">Evidências</h3>
+<table>
+<thead>
+<tr>
+<th>Afirmação</th>
+<th>Arquivo/fonte</th>
+<th>Função, linhas ou configuração</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Produto, variáveis, horários e área do ERA5</td>
+<td><code>scripts/download/download_historical.py</code></td>
+<td>L15–33 (<code>dataset</code>, <code>variable</code>, <code>time</code>, <code>area</code>)</td>
+</tr>
+<tr>
+<td>GRIB → NetCDF por cfgrib 0.9.15.1 / ecCodes 2.42.0</td>
+<td><code>data/era5_wind_southern_hemisphere_2015.nc</code></td>
+<td>atributo global <code>history</code></td>
+</tr>
+<tr>
+<td><code>wind_speed</code> calculado de u10/v10</td>
+<td><code>scripts/analysis/exceedances_by_track.py</code></td>
+<td>L91</td>
+</tr>
+<tr>
+<td>Mesma fórmula na climatologia</td>
+<td><code>scripts/climatology/calculate_local_percentiles.py</code></td>
+<td>L98</td>
+</tr>
+<tr>
+<td>Período da referência = 2010–2020 (11 anos)</td>
+<td><code>scripts/climatology/calculate_local_percentiles.py</code></td>
+<td>L33 <code>years = range(2010, 2021)</code></td>
+</tr>
+<tr>
+<td>16.072 campos de 6 h na amostra</td>
+<td>medição sobre os 11 <code>.nc</code></td>
+<td>soma de <code>sizes["valid_time"]</code></td>
+</tr>
+<tr>
+<td>Percentil por ponto, sem estratificação</td>
+<td><code>scripts/climatology/calculate_local_percentiles.py</code></td>
+<td>L103–106, <code>axis=0</code></td>
+</tr>
+<tr>
+<td>Método de quantil <code>linear</code> (default NumPy 2.0.2)</td>
+<td>mesma fonte</td>
+<td>ausência de <code>method=</code> nas chamadas</td>
+</tr>
+<tr>
+<td>Limiar de entrada <code>min(15,6 ; q90)</code></td>
+<td><code>scripts/analysis/exceedances_by_track.py</code></td>
+<td>L31</td>
+</tr>
+<tr>
+<td>Seleção <code>dist &lt;= 1100 &amp; ws &gt; limiar</code></td>
+<td>idem</td>
+<td>L106</td>
+</tr>
+<tr>
+<td>Comparações estritas <code>&gt;</code> nas seis flags</td>
+<td>idem</td>
+<td>L124–127</td>
+</tr>
+<tr>
+<td>13.404 linhas com <code>exceeded_q90=false</code>, todas com q90 &gt; 15,6 e ws ≤ q90</td>
+<td>leitura do parquet + <code>local_percentiles.nc</code></td>
+<td>verificação ponto a ponto das 13.404</td>
+</tr>
+<tr>
+<td>Domínio e grade dos percentis</td>
+<td><code>data/local_percentiles.nc</code></td>
+<td>221 × 281, 0,25°, lat −10/−65, lon −85/−15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pontos-não-localizados">Pontos não localizados</h3>
+<ul>
+<li><strong>Versão do ERA5 (<code>expver</code>, ERA5 x ERA5.1) e recibo do pedido ao CDS.</strong> Falta o GRIB original ou o log do <code>cdsapi</code>; o NetCDF convertido não preserva o campo.</li>
+<li><strong>Versionamento do <code>local_percentiles.nc</code>.</strong> Não há atributo de versão, hash ou data de geração dentro do arquivo — só dois backups datados de 19/08/2026 e o mtime.</li>
+</ul>
+<hr />
+<h1 id="q-003--quais-convenções-espaciais-e-temporais-foram-usadas">Q-003 · Quais convenções espaciais e temporais foram usadas?</h1>
+<h2 id="perguntas-obrigatórias-1">Perguntas obrigatórias</h2>
+<h3 id="q-0031--centro-e-associação-temporal">Q-003.1 · Centro e associação temporal</h3>
+<ol type="1">
+<li>De qual arquivo e variável vêm <code>lat_center</code> e <code>lon_center</code>?</li>
+<li>O centro é a posição original da track ou foi interpolado para os tempos do ERA5?</li>
+<li>Como os timestamps da track foram associados aos campos ERA5 de 6 h?</li>
+<li>Como foram tratados ciclones simultâneos, tempos duplicados e centros fora do domínio?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><code>$ROOT/data/tracks_danilo/tracks_SAt_filtered_with_periods.csv</code>, colunas <strong><code>lat vor</code></strong> e <strong><code>lon vor</code></strong> (posição do centro pelo máximo de vorticidade; o CSV também traz <code>vor42</code>, <code>region</code>, <code>geometry</code> e <code>period</code>). Leitura em <code>exceedances_by_track.py</code> L46; gravação como <code>lat_center</code>/<code>lon_center</code> em L120.</li>
+<li><strong>Posição original da track, sem nenhuma interpolação.</strong> Para cada campo ERA5 escolhe-se a hora de track existente mais próxima, e usa-se a coordenada dela como está.</li>
+<li>Casamento por vizinho mais próximo no tempo: <code>np.searchsorted</code> sobre os <code>valid_time</code> do ano, seguido da escolha entre o vizinho anterior e o posterior pelo menor Δt (L62–67). Depois, <code>drop_duplicates(["track_id","t_idx"])</code> sobre a tabela ordenada por Δt mantém <strong>uma única posição por (ciclone, instante ERA5)</strong>: a hora de track mais próxima daquele campo (L68–69). Δt máximo possível = 3 h.</li>
+<li><strong>Ciclones simultâneos:</strong> tratados de forma independente, cada um com seu próprio círculo. O mesmo ponto de grade na mesma hora pode pertencer a mais de um ciclone e então aparece em mais de uma linha, uma por <code>track_id</code> — medido: <strong>414.124 pontos-hora (2,5%) pertencem a 2 ou 3 ciclones</strong>, máximo observado 3. <strong>Tempos duplicados:</strong> colapsados pelo <code>drop_duplicates</code> do item 3. <strong>Centros fora do domínio:</strong> mantidos, sem descarte — <strong>1.833 de 20.101 pares (ciclone, instante), 9,1%</strong>, têm o centro fora do retângulo dos percentis e ainda assim contribuem com os pontos do círculo que caem dentro da grade. O círculo é simplesmente truncado pelo domínio.</li>
+</ol>
+<h3 id="q-0032--distância-e-domínio-espacial">Q-003.2 · Distância e domínio espacial</h3>
+<ol type="1">
+<li>Qual fórmula gera <code>distance_km</code>? Informe equação, raio da Terra, biblioteca e CRS/projeção.</li>
+<li>A distância é geodésica, great-circle/haversine, euclidiana projetada ou aproximação em graus?</li>
+<li>Qual regra define o raio máximo observado de 1.100 km?</li>
+<li>Qual é a grade espacial original e sua resolução?</li>
+<li>Como foram tratados longitude periódica, dateline, polos, bordas do domínio, terra e oceano?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><p><strong>Haversine</strong>, implementada em NumPy puro (sem biblioteca geoespacial, sem CRS/projeção declarados — coordenadas geográficas da própria grade ERA5). <code>R_EARTH = 6371.0</code> km (<code>exceedances_by_track.py</code> L22). Equação, L102–105:</p>
+<pre><code>a = sin²(Δφ/2) + cos(φ_ponto)·cos(φ_centro)·sin²(Δλ/2)
+d = 2 · 6371.0 · asin(√a)</code></pre></li>
+<li><p><strong>Great-circle (haversine) sobre esfera.</strong> Não é geodésica elipsoidal, não é euclidiana projetada, não é aproximação em graus. Erro esperado ante WGS84: até ~0,3%, ou seja ~3 km em 1.100 km.</p></li>
+<li><p>Constante <code>RADIUS_KM = 1100.0</code> (L21), aplicada como <code>dist &lt;= RADIUS_KM</code> (L106). O valor foi herdado de <code>scripts/analysis/continuous_5year_analysis.py</code> (mesmo raio) para manter os dois produtos comparáveis. Por isso <code>distance_km</code> tem máximo exatamente 1100.0.</p></li>
+<li><p>Grade nativa do ERA5, <strong>0,25° × 0,25°</strong> (regular lat/lon), recortada para <strong>221 latitudes × 281 longitudes</strong> — lat −10,0 a −65,0 descendente, lon −85,0 a −15,0 ascendente. O recorte é o mesmo de <code>local_percentiles.nc</code>, com <code>assert</code> de igualdade de forma (L54–55).</p></li>
+<li><p><strong>Longitude periódica:</strong> as tracks são normalizadas para [−180, 180) (L48); a haversine é insensível ao wrap porque usa <code>sin(Δλ/2)</code>; o cálculo de quadrante usa <code>((Δλ + 180) % 360) − 180</code> (L112). <strong>Dateline:</strong> não ocorre — o domínio vai de −85 a −15. <strong>Polos:</strong> fora do domínio (limite sul −65). <strong>Bordas do domínio:</strong> o círculo é truncado sem preenchimento nem reflexão; ciclone perto da borda tem menos pontos, e isso não é sinalizado em nenhuma coluna. <strong>Terra e oceano:</strong> sem máscara, tratamento idêntico; a diferença entra só pelo q90 local de cada ponto.</p></li>
+</ol>
+<h3 id="q-0033--quadrante-geográfico">Q-003.3 · Quadrante geográfico</h3>
+<ol type="1">
+<li>Como <code>fixed_quadrant</code> é calculado a partir do centro e do ponto?</li>
+<li>Confirme os códigos documentados: 1=NO, 2=NE, 3=SE, 4=SO.</li>
+<li>Em qual quadrante caem pontos exatamente sobre os eixos norte–sul ou leste–oeste?</li>
+<li>A comparação usa diferenças simples de latitude/longitude ou azimute geodésico?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><p>Pelos sinais de <code>Δlat = lat_ponto − lat_centro</code> e <code>Δlon = ((lon_ponto − lon_centro + 180) % 360) − 180</code>, em graus (L111–114):</p>
+<pre><code>Δlat &gt;= 0 e Δlon &lt;  0  → 1
+Δlat &gt;= 0 e Δlon &gt;= 0  → 2
+Δlat &lt;  0 e Δlon &gt;= 0  → 3
+Δlat &lt;  0 e Δlon &lt;  0  → 4</code></pre></li>
+<li><p><strong>Confirmado:</strong> 1 = NO, 2 = NE, 3 = SE, 4 = SO.</p></li>
+<li><p>Os limites são fechados no lado norte e no lado leste: um ponto exatamente na mesma latitude do centro (<code>Δlat = 0</code>) é classificado como <strong>norte</strong> (1 ou 2); um ponto exatamente na mesma longitude (<code>Δlon = 0</code>) é classificado como <strong>leste</strong> (2 ou 3). O ponto coincidente com o centro (<code>Δlat = Δlon = 0</code>) cai em <strong>2 (NE)</strong>.</p></li>
+<li><p><strong>Diferenças simples de latitude/longitude.</strong> Não há azimute geodésico em nenhum ponto do código.</p></li>
+</ol>
+<h3 id="q-0034--movimento-e-rotação">Q-003.4 · Movimento e rotação</h3>
+<ol type="1">
+<li>Como o vetor de deslocamento do ciclone é calculado: diferença para o passo anterior, seguinte, central ou outro método?</li>
+<li>Qual intervalo temporal entra no vetor e o que ocorre quando há lacunas na track?</li>
+<li>Informe a convenção angular: origem, sentido positivo, unidade e intervalo do ângulo.</li>
+<li>Escreva a transformação matemática ou matriz que converte a posição do ponto para o referencial relativo ao movimento.</li>
+<li>Confirme os códigos documentados: 1=frente-esquerda, 2=frente-direita, 3=trás-direita, 4=trás-esquerda.</li>
+<li>Como são classificados pontos exatamente sobre os eixos rotacionados?</li>
+<li>O que acontece no primeiro e último timestep da track, com velocidade nula ou muito baixa, ou quando não é possível definir direção?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><p><strong>Diferença centrada</strong> sobre a série já reamostrada para 6 h da própria track: posição do passo seguinte menos posição do passo anterior (L73–74).</p></li>
+<li><p>Intervalo nominal <strong>12 h</strong> no miolo da série (t−1 → t+1) e <strong>6 h</strong> nas pontas, onde o cálculo cai para diferença simples (L75–76). <strong>Lacunas:</strong> o cálculo usa os vizinhos existentes na série reamostrada, sem verificar se há buraco — se faltar um passo, o vetor atravessa a lacuna e representa um intervalo maior que 12 h, <strong>sem nenhuma marcação</strong>. Limitação conhecida; não há coluna que sinalize o caso.</p></li>
+<li><p><strong>Não há coluna de ângulo no parquet</strong> — só o quadrante já discretizado. Internamente o deslocamento é guardado como vetor unitário <code>(ux, uy)</code>, com <code>ux</code> na direção leste e <code>uy</code> na direção norte, e <code>Δλ</code> escalado por <code>cos(lat)</code> antes de normalizar (L78–81). Nenhum bearing em graus é calculado ou persistido.</p></li>
+<li><p>Com <code>Δx = Δλ · cos((φ_ponto + φ_centro)/2)</code> e <code>Δy = Δφ</code> (graus), e <code>(ux, uy)</code> unitário na direção do movimento (L115–117):</p>
+<pre><code>[ y&#39; ]   [ ux   uy ] [ Δx ]        y&#39; = componente À FRENTE   (ao longo do movimento)
+[    ] = [         ] [    ]
+[ x&#39; ]   [ uy  -ux ] [ Δy ]        x&#39; = componente À DIREITA  (perpendicular, olhando no sentido do movimento)</code></pre>
+<p>Classificação (L118): <code>y' &gt;= 0 e x' &lt; 0 → 1</code> · <code>y' &gt;= 0 e x' &gt;= 0 → 2</code> · <code>y' &lt; 0 e x' &gt;= 0 → 3</code> · <code>y' &lt; 0 e x' &lt; 0 → 4</code>.</p></li>
+<li><p><strong>Confirmado:</strong> 1 = frente-esquerda, 2 = frente-direita, 3 = trás-direita, 4 = trás-esquerda.</p></li>
+<li><p>Mesma convenção de fechamento do quadrante geográfico: <code>y' = 0</code> conta como <strong>frente</strong>, <code>x' = 0</code> conta como <strong>direita</strong>. Logo, ponto exatamente sobre o eixo transversal vai para 1 ou 2, e ponto exatamente sobre o eixo de movimento vai para 2 ou 3.</p></li>
+<li><p><strong>Primeiro e último instante da track:</strong> diferença simples de 6 h em vez de centrada. <strong>Deslocamento nulo</strong> (mesma posição em dois passos, magnitude zero): fallback explícito para <code>(ux, uy) = (1, 0)</code>, ou seja, <strong>movimento assumido para leste</strong> (L79–81) — nesse caso o quadrante rotacionado degenera para uma rotação fixa do geográfico. <strong>Não há coluna marcando qual linha usou o fallback</strong>, e o caso não foi contabilizado na geração. Track com um único passo no ano cairia no mesmo fallback.</p></li>
+</ol>
+<h2 id="resposta-de-q-003">Resposta de Q-003</h2>
+<h3 id="síntese-reproduzível-1">Síntese reproduzível</h3>
+<p>Da track e do ponto de grade até <code>distance_km</code>, <code>fixed_quadrant</code> e <code>rotated_quadrant</code>:</p>
+<ol type="1">
+<li><strong>Catálogo.</strong> Lê-se <code>tracks_SAt_filtered_with_periods.csv</code> (<code>track_id</code>, <code>date</code> horária, <code>lon vor</code>, <code>lat vor</code>, <code>period</code>), normalizando a longitude para [−180, 180).</li>
+<li><strong>Reamostragem temporal.</strong> Cada hora de track é associada ao campo ERA5 de 6 h mais próximo (Δt ≤ 3 h); mantém-se uma posição por (ciclone, campo), a de menor Δt. A posição não é interpolada.</li>
+<li><strong>Direção do movimento.</strong> Por ciclone, na série de 6 h: diferença centrada entre a posição anterior e a seguinte (12 h), com diferença simples de 6 h nas pontas e fallback para leste quando o deslocamento é nulo. O vetor é normalizado após escalar a longitude por <code>cos(lat)</code>.</li>
+<li><strong>Distância.</strong> Haversine com R = 6.371 km entre cada ponto da grade recortada e o centro do ciclone naquele instante; entram os pontos com <code>dist &lt;= 1.100 km</code> que também passam do limiar de vento.</li>
+<li><strong>Quadrantes.</strong> O geográfico sai dos sinais de Δlat/Δlon; o rotacionado projeta (Δx, Δy) no referencial do movimento e classifica por frente/trás e esquerda/direita.</li>
+</ol>
+<h3 id="equações-e-pseudocódigo">Equações e pseudocódigo</h3>
+<pre class="text"><code># reamostragem temporal (por ano)
+t_idx        = índice do valid_time ERA5 mais próximo de cada hora de track   # Δt &lt;= 3h
+posição(c,t) = hora de track de menor |Δt| dentro de (track_id, t_idx)
+
+# direção do movimento (por ciclone, série de 6h)
+Δlon = lon[t+1] - lon[t-1]        (pontas: diferença simples de 6h)
+Δlat = lat[t+1] - lat[t-1]
+dx   = ((Δlon + 180) mod 360 - 180) * cos(lat[t]) ;  dy = Δlat
+mag  = sqrt(dx² + dy²)
+(ux, uy) = (dx, dy) / mag         SE mag &gt; 0   SENÃO   (1, 0)     # fallback: leste
+
+# distância ponto → centro
+a    = sin²(Δφ/2) + cos(φ_ponto)·cos(φ_centro)·sin²(Δλ/2)
+dist = 2 · 6371.0 · asin(√a)                                      # km
+
+# quadrante geográfico
+Δlon_deg = (lon_ponto - lon_centro + 180) mod 360 - 180 ; Δlat_deg = lat_ponto - lat_centro
+fixed = 1 se (Δlat&gt;=0, Δlon&lt;0) | 2 se (Δlat&gt;=0, Δlon&gt;=0) | 3 se (Δlat&lt;0, Δlon&gt;=0) | 4 se (Δlat&lt;0, Δlon&lt;0)
+
+# quadrante relativo ao movimento
+Δx = Δlon_deg · cos((lat_ponto + lat_centro)/2) ;  Δy = Δlat_deg
+y&#39; = Δx·ux + Δy·uy        # frente (+) / trás (-)
+x&#39; = Δx·uy - Δy·ux        # direita (+) / esquerda (-)
+rotated = 1 se (y&#39;&gt;=0, x&#39;&lt;0) | 2 se (y&#39;&gt;=0, x&#39;&gt;=0) | 3 se (y&#39;&lt;0, x&#39;&gt;=0) | 4 se (y&#39;&lt;0, x&#39;&lt;0)</code></pre>
+<h3 id="evidências-1">Evidências</h3>
+<table>
+<thead>
+<tr>
+<th>Afirmação</th>
+<th>Arquivo/fonte</th>
+<th>Função, linhas ou configuração</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Origem de <code>lat_center</code>/<code>lon_center</code></td>
+<td><code>data/tracks_danilo/tracks_SAt_filtered_with_periods.csv</code></td>
+<td>colunas <code>lat vor</code>, <code>lon vor</code>; leitura em <code>exceedances_by_track.py</code> L46</td>
+</tr>
+<tr>
+<td>Normalização de longitude da track</td>
+<td><code>scripts/analysis/exceedances_by_track.py</code></td>
+<td>L48</td>
+</tr>
+<tr>
+<td>Casamento temporal por vizinho mais próximo (Δt ≤ 3 h)</td>
+<td>idem</td>
+<td>L62–67</td>
+</tr>
+<tr>
+<td>Uma posição por (ciclone, instante)</td>
+<td>idem</td>
+<td>L68–69 (<code>drop_duplicates</code>)</td>
+</tr>
+<tr>
+<td>Vetor de movimento por diferença centrada + fallback leste</td>
+<td>idem</td>
+<td>L73–81</td>
+</tr>
+<tr>
+<td>Haversine, R = 6371 km</td>
+<td>idem</td>
+<td>L22, L102–105</td>
+</tr>
+<tr>
+<td>Raio de 1.100 km</td>
+<td>idem</td>
+<td>L21, L106</td>
+</tr>
+<tr>
+<td>Quadrante geográfico por sinais de Δlat/Δlon</td>
+<td>idem</td>
+<td>L111–114</td>
+</tr>
+<tr>
+<td>Projeção no referencial do movimento</td>
+<td>idem</td>
+<td>L115–118</td>
+</tr>
+<tr>
+<td>2,5% dos pontos-hora em mais de um ciclone (máx. 3)</td>
+<td>leitura do parquet</td>
+<td>agrupamento por (<code>time</code>,<code>lat</code>,<code>lon</code>)</td>
+</tr>
+<tr>
+<td>9,1% dos pares (ciclone, instante) com centro fora do domínio</td>
+<td>leitura do parquet</td>
+<td><code>lat_center</code>/<code>lon_center</code> fora de [−65,−10] × [−85,−15]</td>
+</tr>
+<tr>
+<td>Chave (<code>track_id</code>,<code>time</code>,<code>lat</code>,<code>lon</code>) sem duplicata</td>
+<td>leitura do parquet</td>
+<td>0 duplicatas em 17.182.983 linhas</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pontos-não-localizados-1">Pontos não localizados</h3>
+<ul>
+<li><strong>Quantas linhas usaram o fallback de direção</strong> (deslocamento nulo) — não foi instrumentado na geração e não há coluna que permita reconstruir a posteriori sem reprocessar as tracks. Reprocessável, se necessário.</li>
+<li><strong>Critério que originou o raio de 1.100 km.</strong> O valor é herdado do pipeline anterior; não há no repositório a justificativa metodológica (documento, card ou comentário) que o escolheu.</li>
+</ul>
+<hr />
+<h1 id="esclarecimentos-adicionais-necessários">Esclarecimentos adicionais necessários</h1>
+<p>Responda estes itens quando houver evidência no mesmo código ou fluxo de geração.</p>
+<h2 id="a-fases-do-ciclo-de-vida">A. Fases do ciclo de vida</h2>
+<ol type="1">
+<li>Como <code>phase</code> é calculada ou importada?</li>
+<li>Qual é a definição operacional de <code>incipient</code>, <code>intensification</code>, <code>mature</code>, <code>decay</code> e <code>residual</code>?</li>
+<li>O que significam <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code>?</li>
+<li>Por que 509.788 linhas têm <code>phase</code> ausente?</li>
+<li>Ausência de fase ocorre por ciclone, timestep, falha de junção ou regra do ciclo de vida?</li>
+<li>Como esses valores devem ser tratados em análises futuras?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li><strong>Importada, não calculada.</strong> É a coluna <code>period</code> do próprio CSV de tracks, copiada para a linha como <code>phase</code> (<code>exceedances_by_track.py</code> L46 e L120). Nenhum código deste repositório classifica fase.</li>
+<li><strong>NÃO LOCALIZADO.</strong> A definição operacional está do lado do catálogo (classificação por ciclo de vida energético, LEC), não neste repositório. Falta a referência/código que gerou <code>..._with_periods.csv</code> para documentar os critérios de corte entre <code>incipient</code>, <code>intensification</code>, <code>mature</code>, <code>decay</code> e <code>residual</code>.</li>
+<li>Sufixo <code> 2</code> = <strong>segundo ciclo dentro da mesma track</strong> (o catálogo traz <code>incipient 2</code>, <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code>). A definição formal do que dispara um segundo ciclo é a mesma lacuna do item 2 — <strong>NÃO LOCALIZADO</strong>.</li>
+<li>Porque a hora de track correspondente já vem <strong>sem classificação</strong> no catálogo: <strong>50.069 de 631.009 pontos horários (7,9%)</strong> têm <code>period</code> vazio no CSV de origem. Nada é perdido na junção — a ausência é propagada.</li>
+<li><strong>Por timestep</strong>, não por ciclone. São trechos no início e no fim das trajetórias, antes de a primeira fase começar ou depois de a última terminar. Medido no parquet: <strong>677 ciclones têm pelo menos uma linha sem fase</strong> e apenas <strong>2 têm todas as linhas sem fase</strong>.</li>
+<li>Tratar como categoria própria ("sem classificação"), nunca como zero nem como fase implícita. Em qualquer agregação por fase, filtrar explicitamente e reportar o volume excluído (3,0% das linhas do parquet).</li>
+</ol>
+<h2 id="b-identificador-e-chave-dos-dados">B. Identificador e chave dos dados</h2>
+<ol type="1">
+<li>Como <code>track_id</code> é construído? Seu prefixo codifica ano ou outra informação?</li>
+<li>Por que aparece <code>track_id = 20210007</code> quando o último <code>time</code> observado é de 2020?</li>
+<li><code>track_id</code> é único globalmente no catálogo ou apenas dentro de um arquivo/ano?</li>
+<li>Qual é a chave mínima esperada de uma linha: <code>track_id + time + lat + lon</code>?</li>
+<li>Duplicatas nessa chave são possíveis ou indicam erro?</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li>Inteiro de 8 dígitos no formato <strong>AAAANNNN</strong>: os 4 primeiros são o <strong>ano de gênese</strong> e os 4 últimos um sequencial dentro do ano. Verificado no catálogo completo: o prefixo bate com o ano da primeira data da track em <strong>6.788 de 6.789</strong> casos.</li>
+<li>Porque é <strong>a única exceção</strong>, e é uma track que atravessa o ano civil: <code>20210007</code> vai de <strong>2020-12-30 11:00 a 2021-01-05 16:00</strong>. O catálogo a numerou como 2021; o parquet contém apenas as horas dela que caem dentro do ERA5 baixado, que termina em 2020-12-31 18:00. Não é erro de junção nem de tipo.</li>
+<li><strong>Único globalmente no catálogo</strong> — 6.789 identificadores distintos para 6.789 tracks. No recorte 2010–2020 do parquet aparecem 1.781.</li>
+<li><strong>Sim: (<code>track_id</code>, <code>time</code>, <code>lat</code>, <code>lon</code>).</strong> Verificado: <strong>0 duplicatas</strong> em 17.182.983 linhas.</li>
+<li>Duplicata nessa chave <strong>indica erro</strong>. O que <strong>não</strong> é duplicata e não deve ser tratado como tal: a mesma tripla (<code>time</code>, <code>lat</code>, <code>lon</code>) em <code>track_id</code> diferentes — ocorre em 414.124 pontos-hora (2,5%), com até 3 ciclones no mesmo ponto. Qualquer soma sobre pontos sem agrupar por ciclone contará esses pontos mais de uma vez.</li>
+</ol>
+<h2 id="c-proveniência-e-reprodução">C. Proveniência e reprodução</h2>
+<ol type="1">
+<li>Liste, em ordem, todos os scripts e entradas que produzem o parquet.</li>
+<li>Informe versões relevantes de bibliotecas, parâmetros e constantes.</li>
+<li>Identifique thresholds, máscaras, domínios e caminhos atualmente codificados manualmente.</li>
+<li>Informe quais produtos precisam ser regenerados quando os percentis forem recalculados para 1979–2020.</li>
+<li>Indique qualquer etapa manual que impeça reprodução integral.</li>
+</ol>
+<p><strong>Respostas</strong></p>
+<ol type="1">
+<li>Ordem de execução, com entradas:
+<ol type="1">
+<li><code>scripts/download/download_historical.py</code> → <code>data/era5_wind_southern_hemisphere_{2010..2020}.nc</code> (requer <code>~/.cdsapirc</code>).</li>
+<li><code>scripts/climatology/calculate_local_percentiles.py</code> (entrada: os 11 NetCDF) → <code>data/local_percentiles.nc</code>.</li>
+<li><code>scripts/analysis/exceedances_by_track.py ANO_INI ANO_FIM SAIDA.parquet</code> (entradas: os 11 NetCDF, <code>data/local_percentiles.nc</code> e <code>data/tracks_danilo/tracks_SAt_filtered_with_periods.csv</code>) → <code>outputs/parquet/cyclone_exceedances_by_track_2010_2020_p90.parquet</code>.</li>
+</ol>
+<ul>
+<li>O catálogo de tracks é <strong>insumo externo</strong>: não é produzido por nenhum script deste repositório.</li>
+</ul></li>
+<li>Ambiente de execução <code>/home/publico/venv</code> na máquina 9: <strong>Python 3.9.25, NumPy 2.0.2, pandas 2.2.3, PyArrow 21.0.0, xarray 2024.7.0</strong>. Parquet gravado com <strong>zstd nível 9</strong>, sem dicionário, 14+ row groups. Constantes: <code>RADIUS_KM = 1100.0</code>, <code>R_EARTH = 6371.0</code>, limiares fixos <code>15.6 / 20.0 / 25.0</code>, <code>BLOCO = 120</code> timesteps por leitura.</li>
+<li>Codificado manualmente: os caminhos absolutos <code>ROOT</code>, <code>TRACKS</code>, <code>PERC</code> (L17–20); o raio e o raio da Terra (L21–22); os três limiares fixos (L31, L124–125); o domínio lat −65/−10 e lon −85/−15 (em <code>calculate_local_percentiles.py</code> L40–41, e implicitamente em <code>exceedances_by_track.py</code> via a grade do <code>local_percentiles.nc</code>); o período 2010–2020 (<code>years = range(2010, 2021)</code>). <strong>Não há máscara</strong> de terra/oceano em lugar nenhum.</li>
+<li>Ao recalcular os percentis para 1979–2020, regenerar <strong>nesta ordem</strong>: (a) <code>data/local_percentiles.nc</code>; (b) <code>outputs/parquet/cyclone_exceedances_by_track_*.parquet</code> — muda o conteúdo <strong>e o conjunto de linhas</strong>, porque o critério de entrada depende do q90; (c) <code>outputs/csv/cyclone_exceedances_5years.csv</code> e o parquet derivado dele; (d) <code>wind_spatial_field_by_phase_*</code> e <code>wind_spatial_field_all_mendeley_*</code>; (e) os agregados que alimentam o painel (<code>wind_spatial_pattern_by_phase.csv</code>, <code>wind_phase_extremes_summary.csv</code>, <code>wind_spatial_field_by_phase_grid.csv</code>). Observação: ampliar para 1979 exige também baixar o ERA5 desses anos — hoje só existem 2010–2020 em disco.</li>
+<li>Etapas que impedem reprodução integral hoje: (a) <strong>o projeto não está sob controle de versão</strong> (não há <code>.git</code>), então não existe hash de código que identifique a versão que gerou o parquet; (b) o <strong>catálogo de tracks</strong> vem pronto de fora, sem versão declarada; (c) a conversão <strong>GRIB → NetCDF</strong> foi feita na entrega do CDS e o GRIB original não foi preservado; (d) o script gerador foi escrito fora da árvore do projeto e <strong>só agora foi versionado</strong> em <code>scripts/analysis/exceedances_by_track.py</code> — a cópia preservada é idêntica à que gerou o arquivo.</li>
+</ol>
+<h2 id="respostas-adicionais">Respostas adicionais</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Resposta</th>
+<th>Evidência</th>
+<th>Consequência para o projeto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fases</td>
+<td>Importadas da coluna <code>period</code> do catálogo, não calculadas aqui; 9 valores, incluindo ciclos secundários com sufixo <code> 2</code>; 3,0% das linhas sem fase</td>
+<td><code>exceedances_by_track.py</code> L46/L120; CSV de tracks com 50.069 de 631.009 horas sem <code>period</code></td>
+<td>Definição operacional das fases precisa vir do dono do catálogo antes de qualquer análise por fase; linhas sem fase exigem filtro explícito</td>
+</tr>
+<tr>
+<td><code>track_id</code> e chave</td>
+<td>Formato AAAANNNN (ano de gênese + sequencial), único no catálogo; chave mínima (<code>track_id</code>,<code>time</code>,<code>lat</code>,<code>lon</code>) sem duplicatas; 20210007 é track que cruza 2020→2021</td>
+<td>Verificação em 6.789 tracks (6.788 com prefixo = ano de gênese); 0 duplicatas em 17.182.983 linhas</td>
+<td>Agregações espaciais devem agrupar por ciclone: 2,5% dos pontos-hora pertencem a mais de um ciclone e seriam contados em duplicidade</td>
+</tr>
+<tr>
+<td>Proveniência</td>
+<td>3 scripts encadeados + catálogo externo; ambiente e constantes documentados acima; sem git, sem versão no NetCDF de percentis</td>
+<td><code>download_historical.py</code>, <code>calculate_local_percentiles.py</code>, <code>exceedances_by_track.py</code></td>
+<td>Reprodução é possível hoje, mas não é rastreável: sem versionar código, percentis e catálogo, não há como provar qual versão gerou um parquet específico</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="entrega-esperada">Entrega esperada</h1>
+<h2 id="1-fatos-confirmados">1. Fatos confirmados</h2>
+<ol type="1">
+<li><code>wind_speed</code> é <code>sqrt(u10² + v10²)</code> do ERA5 single-levels 0,25°, em m/s, na grade nativa — sem regrid e sem interpolação espacial ou temporal do campo.</li>
+<li>A referência dos percentis são <strong>11 anos civis (2010–2020)</strong>, 16.072 campos de 6 h, todos os tempos, por ponto de grade, sem estratificação e sem máscara terra/oceano.</li>
+<li>Quantis por <code>numpy.percentile</code>, método <code>linear</code>, persistidos em <code>data/local_percentiles.nc</code> (float64).</li>
+<li>Critério de seleção de linha: <code>dist &lt;= 1100 km</code> <strong>e</strong> <code>wind_speed &gt; min(15,6 ; q90_local)</code>; todas as comparações de limiar são estritas (<code>&gt;</code>).</li>
+<li>As 13.404 linhas com <code>exceeded_q90 = false</code> são exatamente os pontos onde o q90 local supera 15,6 m/s e o vento entrou pelo limiar fixo — verificado em 100% dos casos.</li>
+<li>Centro vindo de <code>lat vor</code>/<code>lon vor</code> do catálogo, sem interpolação; cada hora de track casada com o campo ERA5 mais próximo (Δt ≤ 3 h), uma posição por (ciclone, instante).</li>
+<li><code>distance_km</code> é haversine com R = 6.371 km; máximo exatamente 1.100,0 km.</li>
+<li><code>fixed_quadrant</code> = 1 NO / 2 NE / 3 SE / 4 SO; <code>rotated_quadrant</code> = 1 frente-esq / 2 frente-dir / 3 trás-dir / 4 trás-esq; eixos fechados no norte, no leste, na frente e na direita.</li>
+<li>Vetor de movimento por diferença centrada de 12 h (6 h nas pontas), com fallback para leste quando o deslocamento é nulo.</li>
+<li>Chave (<code>track_id</code>,<code>time</code>,<code>lat</code>,<code>lon</code>) é única; 2,5% dos pontos-hora pertencem a mais de um ciclone.</li>
+<li>1.781 ciclones no parquet contra 1.785 com cobertura ERA5 no catálogo: os 4 ausentes (<code>20091196</code>, <code>20110523</code>, <code>20191177</code>, <code>20203207</code>) não produziram nenhuma linha porque nenhum ponto do círculo passou do limiar de entrada — <code>20091196</code> está inteiramente fora do domínio (lon 28° a 114° E); os outros três foram verificados caso a caso (ex.: <code>20110523</code> em 2011-06-16 18:00 tem vento máximo de 12,34 m/s no círculo contra limiar médio de 13,94 m/s).</li>
+</ol>
+<h2 id="2-pontos-ainda-desconhecidos">2. Pontos ainda desconhecidos</h2>
+<ol type="1">
+<li>Versão do ERA5 (<code>expver</code> / ERA5 vs ERA5.1) e recibo do pedido ao CDS.</li>
+<li>Versão e proveniência formal do <code>local_percentiles.nc</code> (sem atributo de versão ou hash).</li>
+<li>Definição operacional das fases do ciclo de vida e do que caracteriza um ciclo secundário (<code> 2</code>) — pertence ao catálogo, não a este repositório.</li>
+<li>Quantas linhas usaram o fallback de direção (deslocamento nulo).</li>
+<li>Justificativa metodológica documentada do raio de 1.100 km.</li>
+</ol>
+<h2 id="3-correções-sugeridas-para-o-dicionário-de-dados">3. Correções sugeridas para o dicionário de dados</h2>
+<ol type="1">
+<li>Trocar "dez anos" por <strong>"2010–2020, 11 anos civis, 16.072 campos de 6 h"</strong> em toda a documentação.</li>
+<li>Registrar que <strong><code>exceeded_q90</code> não é 100%</strong>: 13.404 linhas (0,08%) entram pelo limiar fixo de 15,6 m/s onde o q90 local é maior.</li>
+<li>Documentar que o <strong>mesmo ponto-hora pode aparecer em até 3 ciclones</strong> (2,5% dos pontos-hora), com a consequência para agregações.</li>
+<li>Documentar o <strong>fallback de direção para leste</strong> quando o deslocamento é nulo, e que ele não é sinalizado por coluna.</li>
+<li>Documentar as <strong>convenções de fronteira</strong> dos dois quadrantes (norte/leste e frente/direita fechados).</li>
+<li>Registrar que <strong>9,1% dos pares (ciclone, instante) têm o centro fora do domínio</strong> e que o círculo é truncado pela grade sem aviso.</li>
+<li>Registrar que <code>phase</code> vem do catálogo e que <strong>3,0% das linhas não têm fase</strong>, com a recomendação de tratamento.</li>
+<li>Acrescentar que <code>distance_km</code> é derivada e recalculável, e que está em float32 (erro de ~7 cm em 1.072 km).</li>
+</ol>
+<h2 id="4-riscos-de-interpretação-do-parquet-atual">4. Riscos de interpretação do parquet atual</h2>
+<ol type="1">
+<li><strong>Dupla contagem entre ciclones:</strong> somar pontos sem agrupar por <code>track_id</code> superestima 2,5% dos pontos-hora.</li>
+<li><strong>"p90" no nome não significa que toda linha excede o p90</strong> — ver correção 2.</li>
+<li><strong>Truncamento nas bordas do domínio:</strong> ciclones perto de −65°S, −85°W ou −15°W têm círculo incompleto, o que enviesa contagens por ciclone sem que nada no dado avise.</li>
+<li><strong>Quadrante rotacionado degenerado</strong> nos casos de deslocamento nulo (direção assumida como leste) e nas pontas de cada track (janela de 6 h em vez de 12 h).</li>
+<li><strong>Percentis in-sample:</strong> a climatologia de referência é o mesmo período analisado e inclui as horas de ciclone, o que amortece os limiares. Muda quando a referência passar para 1979–2020.</li>
+<li><strong>Resolução temporal aparente:</strong> a track é horária, mas o campo é de 6 h; posições distintas podem compartilhar o mesmo campo de vento (Δt de até 3 h).</li>
+<li><strong>Vento de reanálise a 10 m em grade de 0,25°</strong> não é rajada nem medida de estação; não representa vento local em terreno complexo.</li>
+</ol>
+<h2 id="5-artefatos-que-precisam-ser-preservados-para-reproduzir-o-dado">5. Artefatos que precisam ser preservados para reproduzir o dado</h2>
+<ol type="1">
+<li><code>scripts/analysis/exceedances_by_track.py</code> (gerador, agora versionado no projeto).</li>
+<li><code>scripts/climatology/calculate_local_percentiles.py</code> e <code>scripts/download/download_historical.py</code>.</li>
+<li><code>data/local_percentiles.nc</code> (+ os dois backups datados) — sem ele o critério de entrada não é reconstruível.</li>
+<li><code>data/tracks_danilo/tracks_SAt_filtered_with_periods.csv</code> — insumo externo, sem versão declarada.</li>
+<li>Os 11 arquivos <code>data/era5_wind_southern_hemisphere_{ano}.nc</code> (36 GB) ou, na falta deles, o recibo do pedido ao CDS.</li>
+<li><code>outputs/parquet/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code> e este documento.</li>
+</ol>
+<h2 id="6-q-002-e-q-003-podem-ser-marcadas-como-resolved">6. Q-002 e Q-003 podem ser marcadas como RESOLVED?</h2>
+<ul>
+<li><strong>Q-002 — RESOLVED com ressalva.</strong> O caminho do dado bruto até <code>wind_speed</code> e até as seis flags está reconstruído com código, linhas e verificação numérica, incluindo o mecanismo exato das 13.404 linhas divergentes. A ressalva é a versão do ERA5 (<code>expver</code>), não recuperável dos arquivos atuais; ela não afeta a reprodução do procedimento, só a identificação exata do insumo.</li>
+<li><strong>Q-003 — RESOLVED.</strong> Todas as convenções espaciais e temporais estão documentadas com a equação, a constante e a linha correspondente, incluindo tratamento de fronteiras, ciclones simultâneos e casos degenerados. O único item aberto (quantas linhas usaram o fallback de direção) é uma contagem ausente, não uma convenção desconhecida, e é reprodutível a partir do catálogo.</li>
+</ul>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/solicitacao_agente_q002_q003.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+    </main>
+  </div>
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>

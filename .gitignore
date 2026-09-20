@@ -1,0 +1,9 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+.env
+.ipynb_checkpoints/
+
+# Local analysis input; documented but intentionally not versioned.
+data/cyclone_exceedances_by_track_2010_2020_p90.parquet

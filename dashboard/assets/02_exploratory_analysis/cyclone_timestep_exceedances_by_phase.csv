@@ -1,0 +1,7 @@
+phase_group,cyclone_timestep_count,exceeded_15_6,exceeded_20_0,exceeded_25_0,exceeded_q95,exceeded_q99
+incipient,2368,824,69,2,2096,1156
+intensification,8340,5165,1088,81,7359,4348
+mature,2051,1658,652,42,1848,1265
+decay,6355,3817,642,16,4967,2466
+residual,237,150,15,1,202,103
+missing,750,378,62,4,635,328

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Análise exploratória dos ventos associados aos ciclones do projeto cyclofex-br.">
+  <title>Análise exploratória · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+  <style>
+    .analysis-title { max-width: 780px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0 0 25px; }
+    .metric { padding: 18px 19px; border: 1px solid var(--line); border-radius: 13px; background: #f8faf9; }
+    .metric span { display: block; color: var(--muted); font-size: .76rem; font-weight: 700; }
+    .metric strong { display: block; margin-top: 6px; font-size: 1.55rem; letter-spacing: -.035em; line-height: 1.1; }
+    .metric small { display: block; margin-top: 5px; color: var(--muted); font-size: .7rem; }
+    .callout { margin: 20px 0; padding: 17px 19px; border-left: 4px solid #218a8b; border-radius: 9px; background: #edf7f4; }
+    .callout.warning { border-left-color: #d39a46; background: #fbf4e8; }
+    .callout p:last-child { margin-bottom: 0; }
+    .figure-card { margin: 18px 0 31px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: #fbfcfb; }
+    .figure-card img, .figure-card video { display: block; width: 100%; height: auto; border-radius: 7px; background: #fff; }
+    .figure-card figcaption { padding: 12px 5px 2px; color: var(--muted); font-size: .86rem; }
+    .phase-key { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 13px 0 3px; }
+    .phase-key span { display: inline-flex; align-items: center; gap: 6px; font-size: .82rem; }
+    .swatch { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(20,43,61,.4); }
+    .findings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0 27px; }
+    .finding { padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+    .finding strong { display: block; margin-bottom: 6px; color: var(--blue-dark); }
+    .finding p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .file-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; padding-left: 19px; }
+    .file-list li { overflow-wrap: anywhere; }
+    @media (max-width: 900px) { .metric-grid { grid-template-columns: repeat(2, 1fr); } .findings { grid-template-columns: 1fr; } }
+    @media (max-width: 560px) { .metric-grid, .file-list { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+
+  <div class="title-band">
+    <div class="shell analysis-title">
+      <p class="eyebrow">Análise exploratória</p>
+      <p class="page-name">Tracks, fases, ventos e excedências</p>
+      <p class="title-note">Caracterização dos dados de vento associados aos ciclones e exemplo visual da representação espacial em quadrantes.</p>
+    </div>
+  </div>
+
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Seções da análise">
+      <p class="side-label">Nesta página</p>
+      <a href="#visao-geral">Visão geral</a>
+      <a href="#tracks">Todas as tracks</a>
+      <a href="#vento">Velocidade do vento</a>
+      <a href="#excedencias">Excedências</a>
+      <a href="#animacao">Animação</a>
+      <a href="#metodo">Método e limites</a>
+      <a href="#arquivos">Arquivos</a>
+    </nav>
+
+    <main id="conteudo" class="document">
+      <section id="visao-geral">
+        <h1>Análise exploratória dos ventos associados aos ciclones</h1>
+        <p>Esta análise descreve o conjunto atual sem ajustar modelos ou produzir estimativas de hazard. A unidade científica principal é o <strong>ciclone</strong>, identificado por <code>track_id</code>. Linhas de pontos de grade são usadas para descrever campos e distribuições, mas não são tratadas como observações inferenciais independentes.</p>
+
+        <div class="metric-grid">
+          <div class="metric"><span>Ciclones</span><strong>1.781</strong><small><code>track_id</code> únicos</small></div>
+          <div class="metric"><span>Estados ciclone-tempo</span><strong>20.101</strong><small>pares únicos <code>track_id + time</code></small></div>
+          <div class="metric"><span>Linhas espaciais</span><strong>17.182.983</strong><small>pontos associados aos estados</small></div>
+          <div class="metric"><span>Maior vento observado</span><strong>34,85 m/s</strong><small>track 20100510</small></div>
+        </div>
+
+        <div class="callout">
+          <p><strong>Agrupamento usado nas figuras.</strong> O sufixo <code>2</code> identifica um segundo ciclo de vida na mesma track. <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code> foram reunidas às fases principais de mesmo nome apenas para apresentação. <code>residual</code> e fase ausente permanecem separadas, e os valores originais continuam preservados.</p>
+          <div class="phase-key" aria-label="Cores das fases">
+            <span><i class="swatch" style="background:#8ecae6"></i>incipiente</span>
+            <span><i class="swatch" style="background:#f6c945"></i>intensificação</span>
+            <span><i class="swatch" style="background:#d73027"></i>madura</span>
+            <span><i class="swatch" style="background:#9bd77a"></i>decaimento</span>
+            <span><i class="swatch" style="background:#a78bca"></i>residual</span>
+            <span><i class="swatch" style="background:#8c969d"></i>ausente</span>
+          </div>
+        </div>
+
+        <h2>Resumo por fase agrupada</h2>
+        <table>
+          <thead><tr><th>Fase</th><th>Ciclones</th><th>Estados ciclone-tempo</th><th>Linhas espaciais</th><th>Mediana do vento</th><th>P95 do vento</th></tr></thead>
+          <tbody>
+            <tr><td>Incipiente</td><td>1.124</td><td>2.368</td><td>1.583.894</td><td>12,07 m/s</td><td>16,49 m/s</td></tr>
+            <tr><td>Intensificação</td><td>1.687</td><td>8.340</td><td>7.646.684</td><td>14,38 m/s</td><td>18,16 m/s</td></tr>
+            <tr><td>Madura</td><td>1.024</td><td>2.051</td><td>2.586.389</td><td>15,58 m/s</td><td>19,77 m/s</td></tr>
+            <tr><td>Decaimento</td><td>1.439</td><td>6.355</td><td>4.704.434</td><td>14,97 m/s</td><td>18,67 m/s</td></tr>
+            <tr><td>Residual</td><td>66</td><td>237</td><td>151.794</td><td>14,54 m/s</td><td>18,26 m/s</td></tr>
+            <tr><td>Ausente</td><td>677</td><td>750</td><td>509.788</td><td>14,05 m/s</td><td>18,00 m/s</td></tr>
+          </tbody>
+        </table>
+        <p>Um mesmo ciclone pode aparecer em mais de uma fase; portanto, a coluna “Ciclones” não deve ser somada entre as linhas.</p>
+
+        <div class="findings">
+          <div class="finding"><strong>Fase madura</strong><p>Apresenta a maior mediana pontual de <code>wind_speed</code> (15,58 m/s) e o maior P95 (19,77 m/s) neste recorte.</p></div>
+          <div class="finding"><strong>Quadrantes</strong><p>As medianas pontuais são próximas: 14,47–14,90 m/s nos quadrantes fixos e 14,51–14,78 m/s nos rotacionados.</p></div>
+          <div class="finding"><strong>Leitura descritiva</strong><p>As diferenças refletem a seleção p90, duração dos ciclones e quantidade de pontos por estado. Não são testes de diferença entre fases.</p></div>
+        </div>
+      </section>
+
+      <section id="tracks">
+        <h2>Todas as tracks</h2>
+        <p>Cada segmento recebe a cor da fase no seu ponto final. A figura contém todos os 1.781 ciclones e seus 20.101 estados observados.</p>
+        <figure class="figure-card">
+          <img src="assets/02_exploratory_analysis/all_tracks_by_phase.png" alt="Mapa de todas as trajetórias de ciclones no Atlântico Sul, coloridas pela fase do ciclo de vida.">
+          <figcaption>Centros das tracks sobre costa Natural Earth em resolução de 50 m. A sobreposição intensa é esperada e serve para mostrar cobertura espacial, não densidade estimada.</figcaption>
+        </figure>
+      </section>
+
+      <section id="vento">
+        <h2>Distribuição pontual da velocidade do vento</h2>
+        <p>Os boxplots foram calculados sobre linhas espaciais. As caixas mostram P25–P75, a linha central é a mediana, as hastes são P5–P95 e o ponto branco é a média. Eles descrevem o arquivo, mas não fornecem incerteza por ciclone.</p>
+        <figure class="figure-card">
+          <img src="assets/02_exploratory_analysis/wind_speed_boxplots.png" alt="Boxplots de velocidade do vento por fase, quadrante geográfico e quadrante relativo ao movimento.">
+          <figcaption>Comparação da distribuição de <code>wind_speed</code> por fase agrupada e pelas duas convenções de quadrantes.</figcaption>
+        </figure>
+      </section>
+
+      <section id="excedencias">
+        <h2>Ocorrência por estado ciclone-tempo</h2>
+        <p>Para reduzir a contagem repetida de pixels, cada par <code>track_id + time</code> conta uma vez por threshold quando possui ao menos um ponto excedente. O painel superior mostra números de estados; o inferior mostra a fração dos estados da fase.</p>
+        <figure class="figure-card">
+          <img src="assets/02_exploratory_analysis/exceedance_occurrence_by_phase.png" alt="Gráficos de ocorrência de excedências por fase do ciclone.">
+          <figcaption>O q90 não aparece neste gráfico porque ele define aproximadamente o recorte do arquivo. São mostrados os limiares fixos, q95 e q99.</figcaption>
+        </figure>
+
+        <h2>Fase e quadrantes</h2>
+        <p>As duas linhas superiores contam pontos q90; as inferiores mostram o percentual das linhas do recorte que também excedem q95. A escala logarítmica das contagens acomoda diferenças grandes no número de pontos por fase.</p>
+        <figure class="figure-card">
+          <img src="assets/02_exploratory_analysis/exceedances_by_phase_and_quadrant.png" alt="Heatmaps de excedências por fase e quadrantes fixos e relativos ao movimento.">
+          <figcaption>As maiores proporções q95 aparecem na fase madura em vários quadrantes. Essa observação é condicionada ao recorte p90 e à quantidade de linhas que cada ciclone fornece.</figcaption>
+        </figure>
+      </section>
+
+      <section id="animacao">
+        <h2>Exemplo espacial: ciclone com maior vento</h2>
+        <p>O ciclone <code>track_id = 20100510</code> contém o maior <code>wind_speed</code> do conjunto: <strong>34,85 m/s</strong> em 2010-06-18 06:00 UTC, durante intensificação. A animação percorre seus 25 estados de 6 h, de 2010-06-13 12:00 a 2010-06-19 12:00 UTC.</p>
+        <figure class="figure-card">
+          <video controls loop muted playsinline preload="metadata" poster="assets/02_exploratory_analysis/max_wind_cyclone_peak_frame.png">
+            <source src="assets/02_exploratory_analysis/max_wind_cyclone_animation.mp4" type="video/mp4">
+            Seu navegador não conseguiu reproduzir o MP4. Use o link disponível na seção de arquivos.
+          </video>
+          <figcaption>As excedências q90 são coloridas pela velocidade do vento com a mesma escala nos dois painéis. As linhas radiais desenham os setores geográficos fixos à esquerda e os setores relativos ao movimento à direita. O centro usa a cor da fase, a linha escura mostra a trajetória já percorrida, a linha tracejada mostra o restante da track e o círculo tem raio de 1.100 km.</figcaption>
+        </figure>
+        <div class="callout">
+          <p><strong>Extensão do mapa.</strong> Os limites são fixos durante o vídeo e foram calculados a partir do envelope de todos os centros dessa track acrescido do raio de 1.100 km e uma margem de 1°. Isso permite acompanhar todo o deslocamento sem mudanças de escala entre quadros.</p>
+          <p><strong>Comparação dos quadrantes.</strong> A geometria e a costa permanecem em coordenadas geográficas nos dois painéis. No painel rotacionado, os limites reproduzem a convenção usada no dado: diferença centrada entre centros vizinhos de 6 h, diferença simples nas pontas, longitude corrigida por <code>cos(lat)</code> e direção leste quando o deslocamento é nulo.</p>
+        </div>
+      </section>
+
+      <section id="metodo">
+        <h2>Método e limitações</h2>
+        <ol>
+          <li>DuckDB consulta o arquivo de dados diretamente e agrega 17 milhões de linhas sem criar uma cópia intermediária.</li>
+          <li>Contagens principais usam <code>track_id</code> ou <code>track_id + time</code>. Estatísticas de vento e heatmaps explicitamente descrevem pontos de grade.</li>
+          <li>O mapa usa os centros distintos de cada ciclone e instante. As linhas de costa vêm do Natural Earth via Cartopy.</li>
+          <li>O exemplo animado é escolhido por uma regra reproduzível: o <code>track_id</code> da linha com o maior <code>wind_speed</code> global.</li>
+          <li>Somente linhas com <code>exceeded_q90 = true</code> formam o desenho de extremos da animação.</li>
+        </ol>
+        <div class="callout warning">
+          <p><strong>Limites para interpretação.</strong> Os percentis atuais usam os 11 anos civis de 2010–2020 e serão recalculados para 1979–2020. As 13.404 linhas com <code>exceeded_q90 = false</code> entraram pelo limiar alternativo de 15,6 m/s; há também 509.788 linhas sem fase. O círculo é truncado fora do domínio da grade, onde nenhuma avaliação foi feita. Estes produtos são exploratórios e não constituem footprint probabilístico ou hazard geográfico.</p>
+        </div>
+      </section>
+
+      <section id="arquivos">
+        <h2>Código e produtos reproduzíveis</h2>
+        <ul class="file-list">
+          <li><a href="../scripts/01_data_overview/inspect_parquet.py">Script da caracterização estrutural</a></li>
+          <li><a href="../outputs/01_data_overview/structural_summary.json">Resumo estrutural JSON</a></li>
+          <li><a href="../scripts/02_exploratory_analysis/exploratory_analysis.py">Script das figuras e da animação</a></li>
+          <li><a href="assets/02_exploratory_analysis/analysis_summary.json">Resumo e parâmetros JSON</a></li>
+          <li><a href="assets/02_exploratory_analysis/phase_statistics.csv">Estatísticas por fase</a></li>
+          <li><a href="assets/02_exploratory_analysis/quadrant_statistics.csv">Estatísticas por quadrante</a></li>
+          <li><a href="assets/02_exploratory_analysis/cyclone_timestep_exceedances_by_phase.csv">Ocorrências por estado ciclone-tempo</a></li>
+          <li><a href="assets/02_exploratory_analysis/phase_quadrant_exceedances.csv">Excedências por fase e quadrante</a></li>
+          <li><a href="assets/02_exploratory_analysis/max_wind_cyclone_animation.mp4">Abrir ou baixar a animação MP4</a></li>
+          <li><a href="assets/02_exploratory_analysis/max_wind_cyclone_peak_frame.png">Quadro do máximo observado</a></li>
+        </ul>
+      </section>
+
+      <div class="source-note">Análise produzida por <code>scripts/01_data_overview/inspect_parquet.py</code> e <code>scripts/02_exploratory_analysis/exploratory_analysis.py</code> a partir do conjunto com SHA-256 <code>3913a1d8…d9efa0c</code>.</div>
+    </main>
+  </div>
+
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>

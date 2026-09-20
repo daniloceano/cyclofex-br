@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dicionário de dados · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Dicionário de dados</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Documentos do projeto">
+      <p class="side-label">Documentação</p>
+      <a href="open_questions.html">Questões abertas</a>
+      <a href="experiments.html">Experimentos</a>
+      <a href="decisions.html">Decisões</a>
+      <a href="methodology.html">Metodologia</a>
+      <a href="assumptions.html">Pressupostos</a>
+      <a href="data_dictionary.html">Dicionário de dados</a>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="dicionário-de-dados">Dicionário de dados</h1>
+<h2 id="arquivo-inspecionado">Arquivo inspecionado</h2>
+<p><a href="../data/cyclone_exceedances_by_track_2010_2020_p90.parquet"><code>data/cyclone_exceedances_by_track_2010_2020_p90.parquet</code></a> é o conjunto atualmente disponível para desenvolvimento. Suas colunas são documentadas em <a href="../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md"><code>COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></a>. A caracterização estrutural reproduzível está em <a href="../outputs/01_data_overview/structural_summary.json"><code>structural_summary.json</code></a>, gerado por <a href="../scripts/01_data_overview/inspect_parquet.py"><code>inspect_parquet.py</code></a>.</p>
+<ul>
+<li><strong>SHA-256 do arquivo de dados:</strong> <code>3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c</code></li>
+<li><strong>Dimensão:</strong> 17.182.983 linhas, 17 colunas e 143 grupos de linhas.</li>
+<li><strong>Ciclones:</strong> 1.781 valores distintos de <code>track_id</code>.</li>
+<li><strong>Período dos campos:</strong> 2010-01-02 18:00 UTC a 2020-12-31 18:00 UTC, em passos nominais de 6 h conforme a documentação fornecida.</li>
+</ul>
+<h2 id="unidades-do-conjunto">Unidades do conjunto</h2>
+<p><strong>Unidade de análise:</strong> o ciclone, identificado por <code>track_id</code>. Contagens, separação de treino e teste, inferência e validação devem tratar os <strong>1.781 <code>track_id</code> únicos</strong> como as unidades fundamentais, quando aplicável. As 17.182.983 linhas não são 17 milhões de ciclones nem 17 milhões de observações independentes.</p>
+<p><strong>Unidade de armazenamento de uma linha:</strong> um ponto de grade espacial, associado a um <code>track_id</code>, um instante do campo ERA5 e o estado do ciclone nesse instante. <code>lat</code> e <code>lon</code> localizam o ponto; <code>lat_center</code> e <code>lon_center</code> localizam o centro do ciclone. As colunas <code>exceeded_*</code> são valores booleanos no ponto, de modo que um campo espacial está armazenado em formato tabular longo: várias linhas representam posições do campo de um ciclone em um instante.</p>
+<p>O recorte não é formado exclusivamente por excedências do q90. Uma linha é armazenada quando <code>distance_km &lt;= 1.100</code> e <code>wind_speed &gt; min(15,6; q90_local)</code>. Por isso, 13.404 linhas entram pelo limiar fixo em locais onde <code>q90_local &gt; 15,6</code> e têm <code>exceeded_q90 = false</code>; todas elas satisfazem <code>15,6 &lt; wind_speed &lt;= q90_local</code>. Dentro do círculo e do domínio, um ponto ausente não passou pelo limiar de entrada. Fora do domínio, a posição não foi avaliada. Veja <a href="open_questions.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002</a>.</p>
+<h2 id="campos-observados">Campos observados</h2>
+<table>
+<thead>
+<tr>
+<th>Coluna</th>
+<th>Tipo Parquet</th>
+<th>Definição documentada</th>
+<th>Valores observados e ausências</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>track_id</code></td>
+<td><code>int64</code></td>
+<td>Identificador globalmente único do ciclone no catálogo, no formato geral AAAANNNN: ano de gênese e sequência anual.</td>
+<td>1.781 distintos; sem nulos. Faixa observada: 20100003–20210007. O último código pertence a uma track iniciada em dezembro de 2020 e encerrada em 2021.</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td><code>timestamp[ms]</code></td>
+<td>Instante do campo ERA5, passo de 6 h, UTC.</td>
+<td>2010-01-02 18:00 a 2020-12-31 18:00; sem nulos.</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>string</code></td>
+<td>Cópia da coluna <code>period</code> do catálogo de tracks. O sufixo <code>2</code> marca um segundo ciclo de vida na mesma track.</td>
+<td><code>incipient</code>, <code>intensification</code>, <code>intensification 2</code>, <code>mature</code>, <code>mature 2</code>, <code>decay</code>, <code>decay 2</code>, <code>residual</code>; 509.788 nulos, herdados do catálogo. A definição operacional das fases permanece em Q-004.</td>
+</tr>
+<tr>
+<td><code>lat_center</code></td>
+<td><code>float32</code></td>
+<td>Latitude do centro do ciclone, proveniente da vorticidade da track.</td>
+<td>−74,4051 a −17,6289; sem nulos.</td>
+</tr>
+<tr>
+<td><code>lon_center</code></td>
+<td><code>float32</code></td>
+<td>Longitude do centro do ciclone.</td>
+<td>−84,0043 a 7,08357; sem nulos.</td>
+</tr>
+<tr>
+<td><code>lat</code></td>
+<td><code>float32</code></td>
+<td>Latitude do ponto de grade espacial associado à excedência.</td>
+<td>−65 a −10; sem nulos.</td>
+</tr>
+<tr>
+<td><code>lon</code></td>
+<td><code>float32</code></td>
+<td>Longitude do ponto de grade.</td>
+<td>−85 a −15; sem nulos.</td>
+</tr>
+<tr>
+<td><code>wind_speed</code></td>
+<td><code>float32</code></td>
+<td>Magnitude do vento a 10 m, <code>sqrt(u10² + v10²)</code>, em m/s, no campo ERA5 de 0,25°.</td>
+<td>1,39227 a 34,84759 m/s; sem nulos.</td>
+</tr>
+<tr>
+<td><code>distance_km</code></td>
+<td><code>float32</code></td>
+<td>Distância great-circle pelo método haversine, com raio terrestre de 6.371 km.</td>
+<td>0,5254 a 1.100 km; sem nulos. O raio de inclusão usa <code>&lt;= 1.100 km</code>.</td>
+</tr>
+<tr>
+<td><code>fixed_quadrant</code></td>
+<td><code>int8</code></td>
+<td>Quadrante geográfico: 1=NO, 2=NE, 3=SE, 4=SO. Eixos são fechados ao norte e a leste.</td>
+<td>Códigos 1–4; sem nulos. Ponto coincidente com o centro cai em 2.</td>
+</tr>
+<tr>
+<td><code>rotated_quadrant</code></td>
+<td><code>int8</code></td>
+<td>Quadrante relativo ao deslocamento: 1=frente-esquerda, 2=frente-direita, 3=trás-direita, 4=trás-esquerda. Eixos são fechados à frente e à direita.</td>
+<td>Códigos 1–4; sem nulos. Direção por diferença centrada de 12 h, 6 h nas pontas; deslocamento nulo assume leste.</td>
+</tr>
+<tr>
+<td><code>exceeded_15_6</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; 15,6 m/s.</td>
+<td><code>true</code>: 5.508.864 (32,0600%); sem nulos.</td>
+</tr>
+<tr>
+<td><code>exceeded_20_0</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; 20,0 m/s.</td>
+<td><code>true</code>: 287.930 (1,6757%); sem nulos.</td>
+</tr>
+<tr>
+<td><code>exceeded_25_0</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; 25,0 m/s.</td>
+<td><code>true</code>: 4.450 (0,0259%); sem nulos.</td>
+</tr>
+<tr>
+<td><code>exceeded_q90</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; percentil 90 local do ponto.</td>
+<td><code>true</code>: 17.169.579 (99,9220%); <code>false</code>: 13.404; sem nulos.</td>
+</tr>
+<tr>
+<td><code>exceeded_q95</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; percentil 95 local do ponto.</td>
+<td><code>true</code>: 9.158.842 (53,3018%); sem nulos.</td>
+</tr>
+<tr>
+<td><code>exceeded_q99</code></td>
+<td><code>bool</code></td>
+<td>Vento &gt; percentil 99 local do ponto.</td>
+<td><code>true</code>: 2.120.595 (12,3413%); sem nulos.</td>
+</tr>
+</tbody>
+</table>
+<p>Os percentuais foram recalculados diretamente das contagens do conjunto e concordam, após arredondamento, com o documento de colunas. Os mínimos, máximos e nulos vêm das estatísticas dos grupos de linhas; categorias e <code>track_id</code> distintos foram lidos em lotes. A chave (<code>track_id</code>, <code>time</code>, <code>lat</code>, <code>lon</code>) não possui duplicatas.</p>
+<h2 id="proveniência-e-limites-do-recorte">Proveniência e limites do recorte</h2>
+<p>Os percentis locais atuais foram calculados experimentalmente ponto a ponto com os <strong>11 anos civis completos de 2010–2020</strong>, 16.072 campos de 6 h, usando <code>numpy.percentile</code> com interpolação <code>linear</code>. Eles serão atualizados após a incorporação das tracks completas de 1979–2020. A versão exata do ERA5 e a versão formal do arquivo de percentis não foram recuperadas; veja <a href="open_questions.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002</a>.</p>
+<p>O mesmo ponto de grade e hora pode ser associado a ciclones simultâneos: 414.124 pontos-hora aparecem sob mais de um <code>track_id</code>, com máximo de três. Além disso, 1.833 dos 20.101 estados ciclone-tempo têm o centro fora do domínio dos percentis; nesses casos, o círculo é truncado pela grade sem uma coluna de aviso. Agregações devem manter <code>track_id</code>, e comparações entre ciclones devem considerar essa cobertura desigual.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/data_dictionary.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+    </main>
+  </div>
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>

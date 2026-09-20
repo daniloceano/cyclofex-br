@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Questões abertas · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Questões abertas</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Documentos do projeto">
+      <p class="side-label">Documentação</p>
+      <a href="open_questions.html">Questões abertas</a>
+      <a href="experiments.html">Experimentos</a>
+      <a href="decisions.html">Decisões</a>
+      <a href="methodology.html">Metodologia</a>
+      <a href="assumptions.html">Pressupostos</a>
+      <a href="data_dictionary.html">Dicionário de dados</a>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="questões-abertas">Questões abertas</h1>
+<p>Este registro distingue o que ainda precisa ser decidido do que já tem evidência. IDs <code>Q-...</code> são persistentes; ao resolver uma questão, preserve a entrada e aponte para a evidência e a decisão correspondentes. Status possíveis: <code>OPEN</code>, <code>UNDER_TEST</code>, <code>RESOLVED</code>, <code>DEFERRED</code>.</p>
+<h2 id="q-001--qual-é-a-unidade-de-uma-linha-e-como-ela-se-vincula-a-um-ciclone">Q-001 · Qual é a unidade de uma linha e como ela se vincula a um ciclone?</h2>
+<ul>
+<li><strong>Status:</strong> <code>RESOLVED</code></li>
+<li><strong>Resposta atual:</strong> a unidade de análise é o ciclone, identificado por <code>track_id</code>; há 1.781 ciclones distintos. Uma linha armazena um ponto de grade associado a um ciclone e instante. A chave mínima (<code>track_id</code>, <code>time</code>, <code>lat</code>, <code>lon</code>) não tem duplicatas no conjunto atual.</li>
+<li><strong>Evidência:</strong> <a href="../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md"><code>COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></a>, verificação direta do arquivo e <a href="decisions.html#d-002--usar-o-ciclone-como-unidade-de-análise">D-002</a>.</li>
+</ul>
+<h2 id="q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002 · Como foram gerados <code>wind_speed</code> e os indicadores de excedência?</h2>
+<ul>
+<li><strong>Status:</strong> <code>RESOLVED</code></li>
+<li><strong>Resposta atual:</strong> <code>wind_speed</code> é calculado como <code>sqrt(u10² + v10²)</code> a partir do ERA5 single-levels na grade nativa de 0,25°. Os percentis locais usam todos os 16.072 campos de 6 h entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC, ou seja, <strong>11 anos civis completos</strong>, sem estratificação e sem máscara terra/oceano. <code>numpy.percentile</code> foi usado ponto a ponto com o método padrão <code>linear</code>.</li>
+<li><strong>Seleção das linhas:</strong> um ponto é emitido quando <code>distance_km &lt;= 1100</code> e <code>wind_speed &gt; min(15,6; q90_local)</code>. As seis flags são calculadas depois da seleção, sempre com comparação estrita <code>&gt;</code>.</li>
+<li><strong>Explicação das 13.404 linhas com <code>exceeded_q90 = false</code>:</strong> elas entram pelo limiar fixo de 15,6 m/s em locais onde <code>q90_local &gt; 15,6</code>; no arquivo local, todas têm <code>15,6 &lt; wind_speed &lt;= q90_local</code>.</li>
+<li><strong>Evidência:</strong> reconstrução do fluxo e referências de código em <a href="solicitacao_agente_q002_q003.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência"><code>solicitacao_agente_q002_q003.md</code></a>, acompanhada de verificação das contagens no arquivo local.</li>
+<li><strong>Ressalvas de proveniência:</strong> a versão/reprocessamento exato do ERA5 (<code>expver</code>) e uma versão formal do <code>local_percentiles.nc</code> não foram recuperados. Essas lacunas limitam a identificação exata dos insumos, mas não deixam a regra de cálculo ou seleção desconhecida.</li>
+</ul>
+<h2 id="q-003--quais-são-as-convenções-espaciais-e-temporais-usadas-neste-arquivo">Q-003 · Quais são as convenções espaciais e temporais usadas neste arquivo?</h2>
+<ul>
+<li><strong>Status:</strong> <code>RESOLVED</code></li>
+<li><strong>Centro e tempo:</strong> <code>lat_center</code> e <code>lon_center</code> vêm das colunas <code>lat vor</code> e <code>lon vor</code> do catálogo de tracks. A posição não é interpolada; cada hora de track é associada ao campo ERA5 de 6 h mais próximo, com diferença máxima de 3 h, mantendo uma posição por (<code>track_id</code>, instante ERA5).</li>
+<li><strong>Distância e domínio:</strong> <code>distance_km</code> usa haversine sobre esfera com raio de 6.371 km. O domínio regular de 0,25° vai de 10°S a 65°S e de 85°W a 15°W. O círculo de 1.100 km é truncado nas bordas sem sinalização em coluna.</li>
+<li><strong>Quadrante fixo:</strong> os códigos 1–4 são NO, NE, SE e SO, calculados pelos sinais de <code>Δlat</code> e <code>Δlon</code>. Os eixos pertencem ao norte e ao leste; o ponto coincidente com o centro cai em NE.</li>
+<li><strong>Quadrante relativo ao movimento:</strong> a direção usa diferença centrada entre centros vizinhos na série de 6 h, intervalo nominal de 12 h; nas pontas usa diferença simples de 6 h. O vetor é normalizado após corrigir longitude por <code>cos(lat)</code>. Deslocamento nulo usa fallback para leste. Os códigos são frente-esquerda, frente-direita, trás-direita e trás-esquerda.</li>
+<li><strong>Evidência:</strong> fórmulas, pseudocódigo e referências em <a href="solicitacao_agente_q002_q003.html#q-003--quais-convenções-espaciais-e-temporais-foram-usadas"><code>solicitacao_agente_q002_q003.md</code></a>, além das verificações locais de 0 chaves duplicadas, 1.833 estados com centro fora do domínio e 414.124 pontos-hora associados a mais de um ciclone.</li>
+<li><strong>Limitações conhecidas:</strong> a justificativa metodológica original do raio de 1.100 km não foi localizada e o número de casos que usou fallback de direção exige reprocessar o catálogo. Essas lacunas não deixam a convenção de cálculo desconhecida.</li>
+</ul>
+<h2 id="q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004 · Como foram produzidas e como devem ser tratadas as fases?</h2>
+<ul>
+<li><strong>Status:</strong> <code>OPEN</code></li>
+<li><strong>Fatos confirmados:</strong> <code>phase</code> é copiada da coluna <code>period</code> do catálogo de tracks; não é calculada pelo pipeline de vento. O sufixo <code>2</code> identifica um segundo ciclo dentro da mesma track. As 509.788 linhas sem fase propagam horas que já estavam sem <code>period</code> no catálogo, em geral no início ou fim das trajetórias; 677 ciclones possuem alguma linha sem fase e 2 têm todas as linhas sem fase.</li>
+<li><strong>Uso atual:</strong> a análise exploratória agrupa as categorias com sufixo <code>2</code> às fases principais apenas para apresentação, conforme <a href="decisions.html#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003</a>. Ausências permanecem como categoria separada e seu volume deve ser informado em análises por fase.</li>
+<li><strong>Por que permanece aberta:</strong> não foi localizada a definição operacional de <code>incipient</code>, <code>intensification</code>, <code>mature</code>, <code>decay</code> e <code>residual</code>, nem a regra que inicia um segundo ciclo. Essa evidência pertence ao processo que gerou o catálogo externo.</li>
+<li><strong>Evidência necessária:</strong> código ou referência metodológica da classificação <code>period</code> no catálogo <code>tracks_SAt_filtered_with_periods.csv</code>.</li>
+</ul>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/open_questions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+    </main>
+  </div>
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>

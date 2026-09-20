@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Visão científica, roteiro metodológico e estado atual do projeto cyclofex-br.">
+  <title>cyclofex-br · Projeto científico</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #142b3d;
+      --muted: #58707c;
+      --line: #dbe4e6;
+      --paper: #f5f7f6;
+      --white: #fff;
+      --navy: #102c3c;
+      --blue: #126482;
+      --blue-dark: #0d4359;
+      --teal: #218a8b;
+      --teal-soft: #e9f5f2;
+      --teal-pale: #f4faf8;
+      --future: #9babaf;
+      --shadow: 0 18px 48px rgba(19, 48, 64, .055);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.62 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--blue); text-underline-offset: .2em; }
+    a:hover { color: var(--blue-dark); }
+    a:focus-visible { outline: 3px solid #e79646; outline-offset: 3px; border-radius: 4px; }
+    h1, h2, h3, p { margin-top: 0; }
+    .shell { width: min(1120px, calc(100% - 48px)); margin: auto; }
+    .skip {
+      position: fixed;
+      z-index: 20;
+      left: 16px;
+      top: -80px;
+      padding: 9px 13px;
+      border-radius: 0 0 7px 7px;
+      background: #fff;
+      color: var(--navy);
+      font-weight: 750;
+    }
+    .skip:focus { top: 0; }
+    .topbar { background: var(--navy); color: #fff; }
+    .topbar-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 26px;
+    }
+    .brand {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 820;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 29px;
+      height: 29px;
+      margin-right: 8px;
+      border: 2px solid #91d5d1;
+      border-radius: 50%;
+      color: #91d5d1;
+      transform: rotate(-20deg);
+    }
+    .topbar nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+    .topbar nav a { color: #dcebee; font-size: .86rem; text-decoration: none; }
+    .topbar nav a:hover { color: #fff; text-decoration: underline; }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(118deg, #10384c 0%, #145a70 64%, #297986 100%);
+      color: #fff;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 570px;
+      height: 570px;
+      right: max(-90px, calc((100vw - 1120px) / 2 - 70px));
+      top: -270px;
+      border: 1px solid rgba(220, 255, 250, .18);
+      border-radius: 50%;
+      box-shadow:
+        0 0 0 72px rgba(220, 255, 250, .045),
+        0 0 0 144px rgba(220, 255, 250, .032),
+        0 0 0 216px rgba(220, 255, 250, .022);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; padding: 72px 0 78px; }
+    .eyebrow {
+      margin-bottom: 15px;
+      color: #a8e3df;
+      font-size: .75rem;
+      font-weight: 820;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 920px;
+      margin-bottom: 21px;
+      font-size: clamp(2.45rem, 5.4vw, 4.45rem);
+      line-height: 1.04;
+      letter-spacing: -.058em;
+    }
+    .hero-summary {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: #e5f0f1;
+      font-size: clamp(1.02rem, 1.8vw, 1.16rem);
+    }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 30px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 100px;
+      font-size: .76rem;
+      font-weight: 750;
+      line-height: 1.2;
+    }
+    .pill-light {
+      border: 1px solid rgba(225, 245, 245, .34);
+      background: rgba(255, 255, 255, .08);
+      color: #edf7f7;
+    }
+    main { padding: 13px 0 82px; }
+    .section { margin-top: 78px; scroll-margin-top: 22px; }
+    .section-head { max-width: 760px; margin-bottom: 27px; }
+    .section-kicker {
+      margin-bottom: 7px;
+      color: var(--teal);
+      font-size: .72rem;
+      font-weight: 820;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .section-head h2 {
+      margin-bottom: 9px;
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      line-height: 1.16;
+      letter-spacing: -.04em;
+    }
+    .section-head p { margin-bottom: 0; color: var(--muted); }
+    .project-panel {
+      display: grid;
+      grid-template-columns: 1.18fr .82fr;
+      gap: 58px;
+      padding: 35px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .project-question {
+      margin: 0;
+      max-width: 700px;
+      font-size: clamp(1.42rem, 2.7vw, 2rem);
+      line-height: 1.33;
+      letter-spacing: -.025em;
+    }
+    .project-objective h3, .scope h3 {
+      margin-bottom: 9px;
+      color: var(--blue-dark);
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .project-objective p { margin-bottom: 0; color: var(--muted); }
+    .scope { margin-top: 28px; }
+    .scope-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .scope-list li {
+      padding: 6px 10px;
+      border: 1px solid #cedcde;
+      border-radius: 100px;
+      background: rgba(255,255,255,.55);
+      color: #355462;
+      font-size: .79rem;
+      font-weight: 690;
+    }
+    .roadmap-shell {
+      padding: 34px 38px 27px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .roadmap-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px 18px;
+      margin: 0 0 22px 138px;
+      color: var(--muted);
+      font-size: .74rem;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .legend-dot.completed { background: var(--teal); }
+    .legend-dot.current { background: var(--blue); box-shadow: 0 0 0 3px #d8eaed; }
+    .legend-dot.next { border: 2px solid #c08a3c; background: #fff; }
+    .legend-dot.later { border: 1px solid var(--future); background: #fff; }
+    .roadmap-list { position: relative; margin: 0; padding: 0; list-style: none; }
+    .roadmap-list::before {
+      content: "";
+      position: absolute;
+      left: 17px;
+      top: 22px;
+      bottom: 25px;
+      width: 2px;
+      background: #dce5e6;
+    }
+    .roadmap-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 36px 118px minmax(0, 1fr);
+      gap: 0 16px;
+      align-items: start;
+      min-height: 82px;
+      padding: 8px 0 15px;
+    }
+    .roadmap-step:last-child { min-height: auto; padding-bottom: 4px; }
+    .roadmap-marker {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin: 2px 0 0 6px;
+      border-radius: 50%;
+      background: #fff;
+      font-size: .72rem;
+      font-weight: 900;
+    }
+    .roadmap-step.completed .roadmap-marker { background: var(--teal); color: #fff; }
+    .roadmap-step.current .roadmap-marker {
+      border: 5px solid #d9ecee;
+      background: var(--blue);
+      box-shadow: 0 0 0 2px var(--blue);
+    }
+    .roadmap-step.next .roadmap-marker { border: 2px solid #c08a3c; }
+    .roadmap-step.later .roadmap-marker { border: 1.5px solid var(--future); }
+    .step-status {
+      padding-top: 4px;
+      font-size: .68rem;
+      font-weight: 820;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .completed .step-status { color: #28786f; }
+    .current .step-status { color: var(--blue); }
+    .next .step-status { color: #956420; }
+    .later .step-status { color: #788b91; }
+    .step-content { padding: 0 0 17px; border-bottom: 1px solid #e9eef0; }
+    .roadmap-step:last-child .step-content { border-bottom: 0; }
+    .roadmap-step.current .step-content {
+      margin: -8px 0 8px;
+      padding: 15px 18px 16px;
+      border: 1px solid #c9e2df;
+      border-radius: 11px;
+      background: var(--teal-pale);
+    }
+    .step-content h3 { margin-bottom: 4px; font-size: 1.02rem; letter-spacing: -.015em; }
+    .step-content h3 a { color: var(--ink); text-decoration: none; }
+    .step-content h3 a:hover { color: var(--blue); text-decoration: underline; }
+    .step-content p { margin-bottom: 0; color: var(--muted); font-size: .9rem; }
+    .status-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .status-item { min-height: 178px; padding: 26px 27px; border-right: 1px solid var(--line); }
+    .status-item:last-child { border-right: 0; }
+    .status-item.current { background: var(--teal-soft); }
+    .status-label {
+      display: block;
+      margin-bottom: 13px;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 820;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .status-item.current .status-label { color: var(--teal); }
+    .status-item h3 { margin-bottom: 7px; font-size: 1.08rem; line-height: 1.34; }
+    .status-item p { margin-bottom: 0; color: var(--muted); font-size: .88rem; }
+    .status-note {
+      margin: 16px 0 0;
+      padding-left: 13px;
+      border-left: 3px solid #d0dadd;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    .analysis-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: center;
+      padding: 28px 30px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: 15px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .analysis-row h3 { margin-bottom: 8px; font-size: 1.28rem; letter-spacing: -.02em; }
+    .analysis-row p { max-width: 760px; margin-bottom: 0; color: var(--muted); }
+    .analysis-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+    .analysis-meta span {
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #edf4f3;
+      color: #35636a;
+      font-size: .72rem;
+      font-weight: 720;
+    }
+    .button-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 154px;
+      padding: 10px 14px;
+      border-radius: 9px;
+      background: var(--blue);
+      color: #fff;
+      font-size: .85rem;
+      font-weight: 780;
+      text-decoration: none;
+    }
+    .button-link:hover { background: var(--blue-dark); color: #fff; }
+    .docs-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      background: rgba(255,255,255,.45);
+    }
+    .doc-item {
+      min-height: 116px;
+      padding: 20px 21px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .doc-item:hover { background: #fff; }
+    .doc-item strong { display: block; margin-bottom: 4px; font-size: .92rem; }
+    .doc-item span { display: block; color: var(--muted); font-size: .8rem; }
+    .doc-item em {
+      display: inline-block;
+      margin-top: 7px;
+      color: var(--blue);
+      font-size: .69rem;
+      font-style: normal;
+      font-weight: 780;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .data-note {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 30px;
+      align-items: center;
+      padding: 27px 30px;
+      border: 1px solid #d5e3e2;
+      border-radius: 14px;
+      background: #f0f7f5;
+    }
+    .data-note h2 { margin-bottom: 7px; font-size: 1.35rem; letter-spacing: -.025em; }
+    .data-note p { max-width: 780px; margin-bottom: 0; color: var(--muted); font-size: .9rem; }
+    .data-links { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; white-space: nowrap; }
+    .data-links a { font-size: .82rem; font-weight: 750; }
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 0 35px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    @media (max-width: 860px) {
+      .project-panel { grid-template-columns: 1fr; gap: 27px; }
+      .status-panel { grid-template-columns: 1fr; }
+      .status-item { min-height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+      .status-item:last-child { border-bottom: 0; }
+      .docs-panel { grid-template-columns: repeat(2, 1fr); }
+      .analysis-row, .data-note { grid-template-columns: 1fr; }
+      .button-link { justify-self: start; }
+      .data-links { flex-direction: row; flex-wrap: wrap; gap: 6px 18px; }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 30px, 1120px); }
+      .topbar-inner { align-items: flex-start; flex-direction: column; gap: 10px; padding: 15px 0 17px; }
+      .topbar nav { gap: 6px 14px; }
+      .hero-inner { padding: 54px 0 60px; }
+      h1 { font-size: clamp(2.22rem, 12vw, 3.3rem); }
+      .section { margin-top: 61px; }
+      .roadmap-shell { padding: 27px 20px 22px; }
+      .roadmap-legend { margin-left: 0; }
+      .roadmap-list::before { left: 12px; }
+      .roadmap-step { grid-template-columns: 28px minmax(0, 1fr); gap: 0 12px; padding-bottom: 13px; }
+      .roadmap-marker { width: 21px; height: 21px; margin-left: 2px; }
+      .step-status { grid-column: 2; padding-top: 2px; }
+      .step-content { grid-column: 2; padding-top: 3px; }
+      .roadmap-step.current .step-content { margin-top: 3px; }
+      .analysis-row { padding: 23px 22px; }
+      .docs-panel { grid-template-columns: 1fr; }
+      .doc-item { min-height: auto; }
+      .data-note { padding: 23px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#inicio"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <nav aria-label="Navegação principal">
+        <a href="#projeto">Projeto</a>
+        <a href="#roteiro">Roteiro</a>
+        <a href="#estado">Estado atual</a>
+        <a href="#analises">Análise</a>
+        <a href="#documentacao">Documentação</a>
+      </nav>
+    </div>
+  </header>
+  <section class="hero" id="inicio" aria-labelledby="page-title">
+    <div class="shell hero-inner">
+      <p class="eyebrow">cyclofex-br · projeto científico</p>
+      <h1 id="page-title">Footprints probabilísticos de ventos extremos associados a ciclones extratropicais no Atlântico Sul</h1>
+      <p class="hero-summary">O projeto investiga como os ventos extremos se organizam no espaço em relação aos ciclones e busca desenvolver uma representação probabilística de sua ocorrência, geometria e magnitude, com tradução futura para hazard geográfico.</p>
+      <div class="hero-meta" aria-label="Escopo e estado do projeto">
+        <span class="pill pill-light">Pesquisa em desenvolvimento</span>
+        <span class="pill pill-light">Atlântico Sul</span>
+        <span class="pill pill-light">Metodologia em construção</span>
+      </div>
+    </div>
+  </section>
+  <main id="conteudo" class="shell">
+    <section class="section" id="projeto" aria-labelledby="projeto-title">
+      <div class="section-head">
+        <p class="section-kicker">O projeto</p>
+        <h2 id="projeto-title">Do padrão relativo ao ciclone ao risco no espaço geográfico</h2>
+        <p>A visão científica e o estado executado são apresentados separadamente: o objetivo orienta o trabalho; o roteiro indica o que já possui evidência.</p>
+      </div>
+      <div class="project-panel">
+        <div>
+          <h3 class="section-kicker">Pergunta central</h3>
+          <p class="project-question">Como representar onde ventos extremos tendem a ocorrer em relação ao ciclone, que geometria formam e que magnitude alcançam ao longo do ciclo de vida?</p>
+        </div>
+        <div>
+          <div class="project-objective">
+            <h3>Objetivo geral</h3>
+            <p>Construir e avaliar uma representação probabilística capaz de separar ocorrência, geometria e magnitude dos extremos antes de combiná-las em uma estimativa de hazard.</p>
+          </div>
+          <div class="scope">
+            <h3>Escopo</h3>
+            <ul class="scope-list">
+              <li>Ciclones extratropicais</li>
+              <li>Atlântico Sul</li>
+              <li>Ventos extremos</li>
+              <li>Referencial storm-relative</li>
+              <li>Modelagem probabilística</li>
+              <li>Hazard como etapa posterior</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="roteiro" aria-labelledby="roteiro-title">
+      <div class="section-head">
+        <p class="section-kicker">Roteiro metodológico</p>
+        <h2 id="roteiro-title">Uma sequência guiada pela evidência disponível</h2>
+        <p>A análise exploratória e a reconstrução do fluxo gerador estão documentadas. As etapas seguintes descrevem a direção científica e não implicam que um método já tenha sido escolhido.</p>
+      </div>
+      <div class="roadmap-shell">
+        <div class="roadmap-legend" aria-label="Legenda dos estados">
+          <span class="legend-item"><i class="legend-dot completed"></i>Concluído</span>
+          <span class="legend-item"><i class="legend-dot current"></i>Em andamento</span>
+          <span class="legend-item"><i class="legend-dot next"></i>Próximo</span>
+          <span class="legend-item"><i class="legend-dot later"></i>Futuro</span>
+        </div>
+        <ol class="roadmap-list">
+          <li class="roadmap-step completed">
+            <span class="roadmap-marker" aria-hidden="true">✓</span>
+            <span class="step-status">Concluído</span>
+            <div class="step-content">
+              <h3><a href="exploratory_analysis.html">Caracterização e análise exploratória</a></h3>
+              <p>Descrever estrutura, tracks, fases, distribuição dos ventos, excedências e um exemplo espacial.</p>
+            </div>
+          </li>
+          <li class="roadmap-step completed">
+            <span class="roadmap-marker" aria-hidden="true">✓</span>
+            <span class="step-status">Concluído</span>
+            <div class="step-content">
+              <h3><a href="open_questions.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Geração dos extremos e convenções espaciais</a></h3>
+              <p>Reconstruir os percentis, a seleção das linhas, a distância, os quadrantes e a associação temporal.</p>
+            </div>
+          </li>
+          <li class="roadmap-step current">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Em andamento</span>
+            <div class="step-content">
+              <h3><a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Semântica das fases</a></h3>
+              <p>Recuperar a definição operacional das fases e da passagem para um segundo ciclo no catálogo de tracks.</p>
+            </div>
+          </li>
+          <li class="roadmap-step next">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Próximo</span>
+            <div class="step-content">
+              <h3><a href="methodology.html#distinções-conceituais-a-preservar">Definição operacional de extremo e footprint</a></h3>
+              <p>Fixar o threshold, a unidade do evento e o objeto que será estimado antes de escolher um modelo.</p>
+            </div>
+          </li>
+          <li class="roadmap-step later">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Futuro</span>
+            <div class="step-content">
+              <h3>Ocorrência e geometria</h3>
+              <p>Estimar onde a excedência tende a ocorrer e caracterizar seus conjuntos e formas espaciais.</p>
+            </div>
+          </li>
+          <li class="roadmap-step later">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Futuro</span>
+            <div class="step-content">
+              <h3>Magnitude condicional</h3>
+              <p>Descrever a intensidade do vento dado que a excedência ocorreu.</p>
+            </div>
+          </li>
+          <li class="roadmap-step later">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Futuro</span>
+            <div class="step-content">
+              <h3>Validação e robustez</h3>
+              <p>Testar generalização entre ciclones, comparar referências e avaliar sensibilidade das escolhas.</p>
+            </div>
+          </li>
+          <li class="roadmap-step later">
+            <span class="roadmap-marker" aria-hidden="true"></span>
+            <span class="step-status">Futuro</span>
+            <div class="step-content">
+              <h3>Hazard geográfico</h3>
+              <p>Combinar frequência, trajetórias, duração, ocorrência e magnitude em coordenadas geográficas.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+    <section class="section" id="estado" aria-labelledby="estado-title">
+      <div class="section-head">
+        <p class="section-kicker">Estado atual</p>
+        <h2 id="estado-title">Onde estamos agora</h2>
+      </div>
+      <div class="status-panel">
+        <div class="status-item">
+          <span class="status-label">Concluído</span>
+          <h3>Análise exploratória dos ventos associados aos ciclones</h3>
+          <p>Há código, tabelas, figuras, animação e documentação reproduzível para o conjunto de desenvolvimento.</p>
+        </div>
+        <div class="status-item current">
+          <span class="status-label">Agora</span>
+          <h3>Consolidar a semântica das fases</h3>
+          <p>Q-002 e Q-003 foram resolvidas com a reconstrução do fluxo gerador. Q-004 permanece aberta para as definições operacionais das fases e do segundo ciclo.</p>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Próximo</span>
+          <h3>Etapa probabilística ainda não consolidada</h3>
+          <p>O threshold e a definição operacional de footprint precisam ser estabelecidos antes do primeiro experimento metodológico.</p>
+        </div>
+      </div>
+      <p class="status-note">O repositório não registra experimentos científicos, pressupostos inferenciais adotados ou um modelo probabilístico selecionado.</p>
+    </section>
+    <section class="section" id="analises" aria-labelledby="analises-title">
+      <div class="section-head">
+        <p class="section-kicker">Produto disponível</p>
+        <h2 id="analises-title">Análise que já pode ser consultada</h2>
+      </div>
+      <article class="analysis-row">
+        <div>
+          <h3>Análise exploratória</h3>
+          <p>Reúne a caracterização do conjunto atual, mapa das tracks, fases, distribuições de vento, excedências por fase e quadrante e a animação de um caso.</p>
+          <div class="analysis-meta" aria-label="Conteúdo da análise">
+            <span>Tracks e fases</span>
+            <span>Vento e excedências</span>
+            <span>Quadrantes</span>
+            <span>Animação</span>
+          </div>
+        </div>
+        <a class="button-link" href="exploratory_analysis.html">Ver análise →</a>
+      </article>
+    </section>
+    <section class="section" id="documentacao" aria-labelledby="documentacao-title">
+      <div class="section-head">
+        <p class="section-kicker">Memória científica</p>
+        <h2 id="documentacao-title">Documentação do raciocínio e das escolhas</h2>
+        <p>Detalhes metodológicos, evidências e pendências ficam nas camadas de documentação.</p>
+      </div>
+      <div class="docs-panel">
+        <a class="doc-item" href="methodology.html"><strong>Metodologia</strong><span>Procedimentos efetivamente executados e limites atuais.</span></a>
+        <a class="doc-item" href="decisions.html"><strong>Decisões</strong><span>Escolhas adotadas, provisórias e condições de revisão.</span></a>
+        <a class="doc-item" href="experiments.html"><strong>Experimentos</strong><span>Registro de testes metodológicos quando forem executados.</span><em>Nenhum registrado</em></a>
+        <a class="doc-item" href="open_questions.html"><strong>Questões abertas</strong><span>Perguntas que ainda dependem de código, especificação ou evidência.</span><em>1 aberta</em></a>
+        <a class="doc-item" href="assumptions.html"><strong>Pressupostos</strong><span>Hipóteses que venham a sustentar inferência e como serão avaliadas.</span></a>
+        <a class="doc-item" href="data_dictionary.html"><strong>Dicionário de dados</strong><span>Unidades, campos observados e semântica ainda pendente.</span></a>
+      </div>
+    </section>
+    <section class="section" id="dados" aria-labelledby="dados-title">
+      <div class="data-note">
+        <div>
+          <h2 id="dados-title">Dados atuais</h2>
+          <p>As análises usam um conjunto de desenvolvimento de 2010–2020, com ventos e excedências vinculados às tracks. Os percentis atuais são experimentais e serão atualizados com a referência ampliada de 1979–2020; eles não definem a configuração final do projeto.</p>
+        </div>
+        <div class="data-links">
+          <a href="exploratory_analysis.html">Ver análise exploratória →</a>
+          <a href="data_dictionary.html">Ver dicionário de dados →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell">cyclofex-br · Visão do projeto e estado metodológico documentado no repositório.</div></footer>
+</body>
+</html>

@@ -1,0 +1,242 @@
+{
+  "input": "data/cyclone_exceedances_by_track_2010_2020_p90.parquet",
+  "input_sha256": "3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c",
+  "input_size_bytes": 201382719,
+  "column_documentation": "data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md",
+  "column_documentation_sha256": "cc181a4ad7de5c8c1d7f4bcadb1309dc1c9a0ee61f66522c04490bb08ab6f4f6",
+  "cyclone_identifier": "track_id",
+  "unique_cyclone_count": 1781,
+  "row_count": 17182983,
+  "column_count": 17,
+  "row_group_count": 143,
+  "statistics_source": "Parquet row-group metadata; frequencies scanned in batches",
+  "columns": [
+    {
+      "name": "track_id",
+      "type": "int64",
+      "null_count": 0,
+      "min": 20100003,
+      "max": 20210007
+    },
+    {
+      "name": "time",
+      "type": "timestamp[ms]",
+      "null_count": 0,
+      "min": "2010-01-02T18:00:00",
+      "max": "2020-12-31T18:00:00"
+    },
+    {
+      "name": "phase",
+      "type": "string",
+      "null_count": 509788,
+      "min": "decay",
+      "max": "residual"
+    },
+    {
+      "name": "lat_center",
+      "type": "float",
+      "null_count": 0,
+      "min": -74.40509796142578,
+      "max": -17.62885093688965
+    },
+    {
+      "name": "lon_center",
+      "type": "float",
+      "null_count": 0,
+      "min": -84.00430297851562,
+      "max": 7.0835700035095215
+    },
+    {
+      "name": "lat",
+      "type": "float",
+      "null_count": 0,
+      "min": -65.0,
+      "max": -10.0
+    },
+    {
+      "name": "lon",
+      "type": "float",
+      "null_count": 0,
+      "min": -85.0,
+      "max": -15.0
+    },
+    {
+      "name": "wind_speed",
+      "type": "float",
+      "null_count": 0,
+      "min": 1.3922696113586426,
+      "max": 34.847591400146484
+    },
+    {
+      "name": "distance_km",
+      "type": "float",
+      "null_count": 0,
+      "min": 0.5254015922546387,
+      "max": 1100.0
+    },
+    {
+      "name": "fixed_quadrant",
+      "type": "int8",
+      "null_count": 0,
+      "min": 1,
+      "max": 4
+    },
+    {
+      "name": "rotated_quadrant",
+      "type": "int8",
+      "null_count": 0,
+      "min": 1,
+      "max": 4
+    },
+    {
+      "name": "exceeded_15_6",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    },
+    {
+      "name": "exceeded_20_0",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    },
+    {
+      "name": "exceeded_25_0",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    },
+    {
+      "name": "exceeded_q90",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    },
+    {
+      "name": "exceeded_q95",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    },
+    {
+      "name": "exceeded_q99",
+      "type": "bool",
+      "null_count": 0,
+      "min": false,
+      "max": true
+    }
+  ],
+  "observed_category_counts": {
+    "phase": {
+      "None": 509788,
+      "decay": 4397321,
+      "decay 2": 307113,
+      "incipient": 1583894,
+      "intensification": 7459217,
+      "intensification 2": 187467,
+      "mature": 2547409,
+      "mature 2": 38980,
+      "residual": 151794
+    },
+    "fixed_quadrant": {
+      "1": 6625941,
+      "2": 5286615,
+      "3": 2422472,
+      "4": 2847955
+    },
+    "rotated_quadrant": {
+      "1": 4824063,
+      "2": 2030610,
+      "3": 3407552,
+      "4": 6920758
+    },
+    "exceeded_15_6": {
+      "False": 11674119,
+      "True": 5508864
+    },
+    "exceeded_20_0": {
+      "False": 16895053,
+      "True": 287930
+    },
+    "exceeded_25_0": {
+      "False": 17178533,
+      "True": 4450
+    },
+    "exceeded_q90": {
+      "False": 13404,
+      "True": 17169579
+    },
+    "exceeded_q95": {
+      "False": 8024141,
+      "True": 9158842
+    },
+    "exceeded_q99": {
+      "False": 15062388,
+      "True": 2120595
+    }
+  },
+  "first_three_rows": [
+    {
+      "track_id": 20100003,
+      "time": "2010-01-02T18:00:00",
+      "phase": "intensification",
+      "lat_center": -52.19879913330078,
+      "lon_center": -58.153961181640625,
+      "lat": -43.75,
+      "lon": -65.75,
+      "wind_speed": 9.00446891784668,
+      "distance_km": 1095.148681640625,
+      "fixed_quadrant": 1,
+      "rotated_quadrant": 4,
+      "exceeded_15_6": false,
+      "exceeded_20_0": false,
+      "exceeded_25_0": false,
+      "exceeded_q90": true,
+      "exceeded_q95": false,
+      "exceeded_q99": false
+    },
+    {
+      "track_id": 20100003,
+      "time": "2010-01-02T18:00:00",
+      "phase": "intensification",
+      "lat_center": -52.19879913330078,
+      "lon_center": -58.153961181640625,
+      "lat": -44.0,
+      "lon": -66.25,
+      "wind_speed": 9.362739562988281,
+      "distance_km": 1090.5693359375,
+      "fixed_quadrant": 1,
+      "rotated_quadrant": 4,
+      "exceeded_15_6": false,
+      "exceeded_20_0": false,
+      "exceeded_25_0": false,
+      "exceeded_q90": true,
+      "exceeded_q95": false,
+      "exceeded_q99": false
+    },
+    {
+      "track_id": 20100003,
+      "time": "2010-01-02T18:00:00",
+      "phase": "intensification",
+      "lat_center": -52.19879913330078,
+      "lon_center": -58.153961181640625,
+      "lat": -44.0,
+      "lon": -66.0,
+      "wind_speed": 9.66981315612793,
+      "distance_km": 1080.5460205078125,
+      "fixed_quadrant": 1,
+      "rotated_quadrant": 4,
+      "exceeded_15_6": false,
+      "exceeded_20_0": false,
+      "exceeded_25_0": false,
+      "exceeded_q90": true,
+      "exceeded_q95": false,
+      "exceeded_q99": false
+    }
+  ]
+}

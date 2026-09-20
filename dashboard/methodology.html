@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metodologia · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <a class="back" href="index.html">← Voltar ao painel</a>
+    </div>
+  </header>
+  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Metodologia</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Documentos do projeto">
+      <p class="side-label">Documentação</p>
+      <a href="open_questions.html">Questões abertas</a>
+      <a href="experiments.html">Experimentos</a>
+      <a href="decisions.html">Decisões</a>
+      <a href="methodology.html">Metodologia</a>
+      <a href="assumptions.html">Pressupostos</a>
+      <a href="data_dictionary.html">Dicionário de dados</a>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="metodologia-em-uso">Metodologia em uso</h1>
+<p>A metodologia científica para modelar footprints e estimar hazard <strong>ainda não foi adotada</strong>. A proposta atual é um mapa de hipóteses revisável. Este documento descreve apenas procedimentos efetivamente executados; perguntas, testes, decisões e pressupostos têm seus próprios registros.</p>
+<h2 id="análise-exploratória-dos-ventos-associados-aos-ciclones">Análise exploratória dos ventos associados aos ciclones</h2>
+<p><strong>Contexto e pergunta.</strong> Esta é uma única análise exploratória: começa pela caracterização da estrutura dos dados e avança para a descrição das tracks, de <code>wind_speed</code> e das excedências por fase e quadrante. Ela também fornece um exemplo visual do campo q90 ao redor de um ciclone.</p>
+<p><strong>Objeto.</strong> O conjunto <a href="../data/cyclone_exceedances_by_track_2010_2020_p90.parquet"><code>cyclone_exceedances_by_track_2010_2020_p90.parquet</code></a>, documentado por <a href="../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md"><code>COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></a>. O formato de armazenamento é Parquet; o objeto científico descrito são os ventos e as excedências vinculados às tracks.</p>
+<p><strong>Unidades e agrupamentos.</strong> O ciclone (<code>track_id</code>) é a unidade científica principal, conforme <a href="decisions.html#d-002--usar-o-ciclone-como-unidade-de-análise">D-002</a>. Um estado ciclone-tempo é o par único <code>track_id + time</code>. Cada linha armazena uma posição espacial vinculada a um ciclone e instante. Boxplots e heatmaps usam essas linhas e são identificados como descrições pontuais, não como amostras independentes. Para visualização, <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code> são agrupadas às fases principais correspondentes conforme <a href="decisions.html#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003</a>; os valores originais permanecem preservados.</p>
+<p><strong>Caracterização estrutural.</strong> <a href="../scripts/01_data_overview/inspect_parquet.py"><code>inspect_parquet.py</code></a> lê número de linhas, esquema, nulos e extremos observados, conta <code>track_id</code> distintos, categorias de <code>phase</code>, quadrantes e flags de excedência e registra exemplos e hashes. O resultado reproduzível é <a href="../outputs/01_data_overview/structural_summary.json"><code>structural_summary.json</code></a>.</p>
+<p><strong>Exploração descritiva.</strong> <a href="../scripts/02_exploratory_analysis/exploratory_analysis.py"><code>exploratory_analysis.py</code></a> consulta os mesmos dados com DuckDB. Ele produz: mapa dos centros de todas as tracks; quantis de vento por fase e pelos dois sistemas de quadrantes; ocorrência de thresholds por estado ciclone-tempo; contagens q90 e percentuais q95 por fase e quadrante; e tabelas CSV correspondentes. Os heatmaps usam uma escala sequencial de amarelo-claro a roxo-escuro.</p>
+<p><strong>Animação.</strong> O exemplo seleciona de forma determinística o <code>track_id</code> da linha com maior <code>wind_speed</code> global. Para cada tempo da track, mostra apenas pontos com <code>exceeded_q90 = true</code>, coloridos por velocidade do vento, além do centro colorido pela fase e de um círculo de 1.100 km. O painel esquerdo desenha os setores geográficos fixos. No painel direito, a orientação reproduz a regra do gerador: diferença centrada entre centros vizinhos da série de 6 h, diferença simples nas pontas, longitude corrigida por <code>cos(lat)</code> e fallback para leste quando o deslocamento é nulo. A extensão fixa envolve todos os centros da track, seus raios de 1.100 km e margem de 1°.</p>
+<p><strong>Resultado descritivo.</strong> Foram observados 1.781 ciclones distintos, 20.101 estados ciclone-tempo, 17.182.983 linhas espaciais e 17 colunas. O <a href="data_dictionary.html">dicionário de dados</a> distingue a unidade de análise da unidade de armazenamento.</p>
+<p><strong>Interpretação.</strong> As figuras sustentam observações descritivas do recorte. Elas não estimam probabilidades, não corrigem a contribuição desigual de ciclones ou durações e não representam um footprint probabilístico ou hazard geográfico.</p>
+<p><strong>Limitações.</strong> O p90 atual usa a própria janela de 2010–2020 e será recalculado após a incorporação das tracks completas de 1979–2020. Há 13.404 linhas com <code>exceeded_q90 = false</code> porque o recorte também aceita <code>wind_speed &gt; 15,6 m/s</code>; 509.788 linhas têm fase ausente. A definição operacional das fases e do segundo ciclo permanece em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>. O círculo é truncado nos limites do domínio, e posições fora dele não foram avaliadas.</p>
+<h2 id="distinções-conceituais-a-preservar">Distinções conceituais a preservar</h2>
+<ul>
+<li><strong>Excursion set:</strong> realização espacial de excedência para um campo, evento ou instante, conforme definição futura.</li>
+<li><strong>Ocorrência / coverage probability:</strong> probabilidade condicional de uma posição pertencer a um conjunto de excedência.</li>
+<li><strong>Magnitude condicional:</strong> intensidade do vento dado que a excedência ocorreu; responde a outra pergunta.</li>
+<li><strong>Footprint:</strong> requer definição operacional explícita antes de qualquer uso quantitativo.</li>
+<li><strong>Hazard geográfico:</strong> exigirá uma construção que considere frequência, trajetórias, duração, estados e distribuição condicional dos ventos. Um padrão exploratório storm-relative não basta.</li>
+</ul>
+<p>Essas distinções orientam a documentação; nenhuma formulação ou transformação foi escolhida. Quando surgir uma análise metodológica, descreva linearmente contexto, pergunta, motivação, unidade de análise, dados, formulação e termos, intuição, procedimento, hipóteses, diagnósticos, critério de decisão, resultado e limitações. Use equações apenas quando realmente explicarem o método e defina cada termo, domínio e unidade.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/methodology.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+    </main>
+  </div>
+  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+</body>
+</html>
