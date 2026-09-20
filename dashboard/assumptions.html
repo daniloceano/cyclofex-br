@@ -28,6 +28,7 @@
     <main id="conteudo" class="document">
       <h1 id="pressupostos">Pressupostos</h1>
 <p>Nenhum pressuposto científico foi adotado para produzir uma inferência nesta etapa. Em particular, a precisão dos centros, a adequação do <code>q90</code> e a independência entre linhas <strong>não</strong> foram assumidas como fatos.</p>
+<p>A associação ao ERA5 de 6 h, o domínio, a grade, a distância haversine e o raio de 1.100 km não são pressupostos novos: são regras operacionais recuperadas e validadas contra os 20.101 estados do Parquet atual. Os estados sem interseção são marcados como não avaliados, sem assumir que representem não-excedências. A execução original do CycloPhaser continua sendo uma lacuna de proveniência em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>, não um pressuposto convertido em fato.</p>
 <p>Quando um pressuposto passar a sustentar uma análise, registre um ID persistente (<code>A-001</code>, <code>A-002</code>, ...), sua necessidade, onde afeta o trabalho, evidência, forma de teste e status (<code>UNTESTED</code>, <code>SUPPORTED</code>, <code>CHALLENGED</code> ou <code>REJECTED</code>). Referencie esse ID na metodologia e nos experimentos pertinentes.</p>
 
       <div class="source-note">Fonte canônica: <a href="../docs/assumptions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>

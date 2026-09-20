@@ -1,0 +1,247 @@
+{
+  "checks": {
+    "current_parquet_correspondence": "passed",
+    "phase_categories": "passed",
+    "six_hour_association": "passed",
+    "source_checksum": "passed",
+    "source_counts": "passed",
+    "source_hourly_order": "passed",
+    "source_key_uniqueness": "passed",
+    "source_schema": "passed",
+    "special_case_regressions": "passed"
+  },
+  "correspondence": {
+    "matching_centers_after_float32": 20101,
+    "matching_phase_period": 20101,
+    "unexpected_parquet_states": 0
+  },
+  "current_parquet": {
+    "states": 20101,
+    "tracks": 1781
+  },
+  "derived": {
+    "duplicate_track_time": 0,
+    "hourly_catalog_rows": 631009,
+    "six_hour_state_rows": 109857,
+    "six_hour_tracks": 6789,
+    "temporal_offset_hours": {
+      "-1": 1044,
+      "-2": 906,
+      "0": 105332,
+      "1": 870,
+      "2": 849,
+      "3": 856
+    }
+  },
+  "generated_at_utc": "2026-09-20T22:17:38.068452Z",
+  "pipeline_version": "1.0.0",
+  "products": {
+    "states": {
+      "path": "data/cyclone_states_era5_6h_1979_2020.parquet",
+      "role": "nearest-ERA5-6h state and spatial-support catalog",
+      "rows": 109857,
+      "schema": [
+        {
+          "name": "track_id",
+          "nullable": true,
+          "type": "int64"
+        },
+        {
+          "name": "track_time_original",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "time",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "lat_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "lon_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "phase",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "vor42",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "region",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "track_minus_era5_hours",
+          "nullable": true,
+          "type": "int8"
+        },
+        {
+          "name": "in_current_parquet_period",
+          "nullable": true,
+          "type": "bool"
+        },
+        {
+          "name": "has_parquet_rows",
+          "nullable": true,
+          "type": "bool"
+        },
+        {
+          "name": "support_cell_count",
+          "nullable": true,
+          "type": "int32"
+        },
+        {
+          "name": "support_status",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "parquet_state_status",
+          "nullable": true,
+          "type": "string"
+        }
+      ],
+      "sha256": "4865bbc39f273d2360b5735cb26b132d9d01e7af085df94e08fdcd16ce864782",
+      "size_bytes": 2172718
+    },
+    "tracks": {
+      "path": "data/tracks_SAt_1979_2020.parquet",
+      "role": "canonical hourly track/lifecycle catalog",
+      "rows": 631009,
+      "schema": [
+        {
+          "name": "track_id",
+          "nullable": true,
+          "type": "int64"
+        },
+        {
+          "name": "date",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "lon_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "lat_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "vor42",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "region",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "phase",
+          "nullable": true,
+          "type": "string"
+        }
+      ],
+      "sha256": "7d8d628a8d54f9273e1c6280f22bb0082a470d4767393bd3b224a64e8a71c553",
+      "size_bytes": 9626418
+    }
+  },
+  "reconstructed_current_period": {
+    "expected_states": 29311,
+    "missing_no_support": 5977,
+    "missing_states": 9210,
+    "missing_support_status_counts": {
+      "full_support": 1284,
+      "no_support": 5977,
+      "partial_support": 1949
+    },
+    "missing_with_support": 3233,
+    "present_states": 20101,
+    "support_cell_count": 137621821,
+    "support_status_counts": {
+      "full_support": 15618,
+      "no_support": 5977,
+      "partial_support": 7716
+    },
+    "tracks": 1785
+  },
+  "source": {
+    "date_max": "2021-01-07T00:00:00",
+    "date_min": "1979-01-01T00:00:00",
+    "duplicate_track_date": 0,
+    "null_phase_rows": 50069,
+    "phase_categories": [
+      "decay",
+      "decay 2",
+      "incipient",
+      "incipient 2",
+      "intensification",
+      "intensification 2",
+      "mature",
+      "mature 2",
+      "residual"
+    ],
+    "regions": [
+      "ARG",
+      "LA-PLATA",
+      "SE-BR"
+    ],
+    "rows": 631009,
+    "tracks": 6789,
+    "within_track_non_hourly_gaps": 0
+  },
+  "special_cases": {
+    "20091196": {
+      "has_parquet_rows": false,
+      "parquet_state_status": "absent_no_support",
+      "state_count": 31,
+      "support_cell_count": 0,
+      "support_status_counts": {
+        "no_support": 31
+      }
+    },
+    "20110523": {
+      "has_parquet_rows": false,
+      "parquet_state_status": "absent_with_support",
+      "state_count": 6,
+      "support_cell_count": 47599,
+      "support_status_counts": {
+        "full_support": 6
+      }
+    },
+    "20191177": {
+      "has_parquet_rows": false,
+      "parquet_state_status": "absent_with_support",
+      "state_count": 21,
+      "support_cell_count": 121891,
+      "support_status_counts": {
+        "full_support": 12,
+        "partial_support": 9
+      }
+    },
+    "20203207": {
+      "has_parquet_rows": false,
+      "parquet_state_status": "absent_with_support",
+      "state_count": 6,
+      "support_cell_count": 41490,
+      "support_status_counts": {
+        "full_support": 6
+      }
+    }
+  },
+  "status": "passed"
+}

@@ -55,14 +55,30 @@
 <h2 id="d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003 · Agrupar rótulos <code>phase 2</code> nas figuras exploratórias</h2>
 <ul>
 <li><strong>Data:</strong> 2026-09-19</li>
-<li><strong>Status:</strong> <code>PROVISIONAL</code></li>
-<li><strong>Questão:</strong> como representar de forma legível as fases de um segundo ciclo na mesma track?</li>
+<li><strong>Revisada:</strong> 2026-09-20</li>
+<li><strong>Status:</strong> <code>ADOPTED</code></li>
+<li><strong>Questão:</strong> como representar de forma legível ocorrências repetidas de uma fase na mesma track?</li>
 <li><strong>Alternativas consideradas:</strong> mostrar as oito categorias literalmente ou reunir os rótulos <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code> às respectivas fases principais.</li>
-<li><strong>Evidência disponível:</strong> o sufixo <code>2</code> marca um segundo ciclo de vida na mesma track. A definição operacional das fases e da transição para esse segundo ciclo ainda não foi recuperada em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>.</li>
+<li><strong>Evidência disponível:</strong> conforme documentado em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>, o CycloPhaser acrescenta o sufixo quando uma fase reaparece em um bloco não contíguo. O número indica a ordem da ocorrência, não uma classe física diferente.</li>
 <li><strong>Decisão atual:</strong> agrupar os rótulos com sufixo <code>2</code> apenas nas figuras e resumos exploratórios. Preservar os valores originais no conjunto de dados e no resumo estrutural. Manter <code>residual</code> e ausências separados.</li>
-<li><strong>Justificativa:</strong> o agrupamento permite aplicar a paleta de fases solicitada e mantém os gráficos legíveis, sem modificar o dado-fonte.</li>
-<li><strong>Experimentos relacionados:</strong> nenhum; é uma escolha provisória de apresentação.</li>
-<li><strong>Revisar se:</strong> a definição operacional do catálogo exigir que os ciclos sejam comparados separadamente ou que a transição entre ciclos seja preservada nas figuras.</li>
+<li><strong>Justificativa:</strong> o agrupamento compara tipos equivalentes de fase e mantém os gráficos legíveis sem modificar o dado-fonte. A ordem original continua disponível quando a pergunta envolver reintensificação ou sequência do ciclo de vida.</li>
+<li><strong>Experimentos relacionados:</strong> nenhum; é uma escolha de apresentação baseada na semântica dos rótulos.</li>
+<li><strong>Revisar se:</strong> a pergunta científica exigir comparar ocorrências sucessivas separadamente ou se a rodada com o CycloPhaser 2.0 alterar o esquema dos rótulos.</li>
+</ul>
+<h2 id="d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004 · Adotar o Zenodo 18133432 como fonte canônica operacional das tracks e do lifecycle</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-20</li>
+<li><strong>Status:</strong> <code>ADOPTED</code></li>
+<li><strong>Questão:</strong> qual fonte deve produzir o catálogo versionado de centros, estados e fases usado pelo projeto?</li>
+<li><strong>Alternativas consideradas:</strong> usar diretamente o Mendeley V4; tratar o Parquet de vento como catálogo de estados; ou usar o arquivo oficial <code>tracks_SAt_filtered_with_energetics.csv</code> do Zenodo 18133432.</li>
+<li><strong>Evidência disponível:</strong> o Zenodo reproduz <code>track_id</code>, centro e <code>period</code> dos 20.101 estados presentes no Parquet e recupera 9.210 estados omitidos pelo filtro de entrada. O pipeline de validação encontra 20.101/20.101 centros e fases correspondentes e zero estados inesperados. A correspondência Mendeley–Zenodo é parcial: os IDs foram renumerados, o universo mudou e o Zenodo inclui 2020.</li>
+<li><strong>Decisão atual:</strong> adotar o <a href="https://zenodo.org/records/18133432">Zenodo 18133432</a>, DOI <a href="https://doi.org/10.5281/zenodo.18133432"><code>10.5281/zenodo.18133432</code></a>, como fonte canônica operacional. Preservar somente o catálogo mínimo derivado, os scripts, hashes, schema e relatórios; manter o CSV bruto em cache ignorado pelo Git e reproduzível sob demanda.</li>
+<li><strong>Justificativa:</strong> a fonte contém o denominador temporal necessário, preserva o lifecycle usado pelo Parquet e possui arquivo/checksum oficiais. O Parquet de vento é condicionado e perde estados inteiros; o Mendeley não conserva o namespace operacional atual.</li>
+<li><strong>Escopo:</strong> aquisição e preparação de dados. A decisão não valida a metodologia original do CycloPhaser, não escolhe threshold de vento e não adota um modelo de ocorrência ou footprint.</li>
+<li><strong>Relação com o Mendeley:</strong> DOI <code>10.17632/kwcvfr52hp.4</code> permanece documentado como referência histórica da família original de tracks, não como input de produção do catálogo atual.</li>
+<li><strong>Questões relacionadas:</strong> <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a> e <a href="open_questions.html#q-005--qual-é-a-fonte-operacional-dos-estados-de-track-e-lifecycle">Q-005</a>.</li>
+<li><strong>Experimentos relacionados:</strong> nenhum; trata-se de uma decisão de proveniência apoiada por validação de dados.</li>
+<li><strong>Revisar se:</strong> o registro Zenodo receber uma nova versão, uma fonte oficial substituir explicitamente esse catálogo ou uma nova rodada versionada do CycloPhaser for adotada.</li>
 </ul>
 
       <div class="source-note">Fonte canônica: <a href="../docs/decisions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>

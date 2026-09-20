@@ -1,8 +1,10 @@
+> Este arquivo descreve o Parquet **condicionado** de vento, não o catálogo completo de estados. Uma linha existe somente quando `distance_km <= 1100` e `wind_speed > min(15,6; q90_local)`. O catálogo completo e os estados sem linha estão em [`cyclone_states_era5_6h_1979_2020.parquet`](cyclone_states_era5_6h_1979_2020.parquet); detalhes e limites constam no [dicionário de dados](../docs/data_dictionary.md).
+
 | Coluna | Tipo | Descrição | Peso no arquivo |
 |---|---|---|---|
 | `track_id` | int64 | Identificador do ciclone no catálogo (1.781 distintos) | 0,06 MB |
 | `time` | timestamp | Instante do campo ERA5, passo de 6 h (UTC) | 0,10 MB |
-| `phase` | string | Fase do ciclo de vida do ciclone naquele instante | 0,06 MB |
+| `phase` | string | Fase calculada previamente com o CycloPhaser; sufixos numéricos indicam ocorrências repetidas da fase | 0,06 MB |
 | `lat_center` | float32 | Latitude do centro do ciclone (vorticidade da track) | 0,15 MB |
 | `lon_center` | float32 | Longitude do centro | 0,15 MB |
 | `lat` | float32 | Latitude do ponto de grade que excedeu | 1,41 MB |

@@ -7,3 +7,6 @@ __pycache__/
 
 # Local analysis input; documented but intentionally not versioned.
 data/cyclone_exceedances_by_track_2010_2020_p90.parquet
+
+# Reproducible raw downloads. Canonical derived Parquets remain versionable.
+data/raw/

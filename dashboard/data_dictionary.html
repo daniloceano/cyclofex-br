@@ -27,7 +27,151 @@
     </nav>
     <main id="conteudo" class="document">
       <h1 id="dicionário-de-dados">Dicionário de dados</h1>
-<h2 id="arquivo-inspecionado">Arquivo inspecionado</h2>
+<p>Os três produtos abaixo têm unidades de linha diferentes. O catálogo horário é a fonte canônica de centros e lifecycle; o catálogo de 6 h é a ponte temporal e espacial para o ERA5; o Parquet de vento é um recorte condicionado e não substitui nenhum dos dois catálogos.</p>
+<h2 id="a-catálogo-horário-canônico">A. Catálogo horário canônico</h2>
+<ul>
+<li><strong>Arquivo:</strong> <a href="../data/tracks_SAt_1979_2020.parquet"><code>data/tracks_SAt_1979_2020.parquet</code></a></li>
+<li><strong>Unidade da linha:</strong> uma hora de uma track.</li>
+<li><strong>Origem:</strong> <code>tracks_SAt_filtered_with_energetics.csv</code>, <a href="https://zenodo.org/records/18133432">Zenodo 18133432</a>, DOI <a href="https://doi.org/10.5281/zenodo.18133432"><code>10.5281/zenodo.18133432</code></a>.</li>
+<li><strong>Dimensão e período:</strong> 631.009 linhas, 6.789 tracks, de 1979-01-01 00:00 a 2021-01-07 00:00 UTC. O nome <code>1979_2020</code> identifica as safras de gênese; as últimas tracks iniciadas em 2020 terminam em janeiro de 2021.</li>
+<li><strong>Integridade:</strong> 9.626.418 bytes; SHA-256 <code>7d8d628a8d54f9273e1c6280f22bb0082a470d4767393bd3b224a64e8a71c553</code>.</li>
+</ul>
+<p><a href="../scripts/00_data_acquisition/prepare_tracks.py"><code>prepare_tracks.py</code></a> lê somente sete das 31 colunas da fonte, ordena por ciclone e hora e grava Parquet com compressão Zstandard. <code>lon vor</code>, <code>lat vor</code> e <code>period</code> são renomeadas; o literal <code>nan</code> em <code>period</code> vira nulo. Não há agrupamento ou reclassificação de fases.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo Parquet</th>
+<th>Definição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>track_id</code></td>
+<td><code>int64</code></td>
+<td>Identificador do ciclone preservado do Zenodo.</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td><code>timestamp[ms]</code></td>
+<td>Hora original da track; sem timezone armazenado e com semântica UTC.</td>
+</tr>
+<tr>
+<td><code>lon_center</code></td>
+<td><code>double</code></td>
+<td>Longitude do centro, cópia em <code>float64</code> de <code>lon vor</code>.</td>
+</tr>
+<tr>
+<td><code>lat_center</code></td>
+<td><code>double</code></td>
+<td>Latitude do centro, cópia em <code>float64</code> de <code>lat vor</code>.</td>
+</tr>
+<tr>
+<td><code>vor42</code></td>
+<td><code>double</code></td>
+<td>Vorticidade relativa no centro da track, preservada da fonte.</td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td><code>string</code></td>
+<td>Região de gênese: <code>ARG</code>, <code>LA-PLATA</code> ou <code>SE-BR</code>.</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>string</code></td>
+<td>Cópia de <code>period</code>; nove categorias literais e 50.069 linhas nulas.</td>
+</tr>
+</tbody>
+</table>
+<p>As categorias não nulas são <code>incipient</code>, <code>incipient 2</code>, <code>intensification</code>, <code>intensification 2</code>, <code>mature</code>, <code>mature 2</code>, <code>decay</code>, <code>decay 2</code> e <code>residual</code>. A chave (<code>track_id</code>, <code>date</code>) é única e cada track é horária sem lacunas internas.</p>
+<h2 id="b-catálogo-de-estados-associados-ao-era5-de-6-h">B. Catálogo de estados associados ao ERA5 de 6 h</h2>
+<ul>
+<li><strong>Arquivo:</strong> <a href="../data/cyclone_states_era5_6h_1979_2020.parquet"><code>data/cyclone_states_era5_6h_1979_2020.parquet</code></a></li>
+<li><strong>Unidade da linha:</strong> um estado único <code>track_id + time</code> associado à grade temporal de 6 h.</li>
+<li><strong>Origem:</strong> transformação do catálogo horário A.</li>
+<li><strong>Dimensão e período:</strong> 109.857 estados, 6.789 tracks, de 1979-01-01 00:00 a 2021-01-07 00:00 UTC.</li>
+<li><strong>Integridade:</strong> 2.172.718 bytes; SHA-256 <code>4865bbc39f273d2360b5735cb26b132d9d01e7af085df94e08fdcd16ce864782</code>.</li>
+</ul>
+<p>A associação usa o campo ERA5 de 6 h mais próximo, com diferença máxima de 3 h; empate de 3 h escolhe o campo anterior. Se mais de uma hora da mesma track for associada ao mesmo campo, permanece a de menor diferença e, em novo empate, a anterior. A geometria de suporte conta células da grade de 0,25° em latitudes −65 a −10 e longitudes −85 a −15 cuja distância haversine, com raio terrestre de 6.371 km, é <code>&lt;= 1.100 km</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Tipo Parquet</th>
+<th>Definição</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>track_id</code></td>
+<td><code>int64</code></td>
+<td>Identificador preservado do catálogo horário.</td>
+</tr>
+<tr>
+<td><code>track_time_original</code></td>
+<td><code>timestamp[ms]</code></td>
+<td>Hora da track selecionada para representar o estado.</td>
+</tr>
+<tr>
+<td><code>time</code></td>
+<td><code>timestamp[ms]</code></td>
+<td>Hora do campo ERA5 de 6 h; chave com <code>track_id</code>.</td>
+</tr>
+<tr>
+<td><code>lat_center</code>, <code>lon_center</code></td>
+<td><code>double</code></td>
+<td>Centro na hora original selecionada.</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>string</code></td>
+<td>Lifecycle original nessa hora; pode ser nulo.</td>
+</tr>
+<tr>
+<td><code>vor42</code></td>
+<td><code>double</code></td>
+<td>Vorticidade central nessa hora.</td>
+</tr>
+<tr>
+<td><code>region</code></td>
+<td><code>string</code></td>
+<td>Região de gênese da track.</td>
+</tr>
+<tr>
+<td><code>track_minus_era5_hours</code></td>
+<td><code>int8</code></td>
+<td><code>track_time_original - time</code>, em horas; observado de −2 a +3 h, além de zero.</td>
+</tr>
+<tr>
+<td><code>in_current_parquet_period</code></td>
+<td><code>bool</code></td>
+<td>Indica <code>time</code> entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC, período de comparação com C.</td>
+</tr>
+<tr>
+<td><code>has_parquet_rows</code></td>
+<td><code>bool</code></td>
+<td>Há ao menos uma linha do estado no Parquet C. Fora do período comparável, <code>false</code> não deve ser interpretado como ausência avaliada.</td>
+</tr>
+<tr>
+<td><code>support_cell_count</code></td>
+<td><code>int32</code></td>
+<td>Número geométrico de células da grade dentro de 1.100 km. Não é contagem de linhas armazenadas nem máscara de disponibilidade do ERA5.</td>
+</tr>
+<tr>
+<td><code>support_status</code></td>
+<td><code>string</code></td>
+<td><code>full_support</code>: disco contínuo contido no domínio; <code>partial_support</code>: há células, mas o disco é truncado; <code>no_support</code>: zero células da grade.</td>
+</tr>
+<tr>
+<td><code>parquet_state_status</code></td>
+<td><code>string</code></td>
+<td><code>present</code>, <code>absent_with_support</code>, <code>absent_no_support</code> ou <code>outside_comparison_period</code>; combina período, presença em C e suporte.</td>
+</tr>
+</tbody>
+</table>
+<p>No período comparável existem 29.311 estados de 1.785 tracks: 20.101 presentes em C, 3.233 ausentes com suporte e 5.977 ausentes sem suporte. <code>partial_support</code> é suporte válido, porém truncado; não equivale a <code>no_support</code>. Para os estados com suporte e sem linhas, nenhuma célula passou pelo filtro de entrada de C. Para <code>no_support</code>, não há células a classificar como zero.</p>
+<h2 id="c-parquet-condicionado-de-vento-e-excedências">C. Parquet condicionado de vento e excedências</h2>
+<h3 id="arquivo-inspecionado">Arquivo inspecionado</h3>
 <p><a href="../data/cyclone_exceedances_by_track_2010_2020_p90.parquet"><code>data/cyclone_exceedances_by_track_2010_2020_p90.parquet</code></a> é o conjunto atualmente disponível para desenvolvimento. Suas colunas são documentadas em <a href="../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md"><code>COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></a>. A caracterização estrutural reproduzível está em <a href="../outputs/01_data_overview/structural_summary.json"><code>structural_summary.json</code></a>, gerado por <a href="../scripts/01_data_overview/inspect_parquet.py"><code>inspect_parquet.py</code></a>.</p>
 <ul>
 <li><strong>SHA-256 do arquivo de dados:</strong> <code>3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c</code></li>
@@ -35,11 +179,11 @@
 <li><strong>Ciclones:</strong> 1.781 valores distintos de <code>track_id</code>.</li>
 <li><strong>Período dos campos:</strong> 2010-01-02 18:00 UTC a 2020-12-31 18:00 UTC, em passos nominais de 6 h conforme a documentação fornecida.</li>
 </ul>
-<h2 id="unidades-do-conjunto">Unidades do conjunto</h2>
+<h3 id="unidades-do-conjunto">Unidades do conjunto</h3>
 <p><strong>Unidade de análise:</strong> o ciclone, identificado por <code>track_id</code>. Contagens, separação de treino e teste, inferência e validação devem tratar os <strong>1.781 <code>track_id</code> únicos</strong> como as unidades fundamentais, quando aplicável. As 17.182.983 linhas não são 17 milhões de ciclones nem 17 milhões de observações independentes.</p>
 <p><strong>Unidade de armazenamento de uma linha:</strong> um ponto de grade espacial, associado a um <code>track_id</code>, um instante do campo ERA5 e o estado do ciclone nesse instante. <code>lat</code> e <code>lon</code> localizam o ponto; <code>lat_center</code> e <code>lon_center</code> localizam o centro do ciclone. As colunas <code>exceeded_*</code> são valores booleanos no ponto, de modo que um campo espacial está armazenado em formato tabular longo: várias linhas representam posições do campo de um ciclone em um instante.</p>
 <p>O recorte não é formado exclusivamente por excedências do q90. Uma linha é armazenada quando <code>distance_km &lt;= 1.100</code> e <code>wind_speed &gt; min(15,6; q90_local)</code>. Por isso, 13.404 linhas entram pelo limiar fixo em locais onde <code>q90_local &gt; 15,6</code> e têm <code>exceeded_q90 = false</code>; todas elas satisfazem <code>15,6 &lt; wind_speed &lt;= q90_local</code>. Dentro do círculo e do domínio, um ponto ausente não passou pelo limiar de entrada. Fora do domínio, a posição não foi avaliada. Veja <a href="open_questions.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002</a>.</p>
-<h2 id="campos-observados">Campos observados</h2>
+<h3 id="campos-observados">Campos observados</h3>
 <table>
 <thead>
 <tr>
@@ -65,8 +209,8 @@
 <tr>
 <td><code>phase</code></td>
 <td><code>string</code></td>
-<td>Cópia da coluna <code>period</code> do catálogo de tracks. O sufixo <code>2</code> marca um segundo ciclo de vida na mesma track.</td>
-<td><code>incipient</code>, <code>intensification</code>, <code>intensification 2</code>, <code>mature</code>, <code>mature 2</code>, <code>decay</code>, <code>decay 2</code>, <code>residual</code>; 509.788 nulos, herdados do catálogo. A definição operacional das fases permanece em Q-004.</td>
+<td>Cópia da coluna <code>period</code>, calculada com o CycloPhaser. O sufixo <code>2</code> marca a segunda ocorrência não contígua da mesma fase na track; não é outra classe física.</td>
+<td><code>incipient</code>, <code>intensification</code>, <code>intensification 2</code>, <code>mature</code>, <code>mature 2</code>, <code>decay</code>, <code>decay 2</code>, <code>residual</code>; 509.788 nulos, herdados do catálogo. Ver a proveniência e o tratamento em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>.</td>
 </tr>
 <tr>
 <td><code>lat_center</code></td>
@@ -155,9 +299,17 @@
 </tbody>
 </table>
 <p>Os percentuais foram recalculados diretamente das contagens do conjunto e concordam, após arredondamento, com o documento de colunas. Os mínimos, máximos e nulos vêm das estatísticas dos grupos de linhas; categorias e <code>track_id</code> distintos foram lidos em lotes. A chave (<code>track_id</code>, <code>time</code>, <code>lat</code>, <code>lon</code>) não possui duplicatas.</p>
-<h2 id="proveniência-e-limites-do-recorte">Proveniência e limites do recorte</h2>
+<h3 id="proveniência-e-limites-do-recorte">Proveniência e limites do recorte</h3>
 <p>Os percentis locais atuais foram calculados experimentalmente ponto a ponto com os <strong>11 anos civis completos de 2010–2020</strong>, 16.072 campos de 6 h, usando <code>numpy.percentile</code> com interpolação <code>linear</code>. Eles serão atualizados após a incorporação das tracks completas de 1979–2020. A versão exata do ERA5 e a versão formal do arquivo de percentis não foram recuperadas; veja <a href="open_questions.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002</a>.</p>
 <p>O mesmo ponto de grade e hora pode ser associado a ciclones simultâneos: 414.124 pontos-hora aparecem sob mais de um <code>track_id</code>, com máximo de três. Além disso, 1.833 dos 20.101 estados ciclone-tempo têm o centro fora do domínio dos percentis; nesses casos, o círculo é truncado pela grade sem uma coluna de aviso. Agregações devem manter <code>track_id</code>, e comparações entre ciclones devem considerar essa cobertura desigual.</p>
+<h2 id="relação-e-rastreabilidade-entre-os-produtos">Relação e rastreabilidade entre os produtos</h2>
+<ul>
+<li>A é derivado diretamente do CSV oficial; B é derivado somente de A e comparado a C.</li>
+<li>C contém apenas estados com ao menos uma célula que passou por <code>wind_speed &gt; min(15,6; q90_local)</code>. Ele não é um catálogo completo de estados.</li>
+<li>Para um estado de B com <code>present</code> ou <code>absent_with_support</code>, a grade, o centro e a regra espacial permitem reconstruir o conjunto de células avaliáveis. Uma célula elegível ausente de C não passou pelo filtro de entrada e, portanto, é falsa para q90, q95, q99 e para 15,6, 20 e 25 m/s. Os zeros podem ser reconstruídos sob esse contrato sem materializar previamente centenas de milhões de linhas.</li>
+<li>Para <code>partial_support</code>, só as células dentro do domínio entram no denominador; a parte truncada não foi avaliada. Para <code>no_support</code>, nada entra no denominador e a ausência não é zero.</li>
+<li>Checksums, schemas, ambiente, regras e resultados de correspondência estão no <a href="../outputs/00_data_acquisition/provenance_manifest.json"><code>provenance_manifest.json</code></a> e no <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a>.</li>
+</ul>
 
       <div class="source-note">Fonte canônica: <a href="../docs/data_dictionary.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
     </main>

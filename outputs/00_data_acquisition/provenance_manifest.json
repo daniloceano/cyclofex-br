@@ -1,0 +1,292 @@
+{
+  "derived_products": {
+    "states": {
+      "path": "data/cyclone_states_era5_6h_1979_2020.parquet",
+      "role": "nearest-ERA5-6h state and spatial-support catalog",
+      "rows": 109857,
+      "schema": [
+        {
+          "name": "track_id",
+          "nullable": true,
+          "type": "int64"
+        },
+        {
+          "name": "track_time_original",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "time",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "lat_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "lon_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "phase",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "vor42",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "region",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "track_minus_era5_hours",
+          "nullable": true,
+          "type": "int8"
+        },
+        {
+          "name": "in_current_parquet_period",
+          "nullable": true,
+          "type": "bool"
+        },
+        {
+          "name": "has_parquet_rows",
+          "nullable": true,
+          "type": "bool"
+        },
+        {
+          "name": "support_cell_count",
+          "nullable": true,
+          "type": "int32"
+        },
+        {
+          "name": "support_status",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "parquet_state_status",
+          "nullable": true,
+          "type": "string"
+        }
+      ],
+      "sha256": "4865bbc39f273d2360b5735cb26b132d9d01e7af085df94e08fdcd16ce864782",
+      "size_bytes": 2172718
+    },
+    "tracks": {
+      "path": "data/tracks_SAt_1979_2020.parquet",
+      "role": "canonical hourly track/lifecycle catalog",
+      "rows": 631009,
+      "schema": [
+        {
+          "name": "track_id",
+          "nullable": true,
+          "type": "int64"
+        },
+        {
+          "name": "date",
+          "nullable": true,
+          "type": "timestamp[ms]"
+        },
+        {
+          "name": "lon_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "lat_center",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "vor42",
+          "nullable": true,
+          "type": "double"
+        },
+        {
+          "name": "region",
+          "nullable": true,
+          "type": "string"
+        },
+        {
+          "name": "phase",
+          "nullable": true,
+          "type": "string"
+        }
+      ],
+      "sha256": "7d8d628a8d54f9273e1c6280f22bb0082a470d4767393bd3b224a64e8a71c553",
+      "size_bytes": 9626418
+    }
+  },
+  "generated_at_utc": "2026-09-20T22:17:53.561446Z",
+  "historical_reference": {
+    "doi": "10.17632/kwcvfr52hp.4",
+    "provider": "Mendeley Data",
+    "role": "historical genealogy only; IDs and track universe are not the operational Zenodo catalog"
+  },
+  "manifest_schema_version": 1,
+  "pipeline_version": "1.0.0",
+  "source": {
+    "cache_path": "data/raw/zenodo/18133432/tracks_SAt_filtered_with_energetics.csv",
+    "concept_doi": "10.5281/zenodo.18133431",
+    "csv_header": [
+      "track_id",
+      "date",
+      "lon vor",
+      "lat vor",
+      "vor42",
+      "region",
+      "period",
+      "Az",
+      "Ae",
+      "Kz",
+      "Ke",
+      "Cz",
+      "Ca",
+      "Ck",
+      "Ce",
+      "BAz",
+      "BAe",
+      "BKz",
+      "BKe",
+      "BΦZ",
+      "BΦE",
+      "Gz",
+      "Ge",
+      "∂Az/∂t (finite diff.)",
+      "∂Ae/∂t (finite diff.)",
+      "∂Kz/∂t (finite diff.)",
+      "∂Ke/∂t (finite diff.)",
+      "RGz",
+      "RKz",
+      "RGe",
+      "RKe"
+    ],
+    "date_max": "2021-01-07T00:00:00",
+    "date_min": "1979-01-01T00:00:00",
+    "doi": "10.5281/zenodo.18133432",
+    "download_url": "https://zenodo.org/records/18133432/files/tracks_SAt_filtered_with_energetics.csv?download=1",
+    "downloaded_at_utc": "2026-09-20T22:09:15.504261Z",
+    "expected_sha256": "bf1059ab2f1896c6df942a290d7676bce701f6d3cbf7ac9193f5c6b51d63cc26",
+    "filename": "tracks_SAt_filtered_with_energetics.csv",
+    "local_hashes": {
+      "md5": "a413e7f89d20b5b18a9da8b671b53d72",
+      "sha256": "bf1059ab2f1896c6df942a290d7676bce701f6d3cbf7ac9193f5c6b51d63cc26"
+    },
+    "null_phase_rows": 50069,
+    "official_checksum": {
+      "algorithm": "md5",
+      "value": "a413e7f89d20b5b18a9da8b671b53d72"
+    },
+    "parsed_schema": [
+      {
+        "name": "track_id",
+        "nullable": true,
+        "type": "int64"
+      },
+      {
+        "name": "date",
+        "nullable": true,
+        "type": "timestamp[ms]"
+      },
+      {
+        "name": "lon vor",
+        "nullable": true,
+        "type": "double"
+      },
+      {
+        "name": "lat vor",
+        "nullable": true,
+        "type": "double"
+      },
+      {
+        "name": "vor42",
+        "nullable": true,
+        "type": "double"
+      },
+      {
+        "name": "region",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "name": "period",
+        "nullable": true,
+        "type": "string"
+      }
+    ],
+    "phase_categories": [
+      "decay",
+      "decay 2",
+      "incipient",
+      "incipient 2",
+      "intensification",
+      "intensification 2",
+      "mature",
+      "mature 2",
+      "residual"
+    ],
+    "provider": "Zenodo",
+    "record_id": 18133432,
+    "record_url": "https://zenodo.org/records/18133432",
+    "record_version": 1,
+    "rows": 631009,
+    "size_bytes": 180778076,
+    "tracks": 6789,
+    "verified_at_utc": "2026-09-20T22:17:53.561439Z"
+  },
+  "status": "validated_products_ready",
+  "transformation": {
+    "column_mapping": {
+      "date": "date",
+      "lat_center": "lat vor",
+      "lon_center": "lon vor",
+      "phase": "period"
+    },
+    "runtime": {
+      "duckdb": "1.5.5",
+      "numpy": "2.5.3",
+      "pyarrow": "25.0.1",
+      "python": "3.12.14"
+    },
+    "scripts": {
+      "scripts/00_data_acquisition/download_tracks_zenodo.py": "8d27d87e6bf0757a92552f3c1af889c01aa1f530959353ed584e13480bf3ec29",
+      "scripts/00_data_acquisition/prepare_tracks.py": "7ce9a698cb9010e1f4552aff9d908a736cb17334a5d58cc984f54bf424a7f27f"
+    },
+    "six_hour_rule": "nearest ERA5 6 h; |delta|<=3 h; 3 h tie backward; one row per track_id+time",
+    "support_rule": {
+      "comparison": "<=",
+      "distance": "spherical haversine",
+      "earth_radius_km": 6371.0,
+      "grid_degrees": 0.25,
+      "latitude_range": [
+        -65.0,
+        -10.0
+      ],
+      "longitude_range": [
+        -85.0,
+        -15.0
+      ],
+      "maximum_distance_km": 1100.0
+    },
+    "type_policy": {
+      "center_and_vor42": "float64 to preserve source precision",
+      "date_and_time": "timestamp[ms], UTC semantics, timezone-naive storage",
+      "region_and_phase": "string; source 'nan' phase parsed as null",
+      "track_id": "int64"
+    }
+  },
+  "validation": {
+    "current_parquet_path": "data/cyclone_exceedances_by_track_2010_2020_p90.parquet",
+    "current_parquet_sha256": "3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c",
+    "report_path": "outputs/00_data_acquisition/validation_report.json",
+    "report_sha256": "5e6bc8cb13d0d08db664d641c843561468a7b30c040aa30e97daadd91ef78107",
+    "result": "passed"
+  }
+}

@@ -142,15 +142,16 @@
 
       <section id="animacao">
         <h2>Exemplo espacial: ciclone com maior vento</h2>
-        <p>O ciclone <code>track_id = 20100510</code> contém o maior <code>wind_speed</code> do conjunto: <strong>34,85 m/s</strong> em 2010-06-18 06:00 UTC, durante intensificação. A animação percorre seus 25 estados de 6 h, de 2010-06-13 12:00 a 2010-06-19 12:00 UTC.</p>
+        <p>O ciclone <code>track_id = 20100510</code> contém o maior <code>wind_speed</code> do conjunto: <strong>34,85 m/s</strong> em 2010-06-18 06:00 UTC, durante intensificação. A animação percorre os 25 estados de 6 h que aparecem no Parquet condicionado, de 2010-06-13 12:00 a 2010-06-19 12:00 UTC. O catálogo canônico contém 32 estados para a track: um estado posterior ainda tem suporte, mas nenhuma linha selecionada, e os seis últimos já não intersectam o domínio.</p>
         <figure class="figure-card">
           <video controls loop muted playsinline preload="metadata" poster="assets/02_exploratory_analysis/max_wind_cyclone_peak_frame.png">
             <source src="assets/02_exploratory_analysis/max_wind_cyclone_animation.mp4" type="video/mp4">
             Seu navegador não conseguiu reproduzir o MP4. Use o link disponível na seção de arquivos.
           </video>
-          <figcaption>As excedências q90 são coloridas pela velocidade do vento com a mesma escala nos dois painéis. As linhas radiais desenham os setores geográficos fixos à esquerda e os setores relativos ao movimento à direita. O centro usa a cor da fase, a linha escura mostra a trajetória já percorrida, a linha tracejada mostra o restante da track e o círculo tem raio de 1.100 km.</figcaption>
+          <figcaption>Somente as linhas com <code>exceeded_q90 = true</code> são coloridas pela velocidade do vento, com a mesma escala nos dois painéis. As linhas radiais desenham os setores geográficos fixos à esquerda e os setores relativos ao movimento à direita. O centro usa a cor da fase, a linha escura mostra a trajetória já percorrida, a linha tracejada mostra o restante da track presente no Parquet e o círculo tem raio de 1.100 km.</figcaption>
         </figure>
         <div class="callout">
+          <p><strong>Branco não é automaticamente zero.</strong> A animação não desenha as linhas com <code>exceeded_q90 = false</code> nem materializa células omitidas pelo filtro de entrada. Uma área branca só pode ser classificada como não-excedência depois de identificar o estado, reconstruir a grade dentro do raio e restringi-la ao domínio. Fora desse suporte, a posição não foi avaliada.</p>
           <p><strong>Extensão do mapa.</strong> Os limites são fixos durante o vídeo e foram calculados a partir do envelope de todos os centros dessa track acrescido do raio de 1.100 km e uma margem de 1°. Isso permite acompanhar todo o deslocamento sem mudanças de escala entre quadros.</p>
           <p><strong>Comparação dos quadrantes.</strong> A geometria e a costa permanecem em coordenadas geográficas nos dois painéis. No painel rotacionado, os limites reproduzem a convenção usada no dado: diferença centrada entre centros vizinhos de 6 h, diferença simples nas pontas, longitude corrigida por <code>cos(lat)</code> e direção leste quando o deslocamento é nulo.</p>
         </div>
@@ -166,13 +167,19 @@
           <li>Somente linhas com <code>exceeded_q90 = true</code> formam o desenho de extremos da animação.</li>
         </ol>
         <div class="callout warning">
-          <p><strong>Limites para interpretação.</strong> Os percentis atuais usam os 11 anos civis de 2010–2020 e serão recalculados para 1979–2020. As 13.404 linhas com <code>exceeded_q90 = false</code> entraram pelo limiar alternativo de 15,6 m/s; há também 509.788 linhas sem fase. O círculo é truncado fora do domínio da grade, onde nenhuma avaliação foi feita. Estes produtos são exploratórios e não constituem footprint probabilístico ou hazard geográfico.</p>
+          <p><strong>Limites para interpretação.</strong> O Parquet guarda apenas pontos que passaram por <code>wind_speed &gt; min(15,6; q90_local)</code>. O catálogo canônico recupera 9.210 estados inteiros ausentes no período: 3.233 têm suporte e zero linhas selecionadas; 5.977 não intersectam o domínio e não são zeros. Dentro de estado, grade, raio e domínio conhecidos, células omitidas podem ser reconstruídas como não-excedências; sem esse suporte, branco significa apenas “não desenhado”. Os percentis atuais usam os 11 anos civis de 2010–2020 e serão recalculados para 1979–2020. Estes produtos são exploratórios e não constituem footprint probabilístico ou hazard geográfico.</p>
         </div>
       </section>
 
       <section id="arquivos">
         <h2>Código e produtos reproduzíveis</h2>
         <ul class="file-list">
+          <li><a href="../scripts/00_data_acquisition/download_tracks_zenodo.py">Script de aquisição do Zenodo</a></li>
+          <li><a href="../scripts/00_data_acquisition/prepare_tracks.py">Script de preparação e validação</a></li>
+          <li><a href="../data/tracks_SAt_1979_2020.parquet">Catálogo horário canônico</a></li>
+          <li><a href="../data/cyclone_states_era5_6h_1979_2020.parquet">Catálogo completo de estados de 6 h</a></li>
+          <li><a href="../outputs/00_data_acquisition/provenance_manifest.json">Manifesto de proveniência</a></li>
+          <li><a href="../outputs/00_data_acquisition/validation_report.json">Relatório de validação</a></li>
           <li><a href="../scripts/01_data_overview/inspect_parquet.py">Script da caracterização estrutural</a></li>
           <li><a href="../outputs/01_data_overview/structural_summary.json">Resumo estrutural JSON</a></li>
           <li><a href="../scripts/02_exploratory_analysis/exploratory_analysis.py">Script das figuras e da animação</a></li>

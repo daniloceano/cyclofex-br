@@ -443,6 +443,7 @@
       <div class="hero-meta" aria-label="Escopo e estado do projeto">
         <span class="pill pill-light">Pesquisa em desenvolvimento</span>
         <span class="pill pill-light">Atlântico Sul</span>
+        <span class="pill pill-light">Catálogo operacional validado</span>
         <span class="pill pill-light">Metodologia em construção</span>
       </div>
     </div>
@@ -482,7 +483,7 @@
       <div class="section-head">
         <p class="section-kicker">Roteiro metodológico</p>
         <h2 id="roteiro-title">Uma sequência guiada pela evidência disponível</h2>
-        <p>A análise exploratória e a reconstrução do fluxo gerador estão documentadas. As etapas seguintes descrevem a direção científica e não implicam que um método já tenha sido escolhido.</p>
+        <p>A análise exploratória, a reconstrução do fluxo gerador e o catálogo operacional completo estão documentados. As etapas seguintes descrevem a direção científica e não implicam que um método já tenha sido escolhido.</p>
       </div>
       <div class="roadmap-shell">
         <div class="roadmap-legend" aria-label="Legenda dos estados">
@@ -508,12 +509,20 @@
               <p>Reconstruir os percentis, a seleção das linhas, a distância, os quadrantes e a associação temporal.</p>
             </div>
           </li>
+          <li class="roadmap-step completed">
+            <span class="roadmap-marker" aria-hidden="true">✓</span>
+            <span class="step-status">Concluído</span>
+            <div class="step-content">
+              <h3><a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">Fonte canônica e catálogo de estados</a></h3>
+              <p>Validar o Zenodo, gerar os catálogos horário e de 6 h e distinguir estados presentes, ausentes com suporte e não avaliados.</p>
+            </div>
+          </li>
           <li class="roadmap-step current">
             <span class="roadmap-marker" aria-hidden="true"></span>
             <span class="step-status">Em andamento</span>
             <div class="step-content">
               <h3><a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Semântica das fases</a></h3>
-              <p>Recuperar a definição operacional das fases e da passagem para um segundo ciclo no catálogo de tracks.</p>
+              <p>A origem e os rótulos estão confirmados; ainda faltam versão, parâmetros, configuração e artefatos da execução original do CycloPhaser.</p>
             </div>
           </li>
           <li class="roadmap-step next">
@@ -567,21 +576,21 @@
       <div class="status-panel">
         <div class="status-item">
           <span class="status-label">Concluído</span>
-          <h3>Análise exploratória dos ventos associados aos ciclones</h3>
-          <p>Há código, tabelas, figuras, animação e documentação reproduzível para o conjunto de desenvolvimento.</p>
+          <h3>Base operacional de tracks e estados</h3>
+          <p>O Zenodo é a fonte canônica; os catálogos horário e de 6 h têm código, hashes, validação e vínculo exato com o Parquet atual.</p>
         </div>
         <div class="status-item current">
           <span class="status-label">Agora</span>
-          <h3>Consolidar a semântica das fases</h3>
-          <p>Q-002 e Q-003 foram resolvidas com a reconstrução do fluxo gerador. Q-004 permanece aberta para as definições operacionais das fases e do segundo ciclo.</p>
+          <h3>Fechar a proveniência do lifecycle</h3>
+          <p>Q-002, Q-003 e Q-005 estão resolvidas. Q-004 permanece aberta para recuperar versão, configuração e artefatos da execução original do CycloPhaser.</p>
         </div>
         <div class="status-item">
           <span class="status-label">Próximo</span>
-          <h3>Etapa probabilística ainda não consolidada</h3>
-          <p>O threshold e a definição operacional de footprint precisam ser estabelecidos antes do primeiro experimento metodológico.</p>
+          <h3>Definir extremo e footprint</h3>
+          <p>Depois da pendência de lifecycle, fixar threshold, unidade do evento, suporte espacial e objeto estimado antes do primeiro experimento metodológico.</p>
         </div>
       </div>
-      <p class="status-note">O repositório não registra experimentos científicos, pressupostos inferenciais adotados ou um modelo probabilístico selecionado.</p>
+      <p class="status-note">O repositório ainda não registra experimentos científicos, pressupostos inferenciais adotados ou um modelo probabilístico selecionado.</p>
     </section>
     <section class="section" id="analises" aria-labelledby="analises-title">
       <div class="section-head">
@@ -614,14 +623,14 @@
         <a class="doc-item" href="experiments.html"><strong>Experimentos</strong><span>Registro de testes metodológicos quando forem executados.</span><em>Nenhum registrado</em></a>
         <a class="doc-item" href="open_questions.html"><strong>Questões abertas</strong><span>Perguntas que ainda dependem de código, especificação ou evidência.</span><em>1 aberta</em></a>
         <a class="doc-item" href="assumptions.html"><strong>Pressupostos</strong><span>Hipóteses que venham a sustentar inferência e como serão avaliadas.</span></a>
-        <a class="doc-item" href="data_dictionary.html"><strong>Dicionário de dados</strong><span>Unidades, campos observados e semântica ainda pendente.</span></a>
+        <a class="doc-item" href="data_dictionary.html"><strong>Dicionário de dados</strong><span>Contratos, unidades, campos e relações entre os três produtos.</span></a>
       </div>
     </section>
     <section class="section" id="dados" aria-labelledby="dados-title">
       <div class="data-note">
         <div>
           <h2 id="dados-title">Dados atuais</h2>
-          <p>As análises usam um conjunto de desenvolvimento de 2010–2020, com ventos e excedências vinculados às tracks. Os percentis atuais são experimentais e serão atualizados com a referência ampliada de 1979–2020; eles não definem a configuração final do projeto.</p>
+          <p>O catálogo canônico do Zenodo contém 631.009 horas de 6.789 tracks e produz 109.857 estados de 6 h. No período de 2010–2020, o Parquet condicionado de vento mostra 20.101 de 29.311 estados; o catálogo distingue os 3.233 ausentes com suporte dos 5.977 sem interseção com o domínio. Os percentis atuais continuam experimentais e não definem a configuração final do projeto.</p>
         </div>
         <div class="data-links">
           <a href="exploratory_analysis.html">Ver análise exploratória →</a>
