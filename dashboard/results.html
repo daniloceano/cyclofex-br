@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="O que foi observado, o que significa e o que ainda não demonstra.">
+  <title>Resultados e evidências · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Síntese</p>
+      <p class="page-name">Resultados e evidências</p>
+      <p class="title-note">O que foi observado, o que significa e o que ainda não demonstra.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html" class="active" aria-current="page">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="resultados-e-evidências">Resultados e evidências</h1>
+<h2 id="como-ler-esta-síntese">Como ler esta síntese</h2>
+<p>Esta página reúne somente evidências já produzidas. Cada item separa <strong>resultado observado</strong>, <strong>interpretação permitida</strong> e <strong>conclusão ainda não permitida</strong>. Números detalhados e figuras estão na <a href="exploratory_analysis.html">análise exploratória</a>; regras de construção estão em <a href="data_preparation.html">preparação dos dados</a>.</p>
+<h2 id="evidência-1--a-fonte-operacional-reproduz-o-recorte-existente">Evidência 1 — a fonte operacional reproduz o recorte existente</h2>
+<p><strong>Resultado.</strong> O catálogo reconstruído a partir do Zenodo reproduziu os 20.101 centros e os 20.101 rótulos de fase presentes no recorte de vento, sem estados inesperados. Ele recuperou ainda 9.210 estados do período que não possuem linhas no recorte: 3.233 com suporte e 5.977 sem interseção com o domínio.</p>
+<p><strong>Interpretação.</strong> O Zenodo fornece o denominador temporal e preserva o namespace necessário para auditar presença, ausência e suporte. Isso sustenta sua adoção como fonte operacional.</p>
+<p><strong>Não permite concluir.</strong> A correspondência não valida a escolha científica do raio, dos thresholds ou da classificação original do lifecycle.</p>
+<h2 id="evidência-2--o-recorte-é-grande-mas-não-é-uma-amostra-de-linhas-independentes">Evidência 2 — o recorte é grande, mas não é uma amostra de linhas independentes</h2>
+<p><strong>Resultado.</strong> O arquivo atual contém 1.781 ciclones, 20.101 estados ciclone–tempo e 17.182.983 linhas espaciais.</p>
+<p><strong>Interpretação.</strong> Há informação espacial e temporal abundante, porém organizada hierarquicamente: muitos pontos pertencem ao mesmo estado e muitos estados pertencem ao mesmo ciclone.</p>
+<p><strong>Não permite concluir.</strong> O número de linhas não pode ser usado como tamanho amostral inferencial. Precisão aparente calculada como se fossem 17 milhões de eventos seria pseudorreplicação.</p>
+<h2 id="evidência-3--quantis-pontuais-são-maiores-na-fase-madura">Evidência 3 — quantis pontuais são maiores na fase madura</h2>
+<p><strong>Resultado.</strong> No recorte condicionado, a fase madura apresentou mediana pontual de 15,58 m/s e P95 de 19,77 m/s, os maiores entre as fases agrupadas. Na fase incipiente, os valores correspondentes foram 12,07 e 16,49 m/s.</p>
+<p>A figura compara as distribuições pontuais de <code>wind_speed</code>, em m/s, por fase agrupada, quadrante geográfico e quadrante relativo ao movimento. Em cada boxplot, a caixa representa P25–P75, a linha central é a mediana, as hastes são P5–P95 e o ponto branco é a média. A população mostrada é formada pelas linhas espaciais selecionadas, não por ciclones independentes.</p>
+<figure class="result-figure">
+  <img src="assets/02_exploratory_analysis/wind_speed_boxplots.png" alt="Boxplots da velocidade pontual do vento por fase do ciclo de vida, quadrante geográfico e quadrante relativo ao movimento.">
+  <figcaption>Distribuições pontuais no recorte condicionado de 2010–2020. A fase madura apresenta a maior mediana e o maior P95; as medianas dos quadrantes são próximas.</figcaption>
+</figure>
+
+<p><strong>Interpretação.</strong> Entre os pontos armazenados, o padrão é consistente com intensidades maiores na fase madura. É uma hipótese plausível para testes por ciclone.</p>
+<p><strong>Não permite concluir.</strong> Não houve teste inferencial, controle de duração, cobertura ou seleção; portanto, não se demonstrou que fases diferem na população nem que maturidade causa ventos mais fortes.</p>
+<h2 id="evidência-4--medianas-entre-quadrantes-são-próximas">Evidência 4 — medianas entre quadrantes são próximas</h2>
+<p><strong>Resultado.</strong> As medianas pontuais variaram de 14,47 a 14,90 m/s nos quadrantes geográficos e de 14,51 a 14,78 m/s nos quadrantes relativos ao movimento.</p>
+<p><strong>Interpretação.</strong> A mediana, isoladamente, não mostra grande contraste entre setores no recorte. Outras partes da distribuição e a ocorrência podem conter estrutura.</p>
+<p><strong>Não permite concluir.</strong> Não se comparou desempenho de referenciais, estabilidade por ciclone ou incerteza. O referencial relativo ao movimento não foi validado como superior.</p>
+<h2 id="evidência-5--proporções-q95-variam-entre-fase-e-setor">Evidência 5 — proporções q95 variam entre fase e setor</h2>
+<p><strong>Resultado.</strong> Entre linhas já selecionadas, a fase madura apresentou as maiores proporções q95 em vários quadrantes; no noroeste geográfico, 66,69% das linhas q90 também excederam q95.</p>
+<p>Os heatmaps abaixo mostram contagens de pontos q90 nos dois sistemas de quadrantes, nas linhas superiores, e a porcentagem das linhas selecionadas que também excede q95, nas inferiores. Cores mais escuras representam valores maiores; a escala das contagens é logarítmica para acomodar diferenças grandes entre fases.</p>
+<figure class="result-figure">
+  <img src="assets/02_exploratory_analysis/exceedances_by_phase_and_quadrant.png" alt="Heatmaps de contagens q90 e porcentagens q95 por fase e por quadrantes geográficos e relativos ao movimento.">
+  <figcaption>Fase e setor espacial no recorte condicionado. As proporções q95 maiores em parte da fase madura são descritivas e não constituem coverage probability.</figcaption>
+</figure>
+
+<p><strong>Interpretação.</strong> Há um sinal descritivo de concentração de ventos mais intensos em combinações específicas de fase e setor, suficiente para motivar hipóteses.</p>
+<p><strong>Não permite concluir.</strong> A proporção é condicionada ao recorte, depende do número de pontos por estado e não é uma <em>coverage probability</em> espacial.</p>
+<h2 id="evidência-6--ausência-precisa-ser-separada-de-não-observação">Evidência 6 — ausência precisa ser separada de não observação</h2>
+<p><strong>Resultado.</strong> No período comparável, 3.233 estados têm suporte e zero linhas selecionadas, enquanto 5.977 não possuem nenhuma célula dentro do domínio e do raio. Há também 1.833 estados presentes cujo centro fica fora do domínio, produzindo suporte parcial.</p>
+<p><strong>Interpretação.</strong> O denominador espacial pode ser reconstruído para estados com suporte, e a parte fora do domínio deve permanecer como não observada.</p>
+<p><strong>Não permite concluir.</strong> Áreas brancas em figuras ou ausência de linhas não podem ser classificadas automaticamente como vento zero ou não-excedência.</p>
+<h2 id="evidência-visual-complementar--ocorrência-por-estado">Evidência visual complementar — ocorrência por estado</h2>
+<p>Para evitar que a quantidade de pixels domine a leitura, esta figura conta cada par ciclone–tempo uma única vez por threshold quando existe ao menos um ponto excedente. O painel superior mostra o número de estados; o inferior, a fração dentro de cada fase. A população inclui os 20.101 estados presentes no recorte de vento.</p>
+<figure class="result-figure">
+  <img src="assets/02_exploratory_analysis/exceedance_occurrence_by_phase.png" alt="Contagens e frações de estados ciclone-tempo com ao menos uma excedência, separadas por fase e threshold.">
+  <figcaption>Ocorrência de ao menos uma excedência por estado. Contagens absolutas e frações respondem a perguntas diferentes e ainda preservam dependência entre estados do mesmo ciclone.</figcaption>
+</figure>
+
+<p><strong>Observação.</strong> A intensificação fornece o maior número de estados e, por isso, domina várias contagens absolutas. A fase madura apresenta frações elevadas para diversos thresholds.</p>
+<p><strong>Limitação.</strong> A figura não corrige duração, suporte espacial desigual ou dependência entre estados do mesmo ciclone; ela não é um teste inferencial entre fases.</p>
+<h2 id="evidência-7--orientar-pelo-movimento-não-concentrou-toda-a-distribuição-q95">Evidência 7 — orientar pelo movimento não concentrou toda a distribuição q95</h2>
+<p><strong>Resultado.</strong> <a href="e001_orientation.html">E-001</a> comparou 1.784 ciclones e 23.050 estados nas mesmas células e bins. <em>Motion-relative</em> reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. A diferença de entropia foi −0,0023 nat, com IC bootstrap de 95% entre −0,0105 e +0,0057. Apenas a intensificação teve entropia e A75 pontualmente menores em conjunto.</p>
+<p><strong>Interpretação.</strong> A rotação concentrou o núcleo e revelou assimetria atrás e à esquerda do movimento, mas dispersou as regiões intermediária e externa. Não houve melhora global consistente segundo o critério preregistrado.</p>
+<p><strong>Não permite concluir.</strong> O resultado não prova que <em>centered</em> seja fisicamente superior, não resolve weighting por ciclone, não escolhe threshold definitivo e não constitui uma probabilidade espacial.</p>
+<h2 id="síntese-científica-atual">Síntese científica atual</h2>
+<p>A infraestrutura observacional está validada para continuar: fonte, estados, suporte e regras do recorte são conhecidos o suficiente para formular experimentos. A exploração sugere variação por fase e estrutura setorial; E-001 mostrou que alinhar pelo movimento muda a forma, mas não aumenta consistentemente a concentração. O projeto ainda não estimou ocorrência probabilística, magnitude condicional, <em>footprint</em> ou hazard.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/results.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

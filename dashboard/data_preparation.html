@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Como foi construída e validada a amostra de estados ciclone–tempo.">
+  <title>Preparação dos dados · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Base científica</p>
+      <p class="page-name">Preparação dos dados</p>
+      <p class="title-note">Como foi construída e validada a amostra de estados ciclone–tempo.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html" class="active" aria-current="page">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="preparação-dos-dados">Preparação dos dados</h1>
+<h2 id="problema-de-construção-da-amostra">Problema de construção da amostra</h2>
+<p>As tracks operacionais descrevem o centro do ciclone a cada hora, enquanto os campos ERA5 usados pelo produto atual estão espaçados em 6 h. Além disso, o arquivo de vento armazena apenas pontos que passaram por um filtro de intensidade. Usá-lo sozinho como catálogo eliminaria estados inteiros e confundiria ausência de excedência com ausência de observação.</p>
+<p>A preparação, portanto, precisa construir primeiro um denominador temporal e espacial independente do recorte condicionado de vento.</p>
+<h2 id="solução-adotada">Solução adotada</h2>
+<p>O catálogo horário do Zenodo é preservado como fonte dos centros e das fases. A partir dele, cada track é associada à grade temporal ERA5 de 6 h. Para cada estado resultante, o suporte espacial é calculado geometricamente, mesmo quando nenhuma linha de vento foi armazenada. Essa separação permite perguntar se um estado existia, se podia ser observado no domínio e se produziu alguma linha selecionada.</p>
+<h2 id="regra-temporal">Regra temporal</h2>
+<p>Para cada hora de track:</p>
+<ol type="1">
+<li>localiza-se o campo ERA5 de 6 h mais próximo;</li>
+<li>exige-se diferença absoluta máxima de 3 h;</li>
+<li>em empate exato de 3 h, escolhe-se o campo anterior;</li>
+<li>se duas horas da mesma track forem associadas ao mesmo campo, conserva-se a de menor diferença e, em novo empate, a anterior;</li>
+<li>mantém-se uma única linha por <code>track_id + time</code>.</li>
+</ol>
+<p>O horário original, o horário ERA5 escolhido e sua diferença permanecem registrados. Assim, a associação é auditável e não implica interpolação da posição do centro.</p>
+<h2 id="regra-espacial">Regra espacial</h2>
+<p>Para cada estado ciclone–tempo, contam-se as células da grade regular de 0,25° no domínio 65°S–10°S e 85°W–15°W cuja distância ao centro é menor ou igual a 1.100 km. A distância é calculada sobre uma esfera com raio de 6.371 km.</p>
+<p>O resultado recebe um de três estados de suporte: completo, parcial ou sem suporte. Suporte parcial é uma observação espacial truncada, não uma observação ausente; sem suporte significa que nenhuma posição do domínio pôde ser avaliada.</p>
+<h2 id="relação-com-o-recorte-condicionado-de-vento">Relação com o recorte condicionado de vento</h2>
+<p>O arquivo de vento inclui uma célula quando ela está no raio de 1.100 km e satisfaz <code>wind_speed &gt; min(15,6 m/s; q90_local)</code>. As seis flags de excedência são calculadas depois dessa seleção.</p>
+<p>Consequentemente:</p>
+<ul>
+<li>uma célula elegível ausente num estado com suporte não passou pelo filtro e pode ser tratada como não-excedência para as flags atuais;</li>
+<li>um estado com suporte e zero linhas selecionadas contém zeros reconstruíveis, não uma observação perdida;</li>
+<li>um estado sem suporte não possui denominador espacial e não pode receber zero;</li>
+<li>uma posição fora do domínio não foi observada, ainda que esteja a menos de 1.100 km do centro.</li>
+</ul>
+<h2 id="resultado-da-preparação">Resultado da preparação</h2>
+<table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Resultado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Catálogo horário</td>
+<td>631.009 estados horários de 6.789 tracks; chave <code>track_id + date</code> única e sem lacunas horárias internas</td>
+</tr>
+<tr>
+<td>Associação de 6 h</td>
+<td>109.857 estados de 6.789 tracks; nenhuma duplicata de <code>track_id + time</code></td>
+</tr>
+<tr>
+<td>Período comparável ao vento</td>
+<td>29.311 estados de 1.785 tracks</td>
+</tr>
+<tr>
+<td>Presentes no recorte condicionado</td>
+<td>20.101 estados</td>
+</tr>
+<tr>
+<td>Ausentes com suporte</td>
+<td>3.233 estados</td>
+</tr>
+<tr>
+<td>Ausentes sem suporte</td>
+<td>5.977 estados</td>
+</tr>
+</tbody>
+</table>
+<p>As diferenças temporais observadas entre a hora original e o campo ERA5 foram: 105.332 associações exatas, 1.044 com −1 h, 906 com −2 h, 870 com +1 h, 849 com +2 h e 856 com +3 h.</p>
+<h2 id="validação">Validação</h2>
+<p>A reconstrução foi comparada ao recorte de vento já existente. Todos os 20.101 centros coincidiram após a conversão para a precisão <code>float32</code> usada no arquivo, todos os 20.101 rótulos de fase corresponderam e nenhum estado inesperado foi encontrado. Também foram verificados checksum da fonte, schema, contagens, ordem horária, unicidade das chaves, categorias de fase e casos especiais com e sem suporte.</p>
+<p>Essa validação sustenta a adoção do Zenodo como fonte operacional. Ela <strong>não</strong> valida a escolha científica do raio de 1.100 km, do threshold ou do método original de classificação das fases.</p>
+<h2 id="consequência-científica">Consequência científica</h2>
+<p>A amostra agora distingue explicitamente presença de um estado, possibilidade de observação espacial e ocorrência de excedência. Essa distinção impede que eventos omitidos pelo filtro sejam perdidos e evita transformar áreas não observadas em não-excedências. Ela fornece a infraestrutura necessária para os experimentos futuros, sem decidir ainda qual evento espacial ou modelo será adotado.</p>
+<h2 id="reprodutibilidade">Reprodutibilidade</h2>
+<p>Versões, hashes, arquivos e comandos estão em <a href="reproducibility.html">proveniência e reprodutibilidade</a>. A descrição de campos e contratos computacionais está na <a href="internal/data_reference.html">referência técnica dos dados</a>.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/data_preparation.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

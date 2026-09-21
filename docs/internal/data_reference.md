@@ -4,13 +4,13 @@ Os três produtos abaixo têm unidades de linha diferentes. O catálogo horário
 
 ## A. Catálogo horário canônico
 
-- **Arquivo:** [`data/tracks_SAt_1979_2020.parquet`](../data/tracks_SAt_1979_2020.parquet)
+- **Arquivo:** [`data/tracks_SAt_1979_2020.parquet`](../../data/tracks_SAt_1979_2020.parquet)
 - **Unidade da linha:** uma hora de uma track.
 - **Origem:** `tracks_SAt_filtered_with_energetics.csv`, [Zenodo 18133432](https://zenodo.org/records/18133432), DOI [`10.5281/zenodo.18133432`](https://doi.org/10.5281/zenodo.18133432).
 - **Dimensão e período:** 631.009 linhas, 6.789 tracks, de 1979-01-01 00:00 a 2021-01-07 00:00 UTC. O nome `1979_2020` identifica as safras de gênese; as últimas tracks iniciadas em 2020 terminam em janeiro de 2021.
 - **Integridade:** 9.626.418 bytes; SHA-256 `7d8d628a8d54f9273e1c6280f22bb0082a470d4767393bd3b224a64e8a71c553`.
 
-[`prepare_tracks.py`](../scripts/00_data_acquisition/prepare_tracks.py) lê somente sete das 31 colunas da fonte, ordena por ciclone e hora e grava Parquet com compressão Zstandard. `lon vor`, `lat vor` e `period` são renomeadas; o literal `nan` em `period` vira nulo. Não há agrupamento ou reclassificação de fases.
+[`prepare_tracks.py`](../../scripts/00_data_acquisition/prepare_tracks.py) lê somente sete das 31 colunas da fonte, ordena por ciclone e hora e grava Parquet com compressão Zstandard. `lon vor`, `lat vor` e `period` são renomeadas; o literal `nan` em `period` vira nulo. Não há agrupamento ou reclassificação de fases.
 
 | Campo | Tipo Parquet | Definição |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ As categorias não nulas são `incipient`, `incipient 2`, `intensification`, `in
 
 ## B. Catálogo de estados associados ao ERA5 de 6 h
 
-- **Arquivo:** [`data/cyclone_states_era5_6h_1979_2020.parquet`](../data/cyclone_states_era5_6h_1979_2020.parquet)
+- **Arquivo:** [`data/cyclone_states_era5_6h_1979_2020.parquet`](../../data/cyclone_states_era5_6h_1979_2020.parquet)
 - **Unidade da linha:** um estado único `track_id + time` associado à grade temporal de 6 h.
 - **Origem:** transformação do catálogo horário A.
 - **Dimensão e período:** 109.857 estados, 6.789 tracks, de 1979-01-01 00:00 a 2021-01-07 00:00 UTC.
@@ -56,7 +56,7 @@ No período comparável existem 29.311 estados de 1.785 tracks: 20.101 presentes
 
 ### Arquivo inspecionado
 
-[`data/cyclone_exceedances_by_track_2010_2020_p90.parquet`](../data/cyclone_exceedances_by_track_2010_2020_p90.parquet) é o conjunto atualmente disponível para desenvolvimento. Suas colunas são documentadas em [`COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md`](../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md). A caracterização estrutural reproduzível está em [`structural_summary.json`](../outputs/01_data_overview/structural_summary.json), gerado por [`inspect_parquet.py`](../scripts/01_data_overview/inspect_parquet.py).
+[`data/cyclone_exceedances_by_track_2010_2020_p90.parquet`](../../data/cyclone_exceedances_by_track_2010_2020_p90.parquet) é o conjunto atualmente disponível para desenvolvimento. Suas colunas são documentadas em [`COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md`](../../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md). A caracterização estrutural reproduzível está em [`structural_summary.json`](../../outputs/01_data_overview/structural_summary.json), gerado por [`inspect_parquet.py`](../../scripts/01_data_overview/inspect_parquet.py).
 
 - **SHA-256 do arquivo de dados:** `3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c`
 - **Dimensão:** 17.182.983 linhas, 17 colunas e 143 grupos de linhas.
@@ -69,7 +69,7 @@ No período comparável existem 29.311 estados de 1.785 tracks: 20.101 presentes
 
 **Unidade de armazenamento de uma linha:** um ponto de grade espacial, associado a um `track_id`, um instante do campo ERA5 e o estado do ciclone nesse instante. `lat` e `lon` localizam o ponto; `lat_center` e `lon_center` localizam o centro do ciclone. As colunas `exceeded_*` são valores booleanos no ponto, de modo que um campo espacial está armazenado em formato tabular longo: várias linhas representam posições do campo de um ciclone em um instante.
 
-O recorte não é formado exclusivamente por excedências do q90. Uma linha é armazenada quando `distance_km <= 1.100` e `wind_speed > min(15,6; q90_local)`. Por isso, 13.404 linhas entram pelo limiar fixo em locais onde `q90_local > 15,6` e têm `exceeded_q90 = false`; todas elas satisfazem `15,6 < wind_speed <= q90_local`. Dentro do círculo e do domínio, um ponto ausente não passou pelo limiar de entrada. Fora do domínio, a posição não foi avaliada. Veja [Q-002](open_questions.md#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência).
+O recorte não é formado exclusivamente por excedências do q90. Uma linha é armazenada quando `distance_km <= 1.100` e `wind_speed > min(15,6; q90_local)`. Por isso, 13.404 linhas entram pelo limiar fixo em locais onde `q90_local > 15,6` e têm `exceeded_q90 = false`; todas elas satisfazem `15,6 < wind_speed <= q90_local`. Dentro do círculo e do domínio, um ponto ausente não passou pelo limiar de entrada. Fora do domínio, a posição não foi avaliada. Veja [Q-002](../open_questions.md#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência).
 
 ### Campos observados
 
@@ -77,12 +77,12 @@ O recorte não é formado exclusivamente por excedências do q90. Uma linha é a
 | --- | --- | --- | --- |
 | `track_id` | `int64` | Identificador globalmente único do ciclone no catálogo, no formato geral AAAANNNN: ano de gênese e sequência anual. | 1.781 distintos; sem nulos. Faixa observada: 20100003–20210007. O último código pertence a uma track iniciada em dezembro de 2020 e encerrada em 2021. |
 | `time` | `timestamp[ms]` | Instante do campo ERA5, passo de 6 h, UTC. | 2010-01-02 18:00 a 2020-12-31 18:00; sem nulos. |
-| `phase` | `string` | Cópia da coluna `period`, calculada com o CycloPhaser. O sufixo `2` marca a segunda ocorrência não contígua da mesma fase na track; não é outra classe física. | `incipient`, `intensification`, `intensification 2`, `mature`, `mature 2`, `decay`, `decay 2`, `residual`; 509.788 nulos, herdados do catálogo. Ver a proveniência e o tratamento em [Q-004](open_questions.md#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases). |
+| `phase` | `string` | Cópia da coluna `period`, calculada com o CycloPhaser. O sufixo `2` marca a segunda ocorrência não contígua da mesma fase na track; não é outra classe física. | `incipient`, `intensification`, `intensification 2`, `mature`, `mature 2`, `decay`, `decay 2`, `residual`; 509.788 nulos, herdados do catálogo. Ver a proveniência e o tratamento em [Q-004](../open_questions.md#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases). |
 | `lat_center` | `float32` | Latitude do centro do ciclone, proveniente da vorticidade da track. | −74,4051 a −17,6289; sem nulos. |
 | `lon_center` | `float32` | Longitude do centro do ciclone. | −84,0043 a 7,08357; sem nulos. |
 | `lat` | `float32` | Latitude do ponto de grade espacial associado à excedência. | −65 a −10; sem nulos. |
 | `lon` | `float32` | Longitude do ponto de grade. | −85 a −15; sem nulos. |
-| `wind_speed` | `float32` | Magnitude do vento a 10 m, `sqrt(u10² + v10²)`, em m/s, no campo ERA5 de 0,25°. | 1,39227 a 34,84759 m/s; sem nulos. |
+| `wind_speed` | `float32` | Magnitude do vento horizontal a 10 m. É calculada para combinar os dois componentes do ERA5: `sqrt(u10² + v10²)`, onde `u10` é o componente leste–oeste e `v10` é o componente norte–sul, ambos em m/s e definidos em cada ponto e horário. O resultado não negativo, também em m/s, é a intensidade do vetor independentemente da direção. | 1,39227 a 34,84759 m/s; sem nulos. |
 | `distance_km` | `float32` | Distância great-circle pelo método haversine, com raio terrestre de 6.371 km. | 0,5254 a 1.100 km; sem nulos. O raio de inclusão usa `<= 1.100 km`. |
 | `fixed_quadrant` | `int8` | Quadrante geográfico: 1=NO, 2=NE, 3=SE, 4=SO. Eixos são fechados ao norte e a leste. | Códigos 1–4; sem nulos. Ponto coincidente com o centro cai em 2. |
 | `rotated_quadrant` | `int8` | Quadrante relativo ao deslocamento: 1=frente-esquerda, 2=frente-direita, 3=trás-direita, 4=trás-esquerda. Eixos são fechados à frente e à direita. | Códigos 1–4; sem nulos. Direção por diferença centrada de 12 h, 6 h nas pontas; deslocamento nulo assume leste. |
@@ -97,7 +97,7 @@ Os percentuais foram recalculados diretamente das contagens do conjunto e concor
 
 ### Proveniência e limites do recorte
 
-Os percentis locais atuais foram calculados experimentalmente ponto a ponto com os **11 anos civis completos de 2010–2020**, 16.072 campos de 6 h, usando `numpy.percentile` com interpolação `linear`. Eles serão atualizados após a incorporação das tracks completas de 1979–2020. A versão exata do ERA5 e a versão formal do arquivo de percentis não foram recuperadas; veja [Q-002](open_questions.md#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência).
+Os percentis locais atuais foram calculados experimentalmente ponto a ponto com os **11 anos civis completos de 2010–2020**, 16.072 campos de 6 h, usando `numpy.percentile` com interpolação `linear`. Eles serão atualizados após a incorporação das tracks completas de 1979–2020. A versão exata do ERA5 e a versão formal do arquivo de percentis não foram recuperadas; veja [Q-002](../open_questions.md#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência).
 
 O mesmo ponto de grade e hora pode ser associado a ciclones simultâneos: 414.124 pontos-hora aparecem sob mais de um `track_id`, com máximo de três. Além disso, 1.833 dos 20.101 estados ciclone-tempo têm o centro fora do domínio dos percentis; nesses casos, o círculo é truncado pela grade sem uma coluna de aviso. Agregações devem manter `track_id`, e comparações entre ciclones devem considerar essa cobertura desigual.
 
@@ -107,4 +107,4 @@ O mesmo ponto de grade e hora pode ser associado a ciclones simultâneos: 414.12
 - C contém apenas estados com ao menos uma célula que passou por `wind_speed > min(15,6; q90_local)`. Ele não é um catálogo completo de estados.
 - Para um estado de B com `present` ou `absent_with_support`, a grade, o centro e a regra espacial permitem reconstruir o conjunto de células avaliáveis. Uma célula elegível ausente de C não passou pelo filtro de entrada e, portanto, é falsa para q90, q95, q99 e para 15,6, 20 e 25 m/s. Os zeros podem ser reconstruídos sob esse contrato sem materializar previamente centenas de milhões de linhas.
 - Para `partial_support`, só as células dentro do domínio entram no denominador; a parte truncada não foi avaliada. Para `no_support`, nada entra no denominador e a ausência não é zero.
-- Checksums, schemas, ambiente, regras e resultados de correspondência estão no [`provenance_manifest.json`](../outputs/00_data_acquisition/provenance_manifest.json) e no [`validation_report.json`](../outputs/00_data_acquisition/validation_report.json).
+- Checksums, schemas, ambiente, regras e resultados de correspondência estão no [`provenance_manifest.json`](../../outputs/00_data_acquisition/provenance_manifest.json) e no [`validation_report.json`](../../outputs/00_data_acquisition/validation_report.json).

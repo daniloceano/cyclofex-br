@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Comparação formal entre coordenadas centered e motion-relative.">
+  <title>E-001 · Orientação · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Experimento</p>
+      <p class="page-name">E-001 · Orientação</p>
+      <p class="title-note">Comparação formal entre coordenadas centered e motion-relative.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html" class="active" aria-current="page">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="e-001--orientação-pelo-movimento-do-ciclone">E-001 — Orientação pelo movimento do ciclone</h1>
+<ul>
+<li><strong>Status:</strong> <code>INCONCLUSIVE</code></li>
+<li><strong>Planejamento e execução:</strong> 21 de setembro de 2026</li>
+<li><strong>Hipótese:</strong> H2 — orientar os campos pela direção de deslocamento reduz a dispersão espacial das excedências em relação às coordenadas apenas centralizadas.</li>
+<li><strong>Questões e decisões relacionadas:</strong> <a href="open_questions.html#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências">Q-007</a> e <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
+</ul>
+<h2 id="contexto">Contexto</h2>
+<p>Campos de vento de ciclones diferentes podem compartilhar uma organização física e, ainda assim, parecer difusos quando são sobrepostos com o norte geográfico sempre para cima. Isso acontece se a posição preferencial dos extremos acompanha a direção de deslocamento de cada sistema. Uma representação <em>motion-relative</em> gira cada estado para colocar todos os movimentos na mesma direção; uma representação <em>centered</em> apenas desloca o centro do ciclone para a origem.</p>
+<p>E-001 é o primeiro teste formal dessa hipótese de representação. Ele não estima <em>coverage probability</em>, <em>footprint</em> probabilístico ou hazard geográfico. O objeto comparado é mais simples: a distribuição espacial normalizada das ocorrências de excedência do q95 local.</p>
+<h2 id="pergunta">Pergunta</h2>
+<p>Mantendo os mesmos ciclones, estados, células, flags de excedência, pesos e bins, a orientação pela direção de movimento concentra espacialmente as excedências q95 mais do que a simples centralização geográfica?</p>
+<h2 id="hipótese">Hipótese</h2>
+<p>H2 previa menor entropia e menor área necessária para concentrar frações fixas da massa de excedências na representação <em>motion-relative</em>. Fisicamente, esse resultado indicaria que parte da variabilidade aparente em coordenadas geográficas era apenas variabilidade de orientação entre tempestades.</p>
+<h2 id="hipóteses-alternativas-e-explicações-concorrentes">Hipóteses alternativas e explicações concorrentes</h2>
+<p>A rotação poderia não ajudar se os extremos fossem organizados sobretudo por fatores geográficos, estrutura interna variável, intensidade ou estágio do ciclone. Também poderia concentrar apenas o núcleo e dispersar a cauda, ou revelar assimetria sem reduzir a dispersão total. Truncamento nas bordas do domínio poderia produzir uma mudança artificial; por isso o suporte foi reconstruído e diagnosticado separadamente.</p>
+<h2 id="dados-utilizados">Dados utilizados</h2>
+<p>A população partiu do catálogo canônico de estados ERA5 de 6 h derivado do Zenodo 18133432 e do Parquet de vento de 2010–2020. Foram elegíveis os estados no período comparável com suporte espacial — completo ou parcial — e direção de movimento confiável. Estados sem suporte não foram convertidos em zeros.</p>
+<p>O q95 local foi fixado antes das métricas principais. A verificação prévia encontrou amostra suficiente nas quatro fases principais: 2.078 estados q95-positivos em fase incipiente, 7.301 em intensificação, 1.821 em fase madura e 4.891 em decaimento, depois do filtro de heading. Os sufixos <code>2</code>, que indicam repetição não contígua da mesma fase física, foram agrupados somente nesses quatro estratos; os resultados por rótulo literal permanecem disponíveis. A análise global inclui também estados <code>residual</code> e com fase nula; eles não foram forçados a nenhuma das quatro fases.</p>
+<table>
+<thead>
+<tr>
+<th>Quantidade</th>
+<th style="text-align: right;">Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ciclones com suporte antes do filtro de heading</td>
+<td style="text-align: right;">1.784</td>
+</tr>
+<tr>
+<td>Estados com suporte antes do filtro</td>
+<td style="text-align: right;">23.334</td>
+</tr>
+<tr>
+<td>Estados excluídos por heading &lt; 5 km/h</td>
+<td style="text-align: right;">284 (1,22%)</td>
+</tr>
+<tr>
+<td>Ciclones no conjunto comparável final</td>
+<td style="text-align: right;">1.784</td>
+</tr>
+<tr>
+<td>Estados no conjunto comparável final</td>
+<td style="text-align: right;">23.050</td>
+</tr>
+<tr>
+<td>Estados com ao menos uma excedência q95</td>
+<td style="text-align: right;">16.921</td>
+</tr>
+<tr>
+<td>Ciclones com ao menos uma excedência q95</td>
+<td style="text-align: right;">1.757</td>
+</tr>
+<tr>
+<td>Células q95 excedentes</td>
+<td style="text-align: right;">9.090.570</td>
+</tr>
+<tr>
+<td>Células de suporte efetivamente avaliadas</td>
+<td style="text-align: right;">136.177.047</td>
+</tr>
+</tbody>
+</table>
+<h2 id="representações-comparadas">Representações comparadas</h2>
+<h3 id="centered">Centered</h3>
+<p>Cada célula é expressa num plano tangente local centrado no ciclone. Sejam <code>φ₀</code> e <code>λ₀</code> a latitude e longitude do centro e <code>φ</code> e <code>λ</code> as da célula, todas em radianos; <code>Δλ</code> é <code>λ − λ₀</code> envolvida em <code>[-π, π)</code>. A distância de grande círculo usa:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><msup><mo>sin</mo><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>ϕ</mi><mo>−</mo><msub><mi>ϕ</mi><mn>0</mn></msub></mrow><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>cos</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>cos</mo><mi>ϕ</mi><msup><mo>sin</mo><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>Δ</mi><mi>λ</mi></mrow><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">a=\sin^2\left(\frac{\phi-\phi_0}{2}\right)+\cos\phi_0\cos\phi\sin^2\left(\frac{\Delta\lambda}{2}\right).</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>2</mn><mi>R</mi><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><msqrt><mi>a</mi></msqrt><mo>,</mo><msqrt><mrow><mn>1</mn><mo>−</mo><mi>a</mi></mrow></msqrt><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>R</mi><mo>=</mo><mn>6</mn><mspace width="0.167em"></mspace><mn>371</mn><mspace width="0.222em"></mspace><mtext mathvariant="normal">km</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">d=2R\operatorname{atan2}\left(\sqrt{a},\sqrt{1-a}\right), \qquad R=6\,371\ \text{km}.</annotation></semantics></math></p>
+<p>O azimute <code>α</code>, em radianos e no sentido horário a partir do norte, é:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>sin</mo><mi>Δ</mi><mi>λ</mi><mo>cos</mo><mi>ϕ</mi><mo>,</mo><mspace width="0.222em"></mspace><mo>cos</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>sin</mo><mi>ϕ</mi><mo>−</mo><mo>sin</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>cos</mo><mi>ϕ</mi><mo>cos</mo><mi>Δ</mi><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\alpha=\operatorname{atan2}\left(\sin\Delta\lambda\cos\phi,\ \cos\phi_0\sin\phi-\sin\phi_0\cos\phi\cos\Delta\lambda\right).</annotation></semantics></math></p>
+<p>As coordenadas no plano tangente são:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>d</mi><mo>sin</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>y</mi><mo>=</mo><mi>d</mi><mo>cos</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">x = d\sin(\alpha), \qquad y = d\cos(\alpha).</annotation></semantics></math></p>
+<p>Assim, <code>x &gt; 0</code> significa leste, <code>x &lt; 0</code> oeste, <code>y &gt; 0</code> norte e <code>y &lt; 0</code> sul. Essa transformação azimutal equidistante esférica preserva a distância radial <code>d</code> e evita tratar graus de longitude como distância cartesiana.</p>
+<h3 id="motion-relative">Motion-relative</h3>
+<p>Seja <code>θ</code> o heading do ciclone, em radianos, também medido no sentido horário a partir do norte. A rotação usada foi:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mi>m</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mi>m</mi></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mo>cos</mo><mi>θ</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><mo>sin</mo><mi>θ</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mo>sin</mo><mi>θ</mi></mtd><mtd columnalign="center" style="text-align: center"><mo>cos</mo><mi>θ</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>x</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>y</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{bmatrix}x_m\\y_m\end{bmatrix}=\begin{bmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}.</annotation></semantics></math></p>
+<p>Aqui, <code>x_m</code> e <code>y_m</code> estão em km; <code>y_m &gt; 0</code> é a frente do movimento, <code>y_m &lt; 0</code> é a retaguarda, <code>x_m &gt; 0</code> é a direita e <code>x_m &lt; 0</code> é a esquerda. Intuitivamente, a rotação leva o vetor de deslocamento para cima sem alterar a distância ao centro. Por exemplo, para movimento para leste, leste vira frente e sul vira direita.</p>
+<h2 id="estimativa-da-direção-de-movimento">Estimativa da direção de movimento</h2>
+<p>O heading foi calculado exclusivamente do catálogo completo de estados, nunca das linhas de excedência. Para estados internos de uma track, sejam <code>r₋ = (x₋, y₋)</code> e <code>r₊ = (x₊, y₊)</code> os centros anterior e posterior projetados, em km, no plano tangente do estado atual, e <code>t₋</code>, <code>t₊</code> seus horários, em horas. O vetor e o heading são:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐯</mi><mo>=</mo><mfrac><mrow><msub><mi>𝐫</mi><mo>+</mo></msub><mo>−</mo><msub><mi>𝐫</mi><mo>−</mo></msub></mrow><mrow><msub><mi>t</mi><mo>+</mo></msub><mo>−</mo><msub><mi>t</mi><mo>−</mo></msub></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mo>=</mo><msqrt><mrow><msubsup><mi>v</mi><mi>x</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>v</mi><mi>y</mi><mn>2</mn></msubsup></mrow></msqrt><mo>,</mo><mspace width="2.0em"></mspace><mi>θ</mi><mo>=</mo><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>x</mi></msub><mo>,</mo><msub><mi>v</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf{v}=\frac{\mathbf{r}_{+}-\mathbf{r}_{-}}{t_{+}-t_{-}}, \qquad s=\sqrt{v_x^2+v_y^2}, \qquad \theta=\operatorname{atan2}(v_x,v_y).</annotation></semantics></math></p>
+<p><code>vₓ</code> é a componente leste e <code>vᵧ</code>, a componente norte, ambas em km/h; <code>s</code> é a velocidade de translação em km/h; <code>θ</code> está em <code>[-π, π]</code>, medido no sentido horário a partir do norte. Nas extremidades, <code>r₋</code> ou <code>r₊</code> é substituído pelo próprio estado para formar uma diferença simples de 6 h; nos estados internos, a diferença é centrada em 12 h.</p>
+<p>A distribuição foi examinada antes das métricas de concentração. A mediana foi 42,68 km/h, o percentil 1 foi 4,55 km/h e a faixa observada foi 0,31–150,89 km/h. O critério de confiabilidade foi fixado em 5 km/h, equivalente a 30 km em 6 h e aproximadamente uma célula da grade original de 0,25°. Diferentemente do procedimento exploratório herdado, movimentos menores não receberam heading leste artificial.</p>
+<figure class="result-figure">
+  <img src="assets/03_e001_orientation/translation_speed_diagnostic.png" alt="Histograma da velocidade de translação e ampliação da distribuição acumulada abaixo de 25 km por hora, com corte de 5 km por hora.">
+  <figcaption>Distribuição usada para auditar o corte de heading. A linha vermelha marca 5 km/h; 284 de 23.334 estados com suporte ficaram abaixo do corte.</figcaption>
+</figure>
+
+<h2 id="método">Método</h2>
+<p>As duas representações usaram exatamente os mesmos 23.050 estados, as mesmas células, as mesmas flags q95 e uma grade de 44 × 44 bins de 50 km no domínio <code>[-1.100, 1.100] km</code> em cada eixo. Não houve suavização nem máscara mínima de cobertura na análise principal. Cada estado q95-positivo recebeu massa total um, dividida igualmente entre suas células excedentes. Estados sem q95 permaneceram nas contagens e na auditoria de suporte, mas não definem posição numa distribuição condicionada à ocorrência.</p>
+<p>O mapa agregado é, portanto, a distribuição normalizada das ocorrências q95 depois de atribuir o mesmo peso a cada estado q95-positivo. Ciclones mais duradouros ainda podem contribuir com mais estados; resolver <em>equal-time</em> versus <em>equal-cyclone</em> está fora de E-001.</p>
+<h2 id="métricas">Métricas</h2>
+<p>A primeira família mede dispersão de toda a massa. Para bins com proporções <code>p_i &gt; 0</code>, a entropia de Shannon, em nats, é:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mi>−</mi><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><mo>log</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>p</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">H = -\sum_i p_i\log(p_i), \qquad \sum_i p_i = 1.</annotation></semantics></math></p>
+<p>Bins vazios contribuem zero pelo limite de <code>p log(p)</code>. Na mesma grade, menor <code>H</code> significa distribuição mais concentrada.</p>
+<p>A segunda família ordena os bins da maior para a menor massa. <code>A50</code>, <code>A75</code> e <code>A90</code> são a menor área, em km², necessária para conter respectivamente 50%, 75% e 90% das excedências. Cada bin tem 2.500 km²; menor área significa maior concentração.</p>
+<p>Como diagnósticos, foram calculados o centroide, a dispersão RMS em torno dele e a razão entre os eixos principais da matriz de covariância. Centroide e anisotropia descrevem deslocamento e forma; não foram interpretados automaticamente como concentração ou unimodalidade.</p>
+<h2 id="critério-de-decisão">Critério de decisão</h2>
+<p>Antes dos resultados, evidência a favor de <em>motion-relative</em> exigia conjuntamente: entropia e A75 menores com intervalos bootstrap pareados de 95% inteiramente abaixo de zero; A50 e A90 no mesmo sentido; pelo menos três das quatro fases no mesmo sentido; menos de 10% de perda por heading; e ausência de mudança comparável na distribuição do suporte. O padrão simétrico favoreceria <em>centered</em>. Qualquer combinação restante seria inconclusiva. Não foi exigido um tamanho de efeito mínimo arbitrário.</p>
+<h2 id="resultados-globais">Resultados globais</h2>
+<table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th style="text-align: right;">Centered</th>
+<th style="text-align: right;">Motion-relative</th>
+<th style="text-align: right;">Diferença motion − centered</th>
+<th style="text-align: right;">IC bootstrap 95% da diferença</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entropia, nats</td>
+<td style="text-align: right;">7,1151</td>
+<td style="text-align: right;">7,1128</td>
+<td style="text-align: right;">−0,0023</td>
+<td style="text-align: right;">[−0,0105; +0,0057]</td>
+</tr>
+<tr>
+<td>A50, km²</td>
+<td style="text-align: right;">967.500</td>
+<td style="text-align: right;">935.000</td>
+<td style="text-align: right;">−32.500</td>
+<td style="text-align: right;">[−45.000; −15.000]</td>
+</tr>
+<tr>
+<td>A75, km²</td>
+<td style="text-align: right;">1.817.500</td>
+<td style="text-align: right;">1.862.500</td>
+<td style="text-align: right;">+45.000</td>
+<td style="text-align: right;">[+17.500; +67.500]</td>
+</tr>
+<tr>
+<td>A90, km²</td>
+<td style="text-align: right;">2.660.000</td>
+<td style="text-align: right;">2.757.500</td>
+<td style="text-align: right;">+97.500</td>
+<td style="text-align: right;">[+65.000; +123.812]</td>
+</tr>
+<tr>
+<td>RMS ao redor do centroide, km</td>
+<td style="text-align: right;">672,06</td>
+<td style="text-align: right;">679,75</td>
+<td style="text-align: right;">+7,69</td>
+<td style="text-align: right;">[+5,45; +9,77]</td>
+</tr>
+<tr>
+<td>Distância do centroide ao centro, km</td>
+<td style="text-align: right;">219,92</td>
+<td style="text-align: right;">194,58</td>
+<td style="text-align: right;">−25,35</td>
+<td style="text-align: right;">[−31,74; −18,39]</td>
+</tr>
+<tr>
+<td>Razão de anisotropia</td>
+<td style="text-align: right;">1,037</td>
+<td style="text-align: right;">1,022</td>
+<td style="text-align: right;">−0,015</td>
+<td style="text-align: right;">[−0,041; +0,015]</td>
+</tr>
+</tbody>
+</table>
+<p>O núcleo de 50% ficou 32.500 km² menor após a rotação. Porém, A75 aumentou 45.000 km², A90 aumentou 97.500 km² e a dispersão RMS cresceu 7,69 km. A pequena redução de entropia atravessou zero no bootstrap. Assim, a rotação concentrou o núcleo, mas espalhou a massa intermediária e a cauda; as duas famílias de métricas não sustentam uma melhora global.</p>
+<figure class="result-figure">
+  <img src="assets/03_e001_orientation/orientation_comparison.png" alt="Mapas lado a lado da massa q95 normalizada em coordenadas centered e motion-relative, seguidos pela diferença motion menos centered.">
+  <figcaption>Distribuições não suavizadas na mesma grade, domínio e escala para os dois primeiros painéis. O terceiro painel mostra onde a rotação redistribui massa; ele não é uma coverage probability nem um footprint probabilístico.</figcaption>
+</figure>
+
+<h2 id="resultado-por-fase">Resultado por fase</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th style="text-align: right;">Δ entropia (IC 95%)</th>
+<th style="text-align: right;">Δ A75 em km² (IC 95%)</th>
+<th>Leitura conjunta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Incipiente</td>
+<td style="text-align: right;">+0,0292 [+0,0119; +0,0464]</td>
+<td style="text-align: right;">+92.500 [+32.500; +137.500]</td>
+<td>ambas indicam maior dispersão</td>
+</tr>
+<tr>
+<td>Intensificação</td>
+<td style="text-align: right;">−0,0143 [−0,0232; −0,0052]</td>
+<td style="text-align: right;">−10.000 [−32.500; +15.000]</td>
+<td>ganho parcial, A75 incerta</td>
+</tr>
+<tr>
+<td>Madura</td>
+<td style="text-align: right;">+0,0073 [−0,0084; +0,0263]</td>
+<td style="text-align: right;">−7.500 [−42.500; +22.500]</td>
+<td>sinais opostos e incertos</td>
+</tr>
+<tr>
+<td>Decaimento</td>
+<td style="text-align: right;">−0,0095 [−0,0258; +0,0072]</td>
+<td style="text-align: right;">+35.000 [−20.000; +72.500]</td>
+<td>sinais opostos e incertos</td>
+</tr>
+</tbody>
+</table>
+<p>Apenas a intensificação teve entropia e A75 pontualmente menores. A fase incipiente mostrou piora estável nas duas métricas. O efeito global, portanto, não é consistente entre fases.</p>
+<figure class="result-figure">
+  <img src="assets/03_e001_orientation/orientation_by_phase.png" alt="Oito mapas não suavizados comparando centered e motion-relative nas fases incipiente, intensificação, madura e decaimento.">
+  <figcaption>Cada linha usa a mesma escala entre as duas representações daquela fase. Os rótulos com sufixo 2 foram agregados nos quatro estratos preregistrados; métricas pelos rótulos literais continuam nos produtos tabulares.</figcaption>
+</figure>
+
+<h2 id="incerteza-e-bootstrap-por-ciclone">Incerteza e bootstrap por ciclone</h2>
+<p>Foram produzidas 500 réplicas pareadas com semente fixa. Em cada réplica, <code>track_id</code> foi reamostrado com reposição e todos os estados e células do ciclone sorteado foram mantidos. A diferença foi sempre calculada entre representações dentro da mesma réplica. Isso evita tratar 9 milhões de células como unidades independentes e quantifica a estabilidade entre ciclones.</p>
+<p>Os intervalos confirmam o conflito: A50 favorece <em>motion-relative</em>, mas A75, A90 e RMS favorecem <em>centered</em>. Para entropia, 68,2% das réplicas tiveram diferença negativa, insuficiente para excluir ausência de efeito.</p>
+<h2 id="robustez-suporte-e-verificações-de-sanidade">Robustez, suporte e verificações de sanidade</h2>
+<p>A reconstrução reproduziu exatamente as 136.177.047 células de suporte dos estados incluídos. Para cada bin e representação, <code>spatial_bins.csv</code> registra o total de estados elegíveis, estados com suporte efetivo, células avaliadas e excedências q95. Como o diagnóstico não indicou bins de suporte escasso dominando os resultados, nenhuma máscara pós-resultado foi introduzida. A entropia do suporte foi 7,34174 em <em>centered</em> e 7,34253 em <em>motion-relative</em>, diferença de apenas +0,00079 nat e em sentido oposto à pequena redução da entropia q95. Restringir a comparação aos 15.437 estados com suporte completo preservou o conflito: ΔH = −0,00463, ΔA75 = +35.000 km², ΔA90 = +80.000 km² e ΔRMS = +4,70 km.</p>
+<p>Os testes automatizados verificaram origem, sinais cardeais, frente/direita, preservação de distância e transformação inversa. Em três estados individuais, o maior erro de preservação de distância foi <code>2,27 × 10⁻¹³ km</code> e o maior erro de ida e volta foi <code>2,34 × 10⁻¹³ km</code>.</p>
+<figure class="result-figure">
+  <img src="assets/03_e001_orientation/rotation_sanity_checks.png" alt="Três pares de mapas de estados individuais antes e depois da rotação, mostrando o vetor de movimento alinhado para cima.">
+  <figcaption>Verificação visual em velocidades próximas aos quartis 25, 50 e 75. O centro amarelo permanece na origem e a seta de movimento fica orientada para a frente no painel motion-relative.</figcaption>
+</figure>
+
+<h2 id="interpretação">Interpretação</h2>
+<p>A orientação pelo movimento revela uma estrutura visual diferente e desloca o centroide para uma posição média atrás e à esquerda do movimento (<code>x_m = −136 km</code>, <code>y_m = −139 km</code>). Isso é evidência de assimetria relativa ao movimento, mas não de maior concentração global. O núcleo ficou mais compacto, enquanto regiões que contêm 75% e 90% da massa ocuparam áreas maiores.</p>
+<p>Esse comportamento mostra por que um mapa isolado ou uma única métrica teria sido enganoso. E-001 não sustenta a hipótese H2 no sentido amplo definido antes da análise.</p>
+<h2 id="limitações">Limitações</h2>
+<ul>
+<li>q95 foi adequado para este teste, mas não se torna por isso o threshold definitivo do projeto.</li>
+<li>Cada estado q95-positivo tem peso igual; ciclones longos contribuem com mais estados.</li>
+<li>O Parquet disponível é condicionado pelo filtro de entrada e cobre apenas 2010–2020.</li>
+<li>O raio de 1.100 km foi herdado e não recebeu análise de sensibilidade aqui.</li>
+<li>Fase, intensidade, tamanho, normalização radial, terra–oceano e multimodalidade não foram controlados.</li>
+<li>O bootstrap quantifica estabilidade por ciclone, mas não substitui validação fora da amostra ou estudo completo de robustez.</li>
+<li>Centroide e covariância resumem a distribuição e não demonstram uma forma elíptica ou unimodal.</li>
+</ul>
+<h2 id="conclusão">Conclusão</h2>
+<p>E-001 é <strong>inconclusivo</strong> quanto à escolha de representação. <em>Motion-relative</em> melhora a concentração do núcleo A50, mas piora A75, A90 e RMS; a variação de entropia é pequena e seu intervalo inclui zero; e as fases não concordam. H2 não recebeu o conjunto de evidências exigido.</p>
+<h2 id="consequência-para-o-projeto">Consequência para o projeto</h2>
+<p>Não há base para promover <em>motion-relative</em> a representação principal nem para declarar <em>centered</em> cientificamente superior. A escolha permanece aberta conforme <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>. Até novo teste preregistrado, <em>centered</em> pode funcionar como referência transparente e <em>motion-relative</em> como representação diagnóstica de assimetria; isso não equivale a uma decisão definitiva.</p>
+<p>E-001 não avançou para weighting alternativo, threshold sensitivity, normalização por tamanho ou modelagem probabilística.</p>
+<h2 id="reprodutibilidade">Reprodutibilidade</h2>
+<p>O protocolo congelado está em <code>scripts/03_e001_orientation/protocol.json</code>; a implementação e os testes, em <code>scripts/03_e001_orientation/</code>; e os produtos, em <code>outputs/03_e001_orientation/</code>. O resumo reprodutível contém hashes das três entradas, do protocolo e do script, além da semente bootstrap. A sequência de execução está em <a href="reproducibility.html#e-001--orientação-pelo-movimento">proveniência e reprodutibilidade</a>.</p>
+<h2 id="resposta-final-de-e-001">Resposta final de E-001</h2>
+<p><strong>Não de forma consistente.</strong> Depois de controlar apenas pela orientação do movimento, sem mudar estados, células, flags, pesos ou bins, as excedências q95 formaram um núcleo 32.500 km² menor em A50, mas exigiram 45.000 km² a mais em A75 e 97.500 km² a mais em A90; a RMS aumentou 7,69 km e a diferença de entropia foi −0,0023 nat com IC 95% de −0,0105 a +0,0057. A orientação revela assimetria, porém não tornou a distribuição globalmente mais organizada segundo o critério preregistrado.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/e001_orientation.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

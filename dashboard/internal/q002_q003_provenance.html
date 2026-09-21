@@ -3,32 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Respostas sobre Q-002 e Q-003 · cyclofex-br</title>
-  <link rel="stylesheet" href="docs.css">
+  <meta name="description" content="Reconstrução detalhada do código e das convenções herdadas.">
+  <title>Investigação de Q-002 e Q-003 · cyclofex-br</title>
+  <link rel="stylesheet" href="../docs.css">
 </head>
 <body>
   <a class="skip" href="#conteudo">Ir para o conteúdo</a>
   <header class="topbar">
     <div class="shell topbar-inner">
-      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
-      <a class="back" href="index.html">← Voltar ao painel</a>
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
     </div>
   </header>
-  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Respostas sobre Q-002 e Q-003</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Documentação interna</p>
+      <p class="page-name">Investigação de Q-002 e Q-003</p>
+      <p class="title-note">Reconstrução detalhada do código e das convenções herdadas.</p>
+    </div>
+  </div>
   <div class="shell layout">
-    <nav class="side-nav" aria-label="Documentos do projeto">
-      <p class="side-label">Documentação</p>
-      <a href="open_questions.html">Questões abertas</a>
-      <a href="experiments.html">Experimentos</a>
-      <a href="decisions.html">Decisões</a>
-      <a href="methodology.html">Metodologia</a>
-      <a href="assumptions.html">Pressupostos</a>
-      <a href="data_dictionary.html">Dicionário de dados</a>
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="../index.html">Visão geral</a><a href="../scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="../data.html">Dados</a><a href="../data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="../exploratory_analysis.html">Análise exploratória</a><a href="../e001_orientation.html">E-001 · Orientação</a><a href="../experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="../methodology.html">Metodologia atual</a><a href="../results.html">Resultados e evidências</a><a href="../limitations.html">Limitações</a><a href="../open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="../decisions.html">Decisões</a><a href="../reproducibility.html">Proveniência e reprodução</a><a href="index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
-      <h1 id="solicitação-de-esclarecimentos-sobre-a-geração-do-parquet">Solicitação de esclarecimentos sobre a geração do parquet</h1>
-<h2 id="objetivo">Objetivo</h2>
-<p>Responder às questões Q-002 e Q-003 do projeto <strong>cyclofex-br</strong> usando o código, os arquivos intermediários e a documentação que efetivamente geraram:</p>
+      <h1 id="reconstrução-técnica-da-geração-do-recorte-de-vento">Reconstrução técnica da geração do recorte de vento</h1>
+<h2 id="objetivo-e-origem">Objetivo e origem</h2>
+<p>Este registro arquiva a investigação que respondeu às questões Q-002 e Q-003 do projeto <strong>cyclofex-br</strong> usando o código, os arquivos intermediários e a documentação que efetivamente geraram:</p>
 <ul>
 <li><code>data/cyclone_exceedances_by_track_2010_2020_p90.parquet</code></li>
 <li><code>data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></li>
@@ -38,6 +39,16 @@
 <blockquote>
 <p><strong>Nota de origem (preenchida na resposta).</strong> Os três scripts citados abaixo vivem em <code>$ROOT = /home/publico/vendaval-ciclone</code> (máquina 9, <code>irbrerd09</code>). Os caminhos <code>data/...</code> do enunciado correspondem, na origem, a <code>$ROOT/outputs/parquet/</code>. Nada no parquet foi alterado para responder a este documento; todas as contagens vêm de leitura.</p>
 </blockquote>
+<h2 id="convenções-para-ler-as-equações">Convenções para ler as equações</h2>
+<p>As equações abaixo documentam transformações computacionais já executadas; elas são usadas para tornar a reconstrução precisa, não para formalizar um modelo novo.</p>
+<ul>
+<li><code>t</code> é um horário ERA5, em UTC; <code>x</code> e <code>y</code> indexam longitude e latitude da grade de 0,25°; <code>c</code> identifica um ciclone.</li>
+<li><code>u10(t,y,x)</code> e <code>v10(t,y,x)</code> são os componentes zonal, positivo para leste, e meridional, positivo para norte, do vento a 10 m. Ambos estão em m/s. <code>wind_speed(t,y,x)</code> é sua magnitude não negativa, também em m/s.</li>
+<li><code>q90(y,x)</code>, <code>q95(y,x)</code> e <code>q99(y,x)</code> são thresholds locais em m/s, calculados sobre o tempo para um ponto fixo; o resultado indica a intensidade superada pelas caudas de 10%, 5% e 1% da amostra de referência, sob a convenção linear usada.</li>
+<li>Latitude <code>φ</code> e longitude <code>λ</code> entram em radianos nas funções trigonométricas da haversine. <code>Δφ</code> e <code>Δλ</code> são diferenças angulares; <code>a</code> é adimensional no intervalo [0, 1]; <code>d</code> ou <code>dist</code> é a distância de grande círculo em km, obtida com raio terrestre esférico de 6.371 km.</li>
+<li><code>Δlat</code>, <code>Δlon</code>, <code>Δx</code> e <code>Δy</code> descrevem deslocamentos relativos; quando usados na classificação de quadrantes, estão em graus ou graus corrigidos por latitude. <code>(ux,uy)</code> é um vetor unitário adimensional na direção do movimento. <code>x'</code> e <code>y'</code> preservam a escala angular de <code>Δx</code> e <code>Δy</code> e indicam, respectivamente, direita–esquerda e frente–trás.</li>
+</ul>
+<p>Intuitivamente, a magnitude combina os dois componentes do vento; a haversine transforma separação angular em distância sobre uma esfera; e a matriz de rotação apenas reexpressa uma posição geográfica nos eixos definidos pelo movimento do ciclone. Cada bloco posterior informa a população, o domínio e o motivo específico de uso.</p>
 <h2 id="contexto-já-confirmado">Contexto já confirmado</h2>
 <ul>
 <li>A unidade de análise é o ciclone, identificado por <code>track_id</code>.</li>
@@ -583,9 +594,14 @@ rotated = 1 se (y&#39;&gt;=0, x&#39;&lt;0) | 2 se (y&#39;&gt;=0, x&#39;&gt;=0) |
 <li><strong>Q-003 — RESOLVED.</strong> Todas as convenções espaciais e temporais estão documentadas com a equação, a constante e a linha correspondente, incluindo tratamento de fronteiras, ciclones simultâneos e casos degenerados. O único item aberto (quantas linhas usaram o fallback de direção) é uma contagem ausente, não uma convenção desconhecida, e é reprodutível a partir do catálogo.</li>
 </ul>
 
-      <div class="source-note">Fonte canônica: <a href="../docs/solicitacao_agente_q002_q003.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+      <div class="source-note">Fonte canônica: <a href="../../docs/internal/q002_q003_provenance.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
     </main>
   </div>
-  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="../index.html">Visão geral</a>
+    </div>
+  </footer>
 </body>
 </html>

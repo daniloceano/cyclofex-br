@@ -1,47 +1,68 @@
-# Metodologia em uso
+# Metodologia atual
 
-A metodologia científica para modelar footprints e estimar hazard **ainda não foi adotada**. A proposta atual é um mapa de hipóteses revisável. Este documento descreve apenas procedimentos efetivamente executados; perguntas, testes, decisões e pressupostos têm seus próprios registros.
+## Escopo
 
-## Aquisição e preparação das tracks
+Esta página descreve somente métodos efetivamente usados e decisões vigentes. Não existe metodologia adotada para estimar *footprints* probabilísticos ou hazard. O primeiro teste formal, [E-001](e001_orientation.md), comparou duas orientações e foi inconclusivo; portanto, nenhuma delas foi promovida a representação principal.
 
-**Fonte e integridade.** A fonte operacional adotada em [D-004](decisions.md#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle) é `tracks_SAt_filtered_with_energetics.csv`, do [Zenodo 18133432](https://zenodo.org/records/18133432). [`download_tracks_zenodo.py`](../scripts/00_data_acquisition/download_tracks_zenodo.py) baixa o arquivo para um cache ignorado pelo Git, ou reutiliza o cache, somente depois de validar nome, tamanho, MD5, SHA-256 e as 31 colunas esperadas. O CSV bruto pode ser reconstruído da fonte e não integra os dados versionados.
+## Unidade de análise
 
-**Catálogo horário.** [`prepare_tracks.py`](../scripts/00_data_acquisition/prepare_tracks.py) lê apenas `track_id`, `date`, `lon vor`, `lat vor`, `vor42`, `region` e `period`; renomeia os centros e a fase; interpreta o literal `nan` de `period` como nulo; ordena por ciclone e tempo; e grava [`tracks_SAt_1979_2020.parquet`](../data/tracks_SAt_1979_2020.parquet). Identificadores são `int64`, tempos são UTC em `timestamp[ms]` sem timezone armazenado, e centros/vorticidade permanecem `float64`. Nenhuma categoria de fase é agrupada nesse produto.
+O **ciclone**, identificado por `track_id`, é a unidade científica fundamental quando a pergunta compara eventos. Um estado ciclone–tempo representa esse ciclone em um horário ERA5 de 6 h. Uma linha do recorte de vento representa apenas um ponto de grade pertencente a um estado; linhas do mesmo ciclone não são tratadas como observações independentes.
 
-**Estados de 6 h.** Cada hora de track é associada ao campo de 6 h mais próximo, com diferença máxima de 3 h. O empate de 3 h usa o campo anterior; para cada `track_id + time`, conserva-se a hora original com menor diferença e, em novo empate, a anterior. O resultado é [`cyclone_states_era5_6h_1979_2020.parquet`](../data/cyclone_states_era5_6h_1979_2020.parquet), com hora original, hora ERA5, diferença temporal e proveniência do centro/fase.
+Essa decisão evita pseudorreplicação: um ciclone duradouro ou com área maior pode gerar mais estados e pontos sem se tornar vários ciclones independentes. Uma análise que use outra unidade deverá justificá-la explicitamente e preservar o agrupamento por evento.
 
-**Suporte espacial.** Para cada estado, o script conta sem materializar o produto cartesiano as células da grade regular de 0,25° entre 65–10°S e 85–15°W cuja distância haversine, com raio terrestre de 6.371 km, satisfaz `distance <= 1.100 km`. `full_support` indica que o disco contínuo cabe no domínio; `partial_support`, que há células mas o disco é truncado; e `no_support`, que nenhuma célula da grade intersecta o disco. `parquet_state_status` separa estados presentes, ausentes com suporte, ausentes sem suporte e tempos fora do período comparável.
+## Construção da amostra
 
-**Validação.** A transformação falha se checksum, schema, chaves, ordenação, categorias ou contagens divergirem. O [`validation_report.json`](../outputs/00_data_acquisition/validation_report.json) registra a correspondência com o Parquet atual e os quatro casos de regressão. O [`provenance_manifest.json`](../outputs/00_data_acquisition/provenance_manifest.json) registra fonte, ambiente, scripts e hashes dos produtos.
+Os centros e as fases são obtidos do catálogo operacional do Zenodo 18133432. O catálogo horário é associado aos campos ERA5 de 6 h pelo vizinho temporal mais próximo, com tolerância máxima de 3 h. Empates usam o horário anterior; duplicidades dentro da mesma track são resolvidas pela menor diferença temporal e, depois, pela hora anterior.
 
-## Análise exploratória dos ventos associados aos ciclones
+Para cada estado, o suporte espacial é definido pelas células de 0,25° no domínio 65°S–10°S e 85°W–15°W situadas a até 1.100 km do centro. Estados são classificados como suporte completo, parcial ou ausente. A descrição integral, os resultados de validação e as consequências estão em [preparação dos dados](data_preparation.md).
 
-**Contexto e pergunta.** Esta é uma única análise exploratória: começa pela caracterização da estrutura dos dados e avança para a descrição das tracks, de `wind_speed` e das excedências por fase e quadrante. Ela também fornece um exemplo visual do campo q90 ao redor de um ciclone.
+## Representação espacial em uso descritivo
 
-**Objeto.** O conjunto [`cyclone_exceedances_by_track_2010_2020_p90.parquet`](../data/cyclone_exceedances_by_track_2010_2020_p90.parquet), documentado por [`COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md`](../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md). O formato de armazenamento é Parquet; o objeto científico descrito são os ventos e as excedências vinculados às tracks.
+Dois sistemas de quadrantes foram usados na análise exploratória:
 
-**Unidades e agrupamentos.** O ciclone (`track_id`) é a unidade científica principal, conforme [D-002](decisions.md#d-002--usar-o-ciclone-como-unidade-de-análise). Um estado ciclone-tempo é o par único `track_id + time`. Cada linha armazena uma posição espacial vinculada a um ciclone e instante. Boxplots e heatmaps usam essas linhas e são identificados como descrições pontuais, não como amostras independentes. Para visualização, `intensification 2`, `mature 2` e `decay 2` são agrupadas às fases principais correspondentes conforme [D-003](decisions.md#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias); os valores originais permanecem preservados.
+- **Geográfico:** noroeste, nordeste, sudeste e sudoeste em relação ao centro.
+- **Relativo ao movimento:** frente–esquerda, frente–direita, trás–direita e trás–esquerda, após orientar os setores pela direção de deslocamento da track.
 
-**Proveniência e escopo das fases.** A coluna `phase` foi herdada de `period` no Zenodo 18133432, que declara uso do [CycloPhaser](https://doi.org/10.21105/joss.07363) para um recorte limitado às regiões de gênese `ARG`, `SE-BR` e `LA-PLATA`. O Mendeley V4 é a referência histórica da família de tracks, não a fonte operacional desse namespace. A origem dos rótulos está confirmada; a versão e configuração da execução que delimitou os períodos permanecem abertas em [Q-004](open_questions.md#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases).
+Na análise exploratória, a direção relativa ao movimento reproduziu a regra herdada, inclusive o fallback leste. Em E-001, a direção foi recalculada do catálogo completo: diferenças centradas no plano tangente local, diferenças simples nas pontas e exclusão de velocidades abaixo de 5 km/h. Foram excluídos 284 de 23.334 estados com suporte; nenhum heading físico foi inventado para movimento quase nulo.
 
-**Caracterização estrutural.** [`inspect_parquet.py`](../scripts/01_data_overview/inspect_parquet.py) lê número de linhas, esquema, nulos e extremos observados, conta `track_id` distintos, categorias de `phase`, quadrantes e flags de excedência e registra exemplos e hashes. O resultado reproduzível é [`structural_summary.json`](../outputs/01_data_overview/structural_summary.json).
+E-001 usou coordenadas azimutais equidistantes em km, rotação contínua para frente/direita e bins comuns de 50 km. A distribuição q95 atribuiu massa total um a cada estado q95-positivo. O bootstrap reamostrou `track_id`, preservando todos os estados e células de cada ciclone. A comparação encontrou métricas conflitantes e não autorizou escolher *centered* ou *motion-relative* como representação superior.
 
-**Exploração descritiva.** [`exploratory_analysis.py`](../scripts/02_exploratory_analysis/exploratory_analysis.py) consulta os mesmos dados com DuckDB. Ele produz: mapa dos centros de todas as tracks; quantis de vento por fase e pelos dois sistemas de quadrantes; ocorrência de thresholds por estado ciclone-tempo; contagens q90 e percentuais q95 por fase e quadrante; e tabelas CSV correspondentes. Os heatmaps usam uma escala sequencial de amarelo-claro a roxo-escuro.
+## Definição observacional do vento
 
-**Animação.** O exemplo seleciona de forma determinística o `track_id` da linha com maior `wind_speed` global. Para cada tempo existente no Parquet condicionado, mostra apenas pontos com `exceeded_q90 = true`, coloridos por velocidade do vento, além do centro colorido pela fase e de um círculo de 1.100 km. Áreas em branco significam somente “não desenhado”: sem consultar estado, grade, raio e domínio, elas não distinguem não-excedência, linha não armazenada e posição não avaliada. O painel esquerdo desenha os setores geográficos fixos. No painel direito, a orientação reproduz a regra do gerador: diferença centrada entre centros vizinhos da série de 6 h, diferença simples nas pontas, longitude corrigida por `cos(lat)` e fallback para leste quando o deslocamento é nulo. A extensão fixa envolve todos os centros da track presentes no Parquet, seus raios de 1.100 km e margem de 1°.
+`wind_speed` é a magnitude do vento ERA5 a 10 m, em m/s. O recorte disponível armazena pontos dentro de 1.100 km que satisfazem `wind_speed > min(15,6 m/s; q90_local)`. Flags indicam excedência estrita de 15,6, 20 e 25 m/s e de q90, q95 e q99 locais.
 
-**Resultado descritivo.** Foram observados 1.781 ciclones distintos, 20.101 estados ciclone-tempo, 17.182.983 linhas espaciais e 17 colunas. O [dicionário de dados](data_dictionary.md) distingue a unidade de análise da unidade de armazenamento.
+Esses thresholds descrevem o produto atual, não uma definição científica definitiva de extremo. A versão futura deve ser decidida por experimento e não inferida do nome do arquivo.
 
-**Interpretação.** As figuras sustentam observações descritivas do recorte. Elas não estimam probabilidades, não corrigem a contribuição desigual de ciclones ou durações e não representam um footprint probabilístico ou hazard geográfico.
+## Agrupamento de fases
 
-**Limitações.** O Parquet de vento armazena apenas pontos que passaram por `wind_speed > min(15,6; q90_local)`. Células omitidas dentro de um estado e suporte conhecidos podem ser reconstruídas como falsas para as seis flags, mas posições sem suporte não são zeros. Estados inteiros também desaparecem: o catálogo canônico recupera 9.210 no período, dos quais 3.233 têm suporte e 5.977 não intersectam o domínio. O p90 atual usa a própria janela de 2010–2020; há 13.404 linhas com `exceeded_q90 = false` e 509.788 linhas sem fase. A versão e a configuração exatas do CycloPhaser continuam desconhecidas. Esses produtos permanecem descritivos e não constituem coverage probability, footprint probabilístico ou hazard.
+Rótulos com sufixo `2` podem ser agrupados à fase principal de mesmo nome quando isso estiver preregistrado e a pergunta comparar o tipo físico da fase. O sufixo representa uma ocorrência posterior não contígua, e não outra classe física. E-001 aplicou esse agrupamento porque `mature 2` isolada tinha apenas 35 estados q95-positivos e publicou também as métricas literais. Dados canônicos mantêm os rótulos originais; fase residual e ausência não são combinadas com outras categorias. A regra está formalizada em [D-003](decisions.md#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias).
 
-## Distinções conceituais a preservar
+## Procedimento da análise exploratória
 
-- **Excursion set:** realização espacial de excedência para um campo, evento ou instante, conforme definição futura.
-- **Ocorrência / coverage probability:** probabilidade condicional de uma posição pertencer a um conjunto de excedência.
-- **Magnitude condicional:** intensidade do vento dado que a excedência ocorreu; responde a outra pergunta.
-- **Footprint:** requer definição operacional explícita antes de qualquer uso quantitativo.
-- **Hazard geográfico:** exigirá uma construção que considere frequência, trajetórias, duração, estados e distribuição condicional dos ventos. Um padrão exploratório storm-relative não basta.
+A análise já executada:
 
-Essas distinções orientam a documentação; nenhuma formulação ou transformação foi escolhida. Quando surgir uma análise metodológica, descreva linearmente contexto, pergunta, motivação, unidade de análise, dados, formulação e termos, intuição, procedimento, hipóteses, diagnósticos, critério de decisão, resultado e limitações. Use equações apenas quando realmente explicarem o método e defina cada termo, domínio e unidade.
+1. mapeou os centros distintos de todas as tracks presentes no recorte;
+2. descreveu quantis pontuais de vento por fase e quadrante;
+3. contou, por fase, estados com pelo menos uma excedência de cada threshold;
+4. comparou contagens q90 e proporções q95 entre fases e setores;
+5. selecionou de forma determinística o ciclone que contém o maior vento do arquivo para um exemplo espaço-temporal.
+
+As estatísticas pontuais são rotuladas como tais. Contagens por estado reduzem, mas não eliminam, a dependência dentro de ciclones. Não foram ajustados modelos nem calculados intervalos inferenciais.
+
+## Distinções conceituais obrigatórias
+
+- **Evento:** ocorrência física ou unidade científica individual; não é uma climatologia agregada.
+- **Excursion set:** conjunto de posições onde um campo excede um threshold em um evento ou estado definido.
+- **Ocorrência ou coverage probability:** probabilidade condicional de uma posição pertencer a um *excursion set*; ainda não estimada.
+- **Magnitude condicional:** intensidade do vento quando uma excedência ocorre; responde a outra pergunta.
+- **Footprint:** representação espacial cuja definição operacional ainda será fixada; o termo não deve ser usado como sinônimo automático de pontos selecionados.
+- **Hazard geográfico:** frequência e intensidade esperadas em coordenadas fixas; exige frequência de eventos, trajetórias, duração, ocorrência e magnitude.
+- **Não-excedência:** posição observável que não superou o limiar; não equivale a posição sem suporte ou não observada.
+
+## O que esta metodologia permite concluir
+
+Ela permite reproduzir a amostra de estados, distinguir suporte de ausência, descrever o recorte condicionado e concluir que a orientação pelo movimento não melhorou consistentemente a concentração q95 sob o protocolo de E-001. Não permite atribuir causalidade às fases, tratar pixels como réplicas, generalizar para climatologia completa, escolher definitivamente uma orientação, escolher um modelo probabilístico ou estimar hazard.
+
+## Auditoria técnica
+
+Hashes, versões, comandos e produtos ficam em [proveniência e reprodutibilidade](reproducibility.md). Contratos de campos e detalhes de implementação ficam na [documentação técnica](internal/README.md), para não interromper a narrativa científica.

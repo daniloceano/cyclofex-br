@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Caderno estruturado de testes planejados, executados e negativos.">
   <title>Experimentos · cyclofex-br</title>
   <link rel="stylesheet" href="docs.css">
 </head>
@@ -11,28 +12,89 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
-      <a class="back" href="index.html">← Voltar ao painel</a>
+      <span class="report-label">Relatório científico vivo</span>
     </div>
   </header>
-  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Experimentos</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Análises</p>
+      <p class="page-name">Experimentos</p>
+      <p class="title-note">Caderno estruturado de testes planejados, executados e negativos.</p>
+    </div>
+  </div>
   <div class="shell layout">
-    <nav class="side-nav" aria-label="Documentos do projeto">
-      <p class="side-label">Documentação</p>
-      <a href="open_questions.html">Questões abertas</a>
-      <a href="experiments.html">Experimentos</a>
-      <a href="decisions.html">Decisões</a>
-      <a href="methodology.html">Metodologia</a>
-      <a href="assumptions.html">Pressupostos</a>
-      <a href="data_dictionary.html">Dicionário de dados</a>
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html" class="active" aria-current="page">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="experimentos">Experimentos</h1>
-<p>Nenhum experimento científico ou metodológico foi executado nesta etapa. A <a href="../outputs/01_data_overview/structural_summary.json">caracterização estrutural</a> e as figuras fazem parte da mesma análise exploratória dos dados; não são testes de hipótese e, portanto, não receberam ID <code>E-...</code>.</p>
-<p>Quando houver um teste real, atribua um ID persistente (<code>E-001</code>, <code>E-002</code>, ...). Registre pergunta <code>Q-...</code>, hipótese, dados e versão, método, alternativas, métricas, resultado observado, interpretação, limitações, conclusão, decisão <code>D-...</code> e status (<code>PLANNED</code>, <code>RUNNING</code>, <code>ADOPTED</code>, <code>REJECTED</code>, <code>INCONCLUSIVE</code> ou <code>SUPERSEDED</code>). Para <code>REJECTED</code>, explicite as condições do teste, o motivo da rejeição, seu alcance e a evidência que justificaria reavaliá-la. Preserve resultados negativos.</p>
+<h2 id="função-do-registro">Função do registro</h2>
+<p>Esta página é o índice do caderno científico estruturado. Um experimento é um teste com pergunta, hipótese, dados, método, métricas e critério de decisão definidos antes da interpretação. Status permitidos: <strong>PLANNED</strong>, <strong>RUNNING</strong>, <strong>ADOPTED</strong>, <strong>REJECTED</strong>, <strong>INCONCLUSIVE</strong> e <strong>SUPERSEDED</strong>. Resultados negativos e inconclusivos permanecem no histórico.</p>
+<h2 id="estado-atual">Estado atual</h2>
+<p>E-001 foi concluído e recebeu status <strong>INCONCLUSIVE</strong>. Foi o primeiro experimento formal do projeto. Nenhum modelo probabilístico, <em>coverage probability</em>, magnitude condicional ou hazard geográfico foi ajustado.</p>
+<h2 id="e-001--efeito-da-orientação-pelo-movimento-na-organização-espacial-das-excedências">E-001 — Efeito da orientação pelo movimento na organização espacial das excedências</h2>
+<ul>
+<li><strong>Status:</strong> <code>INCONCLUSIVE</code></li>
+<li><strong>Datas:</strong> planejamento, execução e encerramento em 21 de setembro de 2026</li>
+<li><strong>Hipótese:</strong> H2 — <em>motion-relative</em> reduz a dispersão espacial em relação a <em>centered</em>.</li>
+<li><strong>Threshold principal:</strong> q95 local, fixado antes dos resultados.</li>
+<li><strong>Unidade inferencial:</strong> ciclone (<code>track_id</code>), com bootstrap pareado por ciclone.</li>
+<li><strong>Decisão associada:</strong> <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
+</ul>
+<p>O teste usou 1.784 ciclones e 23.050 estados com suporte e heading confiável. A orientação pelo movimento reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e a dispersão RMS em 7,69 km. A diferença de entropia foi −0,0023 nat, com intervalo bootstrap de 95% entre −0,0105 e +0,0057. Apenas uma das quatro fases apresentou entropia e A75 pontualmente menores ao mesmo tempo.</p>
+<p>Como as famílias de métricas e as fases não concordaram, a hipótese não atingiu o critério preregistrado. O relatório científico completo — contexto, equações, dados, mapas, métricas, incerteza, interpretação, limitações, conclusão e reprodutibilidade — está em <a href="e001_orientation.html">E-001 — Orientação pelo movimento do ciclone</a>.</p>
+<hr />
+<h2 id="template-obrigatório-para-novos-experimentos">Template obrigatório para novos experimentos</h2>
+<p>Copie a estrutura abaixo e substitua todas as instruções. Se uma seção não se aplicar, explique por quê; não a remova silenciosamente.</p>
+<h3 id="e-xxx--título-científico">E-XXX — Título científico</h3>
+<ul>
+<li><strong>Status:</strong> <code>PLANNED | RUNNING | ADOPTED | REJECTED | INCONCLUSIVE | SUPERSEDED</code></li>
+<li><strong>Datas:</strong> planejamento, início, encerramento</li>
+<li><strong>Questões e decisões relacionadas:</strong> IDs persistentes</li>
+</ul>
+<h4 id="contexto">Contexto</h4>
+<p>Apresente o problema maior e defina os termos necessários para que a entrada seja compreendida isoladamente.</p>
+<h4 id="pergunta">Pergunta</h4>
+<p>Formule uma pergunta específica que o experimento possa responder.</p>
+<h4 id="hipótese">Hipótese</h4>
+<p>Declare o padrão esperado e o que ele significaria.</p>
+<h4 id="hipótese-alternativa-ou-explicações-concorrentes">Hipótese alternativa ou explicações concorrentes</h4>
+<p>Registre mecanismos ou artefatos que também poderiam produzir o resultado.</p>
+<h4 id="motivação">Motivação</h4>
+<p>Explique por que o teste é necessário antes do próximo passo.</p>
+<h4 id="dados">Dados</h4>
+<p>Identifique população, amostra, período, versão, unidade de análise e critérios de inclusão e exclusão.</p>
+<h4 id="representação-e-variáveis">Representação e variáveis</h4>
+<p>Defina todas as variáveis, unidades, domínios, transformações e tratamento de ausências.</p>
+<h4 id="método">Método</h4>
+<p>Explique o procedimento conceitualmente e com precisão suficiente para reprodução. Toda equação deve ter propósito, símbolos, unidades, domínio e interpretação intuitiva.</p>
+<h4 id="métricas">Métricas</h4>
+<p>Indique o que cada métrica mede e por que responde à pergunta.</p>
+<h4 id="critério-de-decisão">Critério de decisão</h4>
+<p>Registre, antes do resultado, o que contará como evidência favorável, contrária ou inconclusiva.</p>
+<h4 id="resultado">Resultado</h4>
+<p>Apresente observações, números, tabelas e figuras sem antecipar a interpretação.</p>
+<h4 id="interpretação">Interpretação</h4>
+<p>Explique o significado científico dentro do alcance do desenho.</p>
+<h4 id="robustez-e-diagnósticos">Robustez e diagnósticos</h4>
+<p>Registre verificações, sensibilidades, falhas e resultados negativos.</p>
+<h4 id="limitações">Limitações</h4>
+<p>Declare o que o experimento não demonstra.</p>
+<h4 id="conclusão">Conclusão</h4>
+<p>Responda diretamente à pergunta.</p>
+<h4 id="consequência-para-o-projeto">Consequência para o projeto</h4>
+<p>Indique a decisão permitida e o próximo passo.</p>
+<h4 id="reprodutibilidade">Reprodutibilidade</h4>
+<p>Vincule configuração congelada, versão e hash dos dados, código, ambiente, produtos e decisão associada.</p>
 
-      <div class="source-note">Fonte canônica: <a href="../docs/experiments.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+      <div class="source-note">Fonte canônica: <a href="../docs/experiments.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
     </main>
   </div>
-  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
 </body>
 </html>

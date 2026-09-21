@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Origem, significado, cobertura e unidades da base empírica.">
+  <title>Dados · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Base científica</p>
+      <p class="page-name">Dados</p>
+      <p class="title-note">Origem, significado, cobertura e unidades da base empírica.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html" class="active" aria-current="page">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="dados">Dados</h1>
+<h2 id="que-informação-o-projeto-necessita">Que informação o projeto necessita</h2>
+<p>Para estudar a organização espacial de ventos extremos associados a ciclones extratropicais, são necessárias três informações sincronizadas: a posição do centro de cada ciclone ao longo do tempo, sua fase do ciclo de vida e o campo de vento próximo ao centro no mesmo instante. A combinação dessas informações permite descrever o vento em coordenadas relativas ao ciclone sem perder a identidade do evento nem confundir pontos de grade com ciclones independentes.</p>
+<h2 id="tracks-e-ciclo-de-vida">Tracks e ciclo de vida</h2>
+<p>Uma <strong>track</strong> é a sequência temporal dos centros atribuídos ao mesmo ciclone. Cada posição em uma hora específica representa um estado daquele sistema. Depois da associação temporal com o ERA5, o projeto usa a expressão <strong>estado ciclone–tempo</strong> para o par formado por um ciclone identificado por <code>track_id</code> e um horário de campo de 6 h. Um mesmo ciclone contribui com vários estados; por isso, esses estados e seus pontos espaciais não são réplicas independentes do ciclone.</p>
+<p>A fonte operacional é <code>tracks_SAt_filtered_with_energetics.csv</code>, do <a href="https://zenodo.org/records/18133432">Zenodo 18133432</a>, DOI <a href="https://doi.org/10.5281/zenodo.18133432"><code>10.5281/zenodo.18133432</code></a>. Ela fornece centros horários, vorticidade central, região de gênese e o campo <code>period</code>, preservado no projeto como <code>phase</code>. O catálogo cobre tracks iniciadas entre 1979 e 2020; as últimas terminam em 7 de janeiro de 2021.</p>
+<p>O Zenodo foi adotado porque usa o mesmo namespace operacional do recorte de vento, reproduz exatamente seus 20.101 estados presentes e recupera estados omitidos pelo filtro de seleção. A base de <a href="https://doi.org/10.17632/kwcvfr52hp.4">Gramcianinov et al. (2020) no Mendeley Data</a> permanece como referência histórica da família de tracks. Seus identificadores e universo de sistemas não coincidem integralmente com o catálogo operacional e, por isso, ela não é usada para gerar os estados atuais. Essa escolha é formalizada em <a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004</a>.</p>
+<p>O <strong>lifecycle</strong>, ou ciclo de vida, divide a evolução do ciclone em fases como incipiente, intensificação, madura e decaimento. Os rótulos foram produzidos com o CycloPhaser e incluem repetições com sufixo <code>2</code>, fase residual e intervalos sem rótulo. A origem está confirmada, mas a versão e configuração exatas da execução original ainda não são reproduzíveis; essa limitação permanece em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>.</p>
+<h2 id="vento-era5">Vento ERA5</h2>
+<p>O vento analisado provém do ERA5 em <em>single levels</em>, na grade nativa regular de 0,25° e em intervalos de 6 h no produto atualmente reconstruído. A variável <code>wind_speed</code> é a magnitude do vento a 10 m, em metros por segundo, obtida dos componentes zonal e meridional. Em linguagem direta, ela informa a intensidade do vento horizontal perto da superfície em cada ponto da grade.</p>
+<p>O recorte disponível contém indicadores para limiares fixos de 15,6, 20 e 25 m/s e para percentis locais q90, q95 e q99. Um <strong>threshold</strong>, ou limiar, é o valor acima do qual o vento é classificado como excedência. Um <strong>quantil local</strong> varia de ponto para ponto: q90 é o valor superado em 10% da distribuição usada para aquele local. Os percentis atuais foram calculados com 16.072 campos de 6 h dos 11 anos civis de 2010–2020, sem estratificação e sem máscara terra–oceano. Eles são experimentais e não constituem a definição final de extremo do projeto.</p>
+<p>A versão ou reprocessamento exato do ERA5 e um artefato formalmente versionado dos percentis não foram recuperados. A regra de cálculo é conhecida, mas essa lacuna impede identificar integralmente os insumos originais.</p>
+<h2 id="como-ciclone-e-vento-são-associados">Como ciclone e vento são associados</h2>
+<p>Cada centro horário da track é ligado ao horário ERA5 de 6 h mais próximo, desde que a diferença não ultrapasse 3 h. Se dois horários forem igualmente próximos, escolhe-se o anterior. Quando mais de uma hora da mesma track aponta para o mesmo campo, permanece a posição com menor diferença temporal e, em novo empate, a anterior. A posição do centro não é interpolada.</p>
+<p>Para o estado resultante, são considerados pontos da grade entre 65°S–10°S e 85°W–15°W situados a até 1.100 km do centro, segundo distância haversine numa esfera de raio 6.371 km. Esse círculo é o <strong>suporte espacial</strong> atual: o conjunto de posições que poderiam contribuir para aquele estado dentro do domínio disponível.</p>
+<ul>
+<li><strong>Suporte completo:</strong> o círculo está inteiramente contido no domínio.</li>
+<li><strong>Suporte parcial:</strong> parte do círculo intersecta o domínio e parte fica fora; apenas a interseção foi observada.</li>
+<li><strong>Sem suporte:</strong> nenhuma célula do domínio fica dentro do círculo; não há observação espacial para classificar.</li>
+</ul>
+<p>Ausência, zero e não observado são conceitos diferentes. Quando um estado tem suporte e nenhuma linha no recorte condicionado, nenhuma célula passou pelo filtro de entrada e as excedências podem ser reconstruídas como falsas sob o contrato atual. Quando não há suporte, a ausência de linhas significa <strong>não observado</strong>, não vento zero nem não-excedência.</p>
+<h2 id="estrutura-científica-final">Estrutura científica final</h2>
+<table>
+<thead>
+<tr>
+<th>Nível</th>
+<th>O que representa</th>
+<th>Dimensão atual</th>
+<th>Papel científico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ciclone</td>
+<td>Um sistema identificado por <code>track_id</code></td>
+<td>6.789 no catálogo completo; 1.781 no recorte de vento</td>
+<td>Unidade fundamental de análise quando aplicável</td>
+</tr>
+<tr>
+<td>Estado horário</td>
+<td>Centro e lifecycle de uma track em uma hora</td>
+<td>631.009</td>
+<td>Fonte temporal canônica</td>
+</tr>
+<tr>
+<td>Estado ciclone–tempo de 6 h</td>
+<td>Um ciclone associado a um campo ERA5</td>
+<td>109.857</td>
+<td>Ponte entre trajetória e atmosfera</td>
+</tr>
+<tr>
+<td>Estado no recorte de vento</td>
+<td>Estado com ao menos uma linha selecionada</td>
+<td>20.101 entre 2010–2020</td>
+<td>Objeto da análise exploratória atual</td>
+</tr>
+<tr>
+<td>Ponto espacial</td>
+<td>Uma célula de grade ligada a um estado</td>
+<td>17.182.983 linhas armazenadas</td>
+<td>Unidade de armazenamento; não é ciclone independente</td>
+</tr>
+</tbody>
+</table>
+<p>No período comparável de 2010–2020, o catálogo completo contém 29.311 estados de 1.785 tracks: 20.101 estão presentes no recorte, 3.233 estão ausentes apesar de terem suporte e 5.977 não possuem suporte. Quatro tracks do catálogo não aparecem entre os 1.781 ciclones com linhas selecionadas.</p>
+<h2 id="produtos-derivados">Produtos derivados</h2>
+<p>Depois de compreender as unidades científicas, a implementação pode ser auditada nos três produtos: catálogo horário, catálogo de estados de 6 h e recorte condicionado de vento. Campos, tipos, hashes e contratos estão na <a href="internal/data_reference.html">referência técnica dos dados</a>; a linhagem completa está em <a href="reproducibility.html">proveniência e reprodutibilidade</a>.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/data.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

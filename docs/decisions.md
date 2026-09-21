@@ -29,14 +29,14 @@ Decisões mantêm IDs `D-...` mesmo quando forem substituídas. Status possívei
 ## D-003 · Agrupar rótulos `phase 2` nas figuras exploratórias
 
 - **Data:** 2026-09-19
-- **Revisada:** 2026-09-20
+- **Revisada:** 2026-09-21
 - **Status:** `ADOPTED`
 - **Questão:** como representar de forma legível ocorrências repetidas de uma fase na mesma track?
 - **Alternativas consideradas:** mostrar as oito categorias literalmente ou reunir os rótulos `intensification 2`, `mature 2` e `decay 2` às respectivas fases principais.
 - **Evidência disponível:** conforme documentado em [Q-004](open_questions.md#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases), o CycloPhaser acrescenta o sufixo quando uma fase reaparece em um bloco não contíguo. O número indica a ordem da ocorrência, não uma classe física diferente.
-- **Decisão atual:** agrupar os rótulos com sufixo `2` apenas nas figuras e resumos exploratórios. Preservar os valores originais no conjunto de dados e no resumo estrutural. Manter `residual` e ausências separados.
-- **Justificativa:** o agrupamento compara tipos equivalentes de fase e mantém os gráficos legíveis sem modificar o dado-fonte. A ordem original continua disponível quando a pergunta envolver reintensificação ou sequência do ciclo de vida.
-- **Experimentos relacionados:** nenhum; é uma escolha de apresentação baseada na semântica dos rótulos.
+- **Decisão atual:** agrupar os rótulos com sufixo `2` em figuras exploratórias e, quando preregistrado, em estratos do mesmo tipo físico de fase. Preservar sempre resultados pelos valores originais; manter `residual` e ausências separados.
+- **Justificativa:** o agrupamento compara tipos equivalentes de fase e evita estratos muito pequenos sem modificar o dado-fonte. Em E-001, `mature 2` tinha apenas 35 estados q95-positivos, enquanto o estrato maduro agrupado tinha 1.821; as métricas por rótulo literal foram preservadas. A ordem original continua disponível quando a pergunta envolver reintensificação ou sequência do ciclo de vida.
+- **Experimentos relacionados:** E-001 aplicou a regra nos quatro estratos de fase e publicou também a tabela literal.
 - **Revisar se:** a pergunta científica exigir comparar ocorrências sucessivas separadamente ou se a rodada com o CycloPhaser 2.0 alterar o esquema dos rótulos.
 
 ## D-004 · Adotar o Zenodo 18133432 como fonte canônica operacional das tracks e do lifecycle
@@ -53,3 +53,15 @@ Decisões mantêm IDs `D-...` mesmo quando forem substituídas. Status possívei
 - **Questões relacionadas:** [Q-004](open_questions.md#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases) e [Q-005](open_questions.md#q-005--qual-é-a-fonte-operacional-dos-estados-de-track-e-lifecycle).
 - **Experimentos relacionados:** nenhum; trata-se de uma decisão de proveniência apoiada por validação de dados.
 - **Revisar se:** o registro Zenodo receber uma nova versão, uma fonte oficial substituir explicitamente esse catálogo ou uma nova rodada versionada do CycloPhaser for adotada.
+
+## D-005 · Manter aberta a escolha entre centered e motion-relative após E-001
+
+- **Data:** 2026-09-21
+- **Status:** `PROVISIONAL`
+- **Questão:** a orientação pelo movimento deve substituir a centralização geográfica como representação principal?
+- **Alternativas consideradas:** adotar *motion-relative*, manter *centered* como representação científica principal ou preservar a questão aberta.
+- **Evidência disponível:** em [E-001](e001_orientation.md), *motion-relative* reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. O IC bootstrap da diferença de entropia incluiu zero, e somente uma das quatro fases teve entropia e A75 pontualmente menores em conjunto.
+- **Decisão atual:** não adotar nenhuma das duas representações como cientificamente superior. Usar *centered* apenas como referência simples e *motion-relative* como diagnóstico de assimetria quando necessário, sempre identificando que a escolha permanece aberta.
+- **Justificativa:** as famílias de métricas e os estratos de fase não satisfizeram o critério preregistrado. A rotação mudou a forma e concentrou o núcleo, mas não organizou consistentemente a distribuição inteira.
+- **Experimento relacionado:** E-001, status `INCONCLUSIVE`.
+- **Revisar se:** um protocolo posterior isolar weighting, threshold, tamanho ou outra explicação sem ajustar retrospectivamente E-001.

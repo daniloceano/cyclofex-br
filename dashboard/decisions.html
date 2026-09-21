@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Registro persistente das escolhas e condições de revisão.">
   <title>Decisões · cyclofex-br</title>
   <link rel="stylesheet" href="docs.css">
 </head>
@@ -11,19 +12,19 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
-      <a class="back" href="index.html">← Voltar ao painel</a>
+      <span class="report-label">Relatório científico vivo</span>
     </div>
   </header>
-  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Decisões</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Auditoria</p>
+      <p class="page-name">Decisões</p>
+      <p class="title-note">Registro persistente das escolhas e condições de revisão.</p>
+    </div>
+  </div>
   <div class="shell layout">
-    <nav class="side-nav" aria-label="Documentos do projeto">
-      <p class="side-label">Documentação</p>
-      <a href="open_questions.html">Questões abertas</a>
-      <a href="experiments.html">Experimentos</a>
-      <a href="decisions.html">Decisões</a>
-      <a href="methodology.html">Metodologia</a>
-      <a href="assumptions.html">Pressupostos</a>
-      <a href="data_dictionary.html">Dicionário de dados</a>
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html" class="active" aria-current="page">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="decisões">Decisões</h1>
@@ -55,14 +56,14 @@
 <h2 id="d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003 · Agrupar rótulos <code>phase 2</code> nas figuras exploratórias</h2>
 <ul>
 <li><strong>Data:</strong> 2026-09-19</li>
-<li><strong>Revisada:</strong> 2026-09-20</li>
+<li><strong>Revisada:</strong> 2026-09-21</li>
 <li><strong>Status:</strong> <code>ADOPTED</code></li>
 <li><strong>Questão:</strong> como representar de forma legível ocorrências repetidas de uma fase na mesma track?</li>
 <li><strong>Alternativas consideradas:</strong> mostrar as oito categorias literalmente ou reunir os rótulos <code>intensification 2</code>, <code>mature 2</code> e <code>decay 2</code> às respectivas fases principais.</li>
 <li><strong>Evidência disponível:</strong> conforme documentado em <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>, o CycloPhaser acrescenta o sufixo quando uma fase reaparece em um bloco não contíguo. O número indica a ordem da ocorrência, não uma classe física diferente.</li>
-<li><strong>Decisão atual:</strong> agrupar os rótulos com sufixo <code>2</code> apenas nas figuras e resumos exploratórios. Preservar os valores originais no conjunto de dados e no resumo estrutural. Manter <code>residual</code> e ausências separados.</li>
-<li><strong>Justificativa:</strong> o agrupamento compara tipos equivalentes de fase e mantém os gráficos legíveis sem modificar o dado-fonte. A ordem original continua disponível quando a pergunta envolver reintensificação ou sequência do ciclo de vida.</li>
-<li><strong>Experimentos relacionados:</strong> nenhum; é uma escolha de apresentação baseada na semântica dos rótulos.</li>
+<li><strong>Decisão atual:</strong> agrupar os rótulos com sufixo <code>2</code> em figuras exploratórias e, quando preregistrado, em estratos do mesmo tipo físico de fase. Preservar sempre resultados pelos valores originais; manter <code>residual</code> e ausências separados.</li>
+<li><strong>Justificativa:</strong> o agrupamento compara tipos equivalentes de fase e evita estratos muito pequenos sem modificar o dado-fonte. Em E-001, <code>mature 2</code> tinha apenas 35 estados q95-positivos, enquanto o estrato maduro agrupado tinha 1.821; as métricas por rótulo literal foram preservadas. A ordem original continua disponível quando a pergunta envolver reintensificação ou sequência do ciclo de vida.</li>
+<li><strong>Experimentos relacionados:</strong> E-001 aplicou a regra nos quatro estratos de fase e publicou também a tabela literal.</li>
 <li><strong>Revisar se:</strong> a pergunta científica exigir comparar ocorrências sucessivas separadamente ou se a rodada com o CycloPhaser 2.0 alterar o esquema dos rótulos.</li>
 </ul>
 <h2 id="d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004 · Adotar o Zenodo 18133432 como fonte canônica operacional das tracks e do lifecycle</h2>
@@ -80,10 +81,27 @@
 <li><strong>Experimentos relacionados:</strong> nenhum; trata-se de uma decisão de proveniência apoiada por validação de dados.</li>
 <li><strong>Revisar se:</strong> o registro Zenodo receber uma nova versão, uma fonte oficial substituir explicitamente esse catálogo ou uma nova rodada versionada do CycloPhaser for adotada.</li>
 </ul>
+<h2 id="d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005 · Manter aberta a escolha entre centered e motion-relative após E-001</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-21</li>
+<li><strong>Status:</strong> <code>PROVISIONAL</code></li>
+<li><strong>Questão:</strong> a orientação pelo movimento deve substituir a centralização geográfica como representação principal?</li>
+<li><strong>Alternativas consideradas:</strong> adotar <em>motion-relative</em>, manter <em>centered</em> como representação científica principal ou preservar a questão aberta.</li>
+<li><strong>Evidência disponível:</strong> em <a href="e001_orientation.html">E-001</a>, <em>motion-relative</em> reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. O IC bootstrap da diferença de entropia incluiu zero, e somente uma das quatro fases teve entropia e A75 pontualmente menores em conjunto.</li>
+<li><strong>Decisão atual:</strong> não adotar nenhuma das duas representações como cientificamente superior. Usar <em>centered</em> apenas como referência simples e <em>motion-relative</em> como diagnóstico de assimetria quando necessário, sempre identificando que a escolha permanece aberta.</li>
+<li><strong>Justificativa:</strong> as famílias de métricas e os estratos de fase não satisfizeram o critério preregistrado. A rotação mudou a forma e concentrou o núcleo, mas não organizou consistentemente a distribuição inteira.</li>
+<li><strong>Experimento relacionado:</strong> E-001, status <code>INCONCLUSIVE</code>.</li>
+<li><strong>Revisar se:</strong> um protocolo posterior isolar weighting, threshold, tamanho ou outra explicação sem ajustar retrospectivamente E-001.</li>
+</ul>
 
-      <div class="source-note">Fonte canônica: <a href="../docs/decisions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+      <div class="source-note">Fonte canônica: <a href="../docs/decisions.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
     </main>
   </div>
-  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
 </body>
 </html>

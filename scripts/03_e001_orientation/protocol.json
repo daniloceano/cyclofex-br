@@ -1,0 +1,42 @@
+{
+  "experiment_id": "E-001",
+  "title": "Efeito da orientacao pelo movimento na organizacao espacial das excedencias",
+  "protocol_frozen_before_primary_results": true,
+  "primary_threshold": "exceeded_q95",
+  "threshold_definition": "wind_speed > q95 local",
+  "population": "Estados ERA5 de 6 h entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC com suporte espacial e heading confiavel",
+  "support_radius_km": 1100.0,
+  "relative_domain_km": [-1100.0, 1100.0],
+  "bin_size_km": 50.0,
+  "smoothing_for_primary_metrics": false,
+  "state_weighting": "Cada estado com pelo menos uma excedencia q95 tem massa total um; estados sem q95 permanecem na auditoria de suporte, mas nao definem distribuicao espacial condicional",
+  "translation_speed_min_kmh": 5.0,
+  "translation_speed_rationale": "Equivale a 30 km em 6 h, aproximadamente uma celula da grade original de 0,25 grau; deslocamentos menores nao definem orientacao fisica estavel",
+  "heading_rule": "Diferenca centrada entre estados vizinhos do catalogo completo de 6 h; diferenca simples nas extremidades; vetor no plano tangente local",
+  "phase_strata": [
+    "incipient",
+    "intensification",
+    "mature",
+    "decay"
+  ],
+  "phase_rule": "Sufixos ' 2' sao agregados apenas nos quatro estratos fisicos; resultados por rotulo literal tambem sao preservados",
+  "bootstrap_unit": "track_id",
+  "bootstrap_replicates": 500,
+  "bootstrap_seed": 20260921,
+  "primary_metrics": [
+    "entropy_nats",
+    "area50_km2",
+    "area75_km2",
+    "area90_km2"
+  ],
+  "diagnostic_metrics": [
+    "rms_about_centroid_km",
+    "centroid_x_km",
+    "centroid_y_km",
+    "centroid_distance_km",
+    "anisotropy_axis_ratio"
+  ],
+  "primary_differences": "motion-relative minus centered; valores negativos favorecem maior concentracao para entropia, areas e RMS",
+  "decision_rule": "Evidencia favoravel requer entropia e A75 menores com IC bootstrap pareado de 95% abaixo de zero, A50 e A90 na mesma direcao, maioria dos quatro estratos de fase na mesma direcao, perda de heading inferior a 10% e diagnostico de suporte sem mudanca comparavel que explique o efeito. Evidencia contraria exige padrao simetrico a favor de centered; demais combinacoes sao inconclusivas.",
+  "created_utc": "2026-09-21T00:00:00Z"
+}

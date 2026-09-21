@@ -1,8 +1,8 @@
-# Solicitação de esclarecimentos sobre a geração do parquet
+# Reconstrução técnica da geração do recorte de vento
 
-## Objetivo
+## Objetivo e origem
 
-Responder às questões Q-002 e Q-003 do projeto **cyclofex-br** usando o código, os arquivos intermediários e a documentação que efetivamente geraram:
+Este registro arquiva a investigação que respondeu às questões Q-002 e Q-003 do projeto **cyclofex-br** usando o código, os arquivos intermediários e a documentação que efetivamente geraram:
 
 - `data/cyclone_exceedances_by_track_2010_2020_p90.parquet`
 - `data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md`
@@ -12,6 +12,18 @@ Precisamos reconstruir o procedimento com precisão suficiente para reproduzi-lo
 Não faça uma nova análise científica e não altere o parquet. O objetivo é documentar como o dado existente foi construído.
 
 > **Nota de origem (preenchida na resposta).** Os três scripts citados abaixo vivem em `$ROOT = /home/publico/vendaval-ciclone` (máquina 9, `irbrerd09`). Os caminhos `data/...` do enunciado correspondem, na origem, a `$ROOT/outputs/parquet/`. Nada no parquet foi alterado para responder a este documento; todas as contagens vêm de leitura.
+
+## Convenções para ler as equações
+
+As equações abaixo documentam transformações computacionais já executadas; elas são usadas para tornar a reconstrução precisa, não para formalizar um modelo novo.
+
+- `t` é um horário ERA5, em UTC; `x` e `y` indexam longitude e latitude da grade de 0,25°; `c` identifica um ciclone.
+- `u10(t,y,x)` e `v10(t,y,x)` são os componentes zonal, positivo para leste, e meridional, positivo para norte, do vento a 10 m. Ambos estão em m/s. `wind_speed(t,y,x)` é sua magnitude não negativa, também em m/s.
+- `q90(y,x)`, `q95(y,x)` e `q99(y,x)` são thresholds locais em m/s, calculados sobre o tempo para um ponto fixo; o resultado indica a intensidade superada pelas caudas de 10%, 5% e 1% da amostra de referência, sob a convenção linear usada.
+- Latitude `φ` e longitude `λ` entram em radianos nas funções trigonométricas da haversine. `Δφ` e `Δλ` são diferenças angulares; `a` é adimensional no intervalo [0, 1]; `d` ou `dist` é a distância de grande círculo em km, obtida com raio terrestre esférico de 6.371 km.
+- `Δlat`, `Δlon`, `Δx` e `Δy` descrevem deslocamentos relativos; quando usados na classificação de quadrantes, estão em graus ou graus corrigidos por latitude. `(ux,uy)` é um vetor unitário adimensional na direção do movimento. `x'` e `y'` preservam a escala angular de `Δx` e `Δy` e indicam, respectivamente, direita–esquerda e frente–trás.
+
+Intuitivamente, a magnitude combina os dois componentes do vento; a haversine transforma separação angular em distância sobre uma esfera; e a matriz de rotação apenas reexpressa uma posição geográfica nos eixos definidos pelo movimento do ciclone. Cada bloco posterior informa a população, o domínio e o motivo específico de uso.
 
 ## Contexto já confirmado
 

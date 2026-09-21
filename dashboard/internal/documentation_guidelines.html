@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Instrução permanente para manter o relatório científico.">
+  <title>Padrão documental · cyclofex-br</title>
+  <link rel="stylesheet" href="../docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Referência técnica</p>
+      <p class="page-name">Padrão documental</p>
+      <p class="title-note">Instrução permanente para manter o relatório científico.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="../index.html">Visão geral</a><a href="../scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="../data.html">Dados</a><a href="../data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="../exploratory_analysis.html">Análise exploratória</a><a href="../e001_orientation.html">E-001 · Orientação</a><a href="../experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="../methodology.html">Metodologia atual</a><a href="../results.html">Resultados e evidências</a><a href="../limitations.html">Limitações</a><a href="../open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="../decisions.html">Decisões</a><a href="../reproducibility.html">Proveniência e reprodução</a><a href="index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="padrão-permanente-da-documentação">Padrão permanente da documentação</h1>
+<h2 id="instrução-obrigatória">Instrução obrigatória</h2>
+<p><strong>Todo agente ou colaborador deve ler este documento antes de criar ou modificar documentação científica do cyclofex-br.</strong> O objetivo é manter o dashboard como um relatório científico vivo, autossuficiente e auditável por humanos, e não como um índice da implementação.</p>
+<h2 id="objetivo-e-público">Objetivo e público</h2>
+<p>A documentação científica deve permitir que pesquisadores, orientadores, colaboradores, avaliadores e revisores compreendam o problema, os dados, a construção da amostra, as perguntas, os métodos, os resultados, as interpretações, os limites e o estado do projeto sem abrir o código.</p>
+<p>A documentação técnica atende à reprodução computacional, manutenção, scripts, comandos, dependências, diretórios, cache e arquitetura. Ela fica em <code>docs/internal/</code> ou na página de proveniência. Rastreabilidade é obrigatória, mas detalhes de implementação não devem interromper a narrativa científica.</p>
+<h2 id="princípios">Princípios</h2>
+<ol type="1">
+<li><strong>Contexto autossuficiente:</strong> cada página e seção reintroduz os conceitos indispensáveis; não depende da memória de outra página.</li>
+<li><strong>Raciocínio linear:</strong> contexto → problema → pergunta → dados → método → resultado → interpretação → limitações → consequência.</li>
+<li><strong>Ciência separada da implementação:</strong> nomes de arquivos e scripts aparecem em reprodutibilidade ou na camada técnica.</li>
+<li><strong>Terminologia definida:</strong> na primeira ocorrência relevante de cada página, explique termos científicos em linguagem simples.</li>
+<li><strong>Resultado separado de interpretação:</strong> observação, significado e conclusão não permitida devem ser distinguíveis.</li>
+<li><strong>Limitações explícitas:</strong> dados, seleção, suporte, viés, dependência e testes ausentes ficam visíveis.</li>
+<li><strong>Rastreabilidade:</strong> análises apontam para dados, versão, configuração, produtos, código, decisões e experimentos.</li>
+<li><strong>Força proporcional à evidência:</strong> associação descritiva não vira causalidade, inferência ou hazard.</li>
+<li><strong>Fonte canônica única:</strong> Markdown é canônico; HTML é gerado.</li>
+<li><strong>Estado explícito:</strong> diferencie <code>PROPOSTO</code>, <code>EM TESTE</code>, <code>ADOTADO</code>, <code>REJEITADO</code>, <code>INCONCLUSIVO</code> e <code>AINDA NÃO TESTADO</code>.</li>
+</ol>
+<h2 id="estrutura-recomendada-para-uma-análise">Estrutura recomendada para uma análise</h2>
+<p>Adapte os títulos à pergunta, preservando o raciocínio:</p>
+<ol type="1">
+<li>motivação e pergunta;</li>
+<li>população, período, unidade de análise e seleção;</li>
+<li>variáveis e representações, com definições;</li>
+<li>método descritivo ou inferencial e justificativa;</li>
+<li>resultados com tabelas e figuras contextualizadas;</li>
+<li>interpretação cientificamente permitida;</li>
+<li>limitações e conclusões não permitidas;</li>
+<li>síntese do aprendizado e consequência para o projeto;</li>
+<li>bloco discreto de reprodutibilidade.</li>
+</ol>
+<p>Não organize a página pela ordem de funções de um script.</p>
+<h2 id="estrutura-obrigatória-para-experimentos">Estrutura obrigatória para experimentos</h2>
+<p>Cada experimento <code>E-XXX</code> deve conter: contexto; pergunta; hipótese; explicações concorrentes quando pertinentes; motivação; dados e critérios de inclusão/exclusão; representação e variáveis; método; métricas; critério de decisão registrado antes do resultado; resultado; interpretação; robustez e diagnósticos; limitações; conclusão; consequência para o projeto; reprodutibilidade; status, datas e vínculos a questões e decisões.</p>
+<p>Se uma seção não se aplicar, explique por quê. Resultados negativos, rejeitados e inconclusivos permanecem no histórico. O template canônico está em <a href="../experiments.html#template-obrigatório-para-novos-experimentos">experimentos</a>.</p>
+<h2 id="regras-para-equações">Regras para equações</h2>
+<p>Uma equação só deve aparecer quando tornar o método mais claro ou preciso. Antes ou imediatamente depois dela, documente:</p>
+<ul>
+<li>o que representa e por que é usada;</li>
+<li>todos os símbolos;</li>
+<li>unidade de cada quantidade, quando aplicável;</li>
+<li>domínio dos valores, quando relevante;</li>
+<li>interpretação intuitiva do resultado.</li>
+</ul>
+<p>Nunca apresente notação isolada nem presuma que o leitor conhece a convenção.</p>
+<h2 id="regras-para-figuras-e-tabelas">Regras para figuras e tabelas</h2>
+<p>Antes ou imediatamente depois de cada figura científica, explique a pergunta, população, eixos, cores, painéis, unidades e como ler o elemento visual. Em seguida, separe:</p>
+<ul>
+<li><strong>observação:</strong> o que é visível ou calculado;</li>
+<li><strong>interpretação:</strong> o significado compatível com o desenho;</li>
+<li><strong>limitação:</strong> o que o elemento não mostra.</li>
+</ul>
+<p>Tabelas recebem a mesma contextualização. Legendas que apenas repetem o conteúdo não são suficientes. Texto alternativo deve descrever a informação relevante da imagem.</p>
+<h2 id="regras-para-dados">Regras para dados</h2>
+<p>Apresente primeiro a necessidade científica, a origem e o significado das unidades. Explique track, estado ciclone–tempo, lifecycle, vento, associação temporal, suporte espacial e distinção entre zero, ausência e não observado antes de listar arquivos ou schemas. Declare período, população, resolução, filtros e unidade de análise. Campos e tipos completos pertencem à referência técnica.</p>
+<h2 id="terminologia-que-exige-cuidado">Terminologia que exige cuidado</h2>
+<p>Defina quando aparecer pela primeira vez na página: <em>storm-relative</em>, <em>motion-relative</em>, lifecycle, <em>excursion set</em>, <em>coverage probability</em>, <em>footprint</em>, hazard, threshold, quantil local, unidade de análise e suporte espacial.</p>
+<p>Preserve sempre:</p>
+<ul>
+<li>evento ≠ climatologia;</li>
+<li><em>excursion set</em> ≠ <em>footprint</em> probabilístico;</li>
+<li>ocorrência ≠ magnitude;</li>
+<li><em>footprint storm-relative</em> ≠ hazard geográfico;</li>
+<li>ausência de observação ≠ não-excedência.</li>
+</ul>
+<h2 id="citações-e-proveniência">Citações e proveniência</h2>
+<ul>
+<li>Use links persistentes e DOI para fontes externas quando disponíveis.</li>
+<li>Identifique produto, versão, período e hash na camada de reprodutibilidade.</li>
+<li>Não atribua método ou resultado a uma fonte que apenas fornece genealogia histórica.</li>
+<li>Se a versão exata for desconhecida, registre a lacuna; não escolha uma por suposição.</li>
+<li>Separe dados fornecidos, transformação executada no projeto e inferência do autor.</li>
+</ul>
+<h2 id="decisões-questões-e-pressupostos">Decisões, questões e pressupostos</h2>
+<ul>
+<li><code>decisions.md</code> é o registro formal. A narrativa explica a escolha em prosa e cita o ID discretamente.</li>
+<li><code>open_questions.md</code> registra por que a questão importa, o conhecido, o desconhecido, a evidência necessária, dependências e status.</li>
+<li><code>assumptions.md</code> recebe IDs <code>A-...</code> quando um pressuposto sustenta inferência, com necessidade, alcance, evidência, teste e status.</li>
+<li>IDs nunca são reutilizados. Substituições preservam o item anterior e apontam para o novo.</li>
+</ul>
+<h2 id="relação-entre-documentação-científica-e-técnica">Relação entre documentação científica e técnica</h2>
+<p>O relatório principal responde “o que, por quê, como cientificamente, o que foi encontrado e o que significa”. <code>docs/internal/</code> responde “como executar e manter”. Uma página científica pode incluir um bloco final de reprodutibilidade, mas caminhos e comandos não devem dominar sua abertura ou estruturar seus títulos.</p>
+<h2 id="atualização-do-dashboard">Atualização do dashboard</h2>
+<ol type="1">
+<li>Edite a fonte Markdown apropriada.</li>
+<li>Atualize decisões, questões, pressupostos e experimentos vinculados quando o estado científico mudar.</li>
+<li>Atualize números somente a partir de produtos reproduzíveis identificados.</li>
+<li>Execute <code>python3 dashboard/build_docs.py</code>.</li>
+<li>Verifique links, mídia, responsividade básica e legibilidade.</li>
+<li>Não edite manualmente o conteúdo dos HTML gerados.</li>
+</ol>
+<h2 id="revisão-editorial-obrigatória">Revisão editorial obrigatória</h2>
+<p>Procure parágrafos sem contexto, termos indefinidos, código no meio da narrativa, força excessiva de conclusão, figuras ou tabelas sem leitura, equações sem definição, duplicação, inconsistência terminológica, unidade não explicada e fatos científicos escondidos apenas na camada técnica.</p>
+<h2 id="teste-de-auditoria-humana">Teste de auditoria humana</h2>
+<p>Antes de entregar, confirme que um pesquisador externo consegue responder pelo dashboard:</p>
+<ol type="1">
+<li>Qual é a pergunta e por que importa?</li>
+<li>Quais dados, fontes, períodos e unidades são usados?</li>
+<li>Como a amostra foi preparada e o que é suporte espacial?</li>
+<li>Que análise foi feita e por quê?</li>
+<li>O que foi encontrado, interpretado e ainda não demonstrado?</li>
+<li>Quais decisões estão vigentes e quais questões permanecem abertas?</li>
+<li>Qual é o próximo teste e por que ainda não começou?</li>
+<li>Como reproduzir tecnicamente os resultados?</li>
+</ol>
+<p>Se uma resposta científica exigir abrir código-fonte, a documentação ainda não está pronta.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../../docs/documentation_guidelines.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="../index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

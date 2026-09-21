@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Verificação do relatório pela perspectiva de um pesquisador externo.">
+  <title>Auditoria humana simulada · cyclofex-br</title>
+  <link rel="stylesheet" href="../docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Documentação interna</p>
+      <p class="page-name">Auditoria humana simulada</p>
+      <p class="title-note">Verificação do relatório pela perspectiva de um pesquisador externo.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="../index.html">Visão geral</a><a href="../scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="../data.html">Dados</a><a href="../data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="../exploratory_analysis.html">Análise exploratória</a><a href="../e001_orientation.html">E-001 · Orientação</a><a href="../experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="../methodology.html">Metodologia atual</a><a href="../results.html">Resultados e evidências</a><a href="../limitations.html">Limitações</a><a href="../open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="../decisions.html">Decisões</a><a href="../reproducibility.html">Proveniência e reprodução</a><a href="index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="auditoria-simulada-do-relatório-científico">Auditoria simulada do relatório científico</h1>
+<ul>
+<li><strong>Data:</strong> 21 de setembro de 2026</li>
+<li><strong>Perspectiva:</strong> pesquisador externo sem leitura prévia do código</li>
+<li><strong>Escopo:</strong> páginas HTML geradas a partir do Markdown canônico</li>
+<li><strong>Resultado:</strong> <code>PASS</code></li>
+</ul>
+<h2 id="critério">Critério</h2>
+<p>Cada pergunta deve ser respondida pela narrativa do dashboard. Links de reprodutibilidade podem apontar para arquivos e código, mas a compreensão científica não pode depender de abrir esses artefatos.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>Pergunta do avaliador</th>
+<th>Resposta encontrada no dashboard</th>
+<th>Página principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>Qual é a pergunta científica?</td>
+<td>Representar ocorrência, geometria e magnitude de ventos extremos em relação a ciclones extratropicais sem confundir o padrão relativo com hazard geográfico.</td>
+<td><a href="../index.html#o-problema-científico">Visão geral</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Por que o problema é relevante?</td>
+<td>A track localiza o centro, mas não informa onde os ventos intensos ocorrem, que área ocupam nem como mudam no lifecycle; essa lacuna precede qualquer tradução geográfica.</td>
+<td><a href="../index.html#o-problema-científico">Visão geral</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Quais dados são utilizados?</td>
+<td>Tracks e fases do Zenodo, campos ERA5 a 10 m e um recorte condicionado de vento e excedências.</td>
+<td><a href="../data.html">Dados</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>Qual é a proveniência?</td>
+<td>Zenodo 18133432 é a fonte operacional; Mendeley V4 é genealogia histórica; ERA5 fornece o vento, com lacunas de versão explicitadas.</td>
+<td><a href="../data.html#tracks-e-ciclo-de-vida">Dados</a> e <a href="../reproducibility.html#linhagem-dos-dados">Reprodutibilidade</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>Qual é a unidade de análise?</td>
+<td>O ciclone identificado por <code>track_id</code>; estados e pontos são níveis internos dependentes.</td>
+<td><a href="../methodology.html#unidade-de-análise">Metodologia</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td>Como os dados foram preparados?</td>
+<td>Track horária associada ao ERA5 de 6 h mais próximo, deduplicação por estado e classificação do suporte num raio de 1.100 km.</td>
+<td><a href="../data_preparation.html">Preparação dos dados</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td>O que é um estado ciclone–tempo?</td>
+<td>O par formado por um ciclone e um horário de campo ERA5 de 6 h.</td>
+<td><a href="../data.html#tracks-e-ciclo-de-vida">Dados</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td>O que é suporte espacial?</td>
+<td>O conjunto de células do domínio que poderia contribuir para um estado dentro de 1.100 km, classificado como completo, parcial ou ausente.</td>
+<td><a href="../data.html#como-ciclone-e-vento-são-associados">Dados</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td>Que análise foi executada?</td>
+<td>Uma análise exploratória e E-001, comparação formal entre coordenadas centered e motion-relative com bootstrap por ciclone.</td>
+<td><a href="../exploratory_analysis.html">Análise exploratória</a> e <a href="../e001_orientation.html">E-001</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td>Por que ela foi executada?</td>
+<td>Para compreender cobertura, seleção e sinais descritivos antes de ajustar qualquer modelo.</td>
+<td><a href="../exploratory_analysis.html#motivação">Análise exploratória</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td>O que foi encontrado?</td>
+<td>Além dos padrões exploratórios, E-001 mostrou núcleo A50 menor após rotação, mas A75, A90 e RMS maiores; a orientação não melhorou consistentemente a concentração.</td>
+<td><a href="../results.html">Resultados e evidências</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td>O que não pode ser concluído?</td>
+<td>Causalidade, diferenças populacionais entre fases, probabilidades espaciais, footprint probabilístico, generalização climatológica e hazard.</td>
+<td><a href="../results.html">Resultados e evidências</a> e <a href="../limitations.html">Limitações</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td>Quais decisões metodológicas foram tomadas?</td>
+<td>Ciclone como unidade, Zenodo como fonte operacional e, após E-001 inconclusivo, nenhuma orientação adotada como superior.</td>
+<td><a href="../decisions.html">Decisões</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td>Quais perguntas permanecem abertas?</td>
+<td>Reprodução integral do lifecycle, definição de extremo e objeto espacial e escolha da orientação principal.</td>
+<td><a href="../open_questions.html#prioridades-atuais">Questões abertas</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td>Qual é a consequência do primeiro teste?</td>
+<td>E-001 foi encerrado como inconclusivo; não se avança por ajuste retrospectivo e qualquer novo teste deve isolar um fator por vez.</td>
+<td><a href="../e001_orientation.html#consequência-para-o-projeto">E-001</a></td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td>Como reproduzir tecnicamente?</td>
+<td>A página de proveniência vincula versões, hashes, dados, tabelas, figuras, código e comandos; a referência interna explica os fluxos.</td>
+<td><a href="../reproducibility.html">Reprodutibilidade</a> e <a href="computational_workflows.html">Fluxos computacionais</a></td>
+</tr>
+</tbody>
+</table>
+<h2 id="veredito">Veredito</h2>
+<p>As 16 perguntas são respondidas sem exigir leitura do código-fonte para compreender a ciência. O código permanece acessível somente quando o avaliador decide reproduzir ou auditar a implementação. As lacunas científicas e de proveniência não foram preenchidas artificialmente; estão identificadas como limitações ou questões abertas.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../../docs/internal/human_audit.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="../index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

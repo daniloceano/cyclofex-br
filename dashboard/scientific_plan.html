@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="O que foi proposto, adotado, testado ou permanece em aberto.">
+  <title>Plano científico · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Projeto</p>
+      <p class="page-name">Plano científico</p>
+      <p class="title-note">O que foi proposto, adotado, testado ou permanece em aberto.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html" class="active" aria-current="page">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="plano-científico">Plano científico</h1>
+<h2 id="finalidade-desta-página">Finalidade desta página</h2>
+<p>Este plano mantém separadas a ambição científica, a evidência já produzida e as possibilidades futuras. Um item proposto não deve ser descrito como metodologia executada. Os estados usados aqui são:</p>
+<ul>
+<li><strong>PROPOSTO:</strong> direção ou pergunta ainda sem protocolo completo;</li>
+<li><strong>EM TESTE:</strong> experimento em execução, sem conclusão;</li>
+<li><strong>ADOTADO:</strong> escolha sustentada pela evidência registrada;</li>
+<li><strong>REJEITADO:</strong> alternativa testada e incompatível com o critério definido;</li>
+<li><strong>INCONCLUSIVO:</strong> evidência insuficiente ou ambígua;</li>
+<li><strong>AINDA NÃO TESTADO:</strong> possibilidade que ainda não entrou em experimento.</li>
+<li><strong>DESCRITO:</strong> padrão observado exploratoriamente, ainda sem teste de hipótese.</li>
+</ul>
+<h2 id="pergunta-central">Pergunta central</h2>
+<p>Como representar onde ventos extremos tendem a ocorrer em relação a um ciclone extratropical, que geometria formam e que magnitude alcançam ao longo de seu ciclo de vida, sem confundir esse padrão relativo à tempestade com hazard em posições geográficas fixas?</p>
+<h2 id="ideia-de-trabalho">Ideia de trabalho</h2>
+<p>O referencial <em>storm-relative</em> expressa cada posição pela distância e direção em relação ao centro do ciclone. Uma variante <em>motion-relative</em> orienta essas posições pelo deslocamento da tempestade, distinguindo frente, trás, esquerda e direita. A ideia é que alinhar eventos dessa forma possa revelar organização espacial que seria diluída em latitude e longitude absolutas.</p>
+<p>E-001 testou essa hipótese e encontrou evidência mista: o referencial relativo ao movimento concentrou o núcleo A50, mas aumentou A75, A90 e RMS. A escolha da orientação permanece <strong>INCONCLUSIVA</strong>; também não foi demonstrado que as fases expliquem diferenças além da seleção da amostra ou que um modelo específico seja adequado.</p>
+<h2 id="perguntas-científicas-e-estado">Perguntas científicas e estado</h2>
+<table>
+<thead>
+<tr>
+<th>Pergunta</th>
+<th>Estado</th>
+<th>O que já existe</th>
+<th>Evidência ainda necessária</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quais dados de track e lifecycle sustentam a amostra?</td>
+<td><strong>ADOTADO</strong></td>
+<td>Zenodo 18133432 como fonte operacional; correspondência exata com o recorte atual.</td>
+<td>Reavaliar somente se surgir nova versão ou fonte oficial substituta.</td>
+</tr>
+<tr>
+<td>Como construir estados compatíveis com ERA5 de 6 h?</td>
+<td><strong>ADOTADO</strong></td>
+<td>Associação ao horário mais próximo, tolerância de 3 h e desempate documentado.</td>
+<td>Testes futuros podem avaliar sensibilidade, mas a regra atual está validada contra o dado existente.</td>
+</tr>
+<tr>
+<td>Como interpretar as fases do lifecycle?</td>
+<td><strong>INCONCLUSIVO</strong></td>
+<td>Origem dos rótulos e semântica geral conhecidas.</td>
+<td>Versão, parâmetros, configuração e artefatos da execução original do CycloPhaser.</td>
+</tr>
+<tr>
+<td>Onde aparecem diferenças descritivas entre fases e quadrantes?</td>
+<td><strong>DESCRITO</strong></td>
+<td>A fase madura tem os maiores quantis pontuais no recorte; quadrantes têm medianas próximas.</td>
+<td>Inferência por ciclone, controle da seleção e avaliação de incerteza.</td>
+</tr>
+<tr>
+<td>O que constitui um extremo e um evento espacial?</td>
+<td><strong>PROPOSTO</strong></td>
+<td>q95 foi controle preregistrado de E-001, não definição final; também existem flags fixas, q90 e q99.</td>
+<td>Justificativa científica do limiar, unidade de evento, denominador e análise de sensibilidade.</td>
+</tr>
+<tr>
+<td>A orientação pelo movimento organiza melhor as excedências?</td>
+<td><strong>INCONCLUSIVO</strong></td>
+<td>E-001 comparou 1.784 ciclones; A50 melhorou, A75, A90 e RMS pioraram, e a entropia foi incerta.</td>
+<td>Novo protocolo que isole uma explicação por vez, sem ajuste retrospectivo.</td>
+</tr>
+<tr>
+<td>Como estimar ocorrência e geometria relativas ao ciclone?</td>
+<td><strong>AINDA NÃO TESTADO</strong></td>
+<td>E-001 comparou uma distribuição normalizada de ocorrências, não uma coverage probability.</td>
+<td>Definição do estimando, validação entre ciclones e diagnósticos.</td>
+</tr>
+<tr>
+<td>Como estimar magnitude condicionada à ocorrência?</td>
+<td><strong>AINDA NÃO TESTADO</strong></td>
+<td>Velocidade do vento está disponível nos pontos selecionados.</td>
+<td>Definição da distribuição-alvo, tratamento da seleção e validação.</td>
+</tr>
+<tr>
+<td>Como traduzir o padrão relativo para hazard geográfico?</td>
+<td><strong>AINDA NÃO TESTADO</strong></td>
+<td>Apenas direção conceitual.</td>
+<td>Frequência de eventos, trajetórias, duração, ocorrência e magnitude validadas.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fluxo-de-trabalho-científico">Fluxo de trabalho científico</h2>
+<p>O fluxograma resume a ordem lógica do projeto. Verde indica infraestrutura ou análise concluída; amarelo marca uma pendência ativa; azul identifica o próximo teste que precisa ser protocolado; cinza indica etapas futuras que ainda não devem ser descritas como metodologia executada.</p>
+<div class="project-flow" role="group" aria-label="Etapas do projeto científico">
+  <div class="flow-legend" aria-label="Legenda dos estados">
+    <span><i class="flow-dot completed"></i>Concluído</span>
+    <span><i class="flow-dot current"></i>Pendência ativa</span>
+    <span><i class="flow-dot next"></i>Próximo teste</span>
+    <span><i class="flow-dot future"></i>Futuro</span>
+  </div>
+  <ol class="flow-list">
+    <li class="flow-step completed">
+      <span class="flow-marker" aria-hidden="true">✓</span>
+      <div class="flow-content"><span class="flow-status">Concluído</span><h3>Base observacional</h3><p>Fonte operacional, catálogo horário, associação ao ERA5 de 6 h e suporte espacial foram reconstruídos e validados.</p></div>
+    </li>
+    <li class="flow-step completed">
+      <span class="flow-marker" aria-hidden="true">✓</span>
+      <div class="flow-content"><span class="flow-status">Concluído</span><h3><a href="exploratory_analysis.html">Análise exploratória</a></h3><p>Tracks, fases, distribuições de vento, ocorrência de excedências, quadrantes e um caso individual foram descritos.</p></div>
+    </li>
+    <li class="flow-step current">
+      <span class="flow-marker" aria-hidden="true">!</span>
+      <div class="flow-content"><span class="flow-status">Pendência ativa</span><h3><a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Proveniência do lifecycle</a></h3><p>A origem dos rótulos está confirmada; versão, parâmetros e artefatos da execução original do CycloPhaser permanecem desconhecidos.</p></div>
+    </li>
+    <li class="flow-step completed">
+      <span class="flow-marker" aria-hidden="true">✓</span>
+      <div class="flow-content"><span class="flow-status">Concluído · inconclusivo</span><h3><a href="e001_orientation.html">E-001 — orientação pelo movimento</a></h3><p>O protocolo pareado foi executado; núcleo, cauda e fases não concordaram, portanto nenhuma representação foi adotada.</p></div>
+    </li>
+    <li class="flow-step future">
+      <span class="flow-marker" aria-hidden="true">2</span>
+      <div class="flow-content"><span class="flow-status">Futuro</span><h3>Ocorrência e geometria</h3><p>Estimar onde excedências tendem a ocorrer e caracterizar seus conjuntos espaciais, com validação entre ciclones.</p></div>
+    </li>
+    <li class="flow-step future">
+      <span class="flow-marker" aria-hidden="true">3</span>
+      <div class="flow-content"><span class="flow-status">Futuro</span><h3>Magnitude condicional</h3><p>Descrever a intensidade do vento quando a excedência ocorre, sem confundi-la com probabilidade de ocorrência.</p></div>
+    </li>
+    <li class="flow-step future">
+      <span class="flow-marker" aria-hidden="true">4</span>
+      <div class="flow-content"><span class="flow-status">Futuro</span><h3>Validação e robustez</h3><p>Avaliar generalização, sensibilidade às escolhas e estabilidade dos resultados em ciclones não usados no ajuste.</p></div>
+    </li>
+    <li class="flow-step future">
+      <span class="flow-marker" aria-hidden="true">5</span>
+      <div class="flow-content"><span class="flow-status">Futuro</span><h3>Hazard geográfico</h3><p>Combinar frequência, trajetórias, duração, ocorrência e magnitude somente depois que os componentes forem validados.</p></div>
+    </li>
+  </ol>
+</div>
+
+<h2 id="sequência-prevista">Sequência prevista</h2>
+<h3 id="1-base-observacional--concluída-para-o-estágio-atual">1. Base observacional — concluída para o estágio atual</h3>
+<p>A proveniência das tracks foi estabelecida, a ponte temporal para ERA5 foi reconstruída e o suporte espacial foi explicitado. O recorte condicionado de vento foi caracterizado e suas convenções foram recuperadas.</p>
+<h3 id="2-exploração-descritiva--concluída">2. Exploração descritiva — concluída</h3>
+<p>A análise disponível descreveu cobertura das tracks, distribuições pontuais de vento, ocorrência de excedências por estado, contrastes por fase e quadrante e um evento individual. Ela gerou hipóteses, não testes confirmatórios.</p>
+<h3 id="3-e-001--orientação-pelo-movimento--concluído-e-inconclusivo">3. E-001 — orientação pelo movimento — concluído e inconclusivo</h3>
+<p>O primeiro experimento fixou q95, suporte, weighting por estado, grade de 50 km, métricas e critério antes do resultado. A comparação pareada mostrou concentração maior somente no núcleo A50, acompanhada por A75, A90 e RMS maiores e efeitos discordantes por fase. O <a href="e001_orientation.html">relatório E-001</a> preserva a hipótese, o resultado negativo parcial e a consequência: nenhuma orientação principal foi adotada.</p>
+<h3 id="4-ocorrência-geometria-e-magnitude--ainda-não-testadas">4. Ocorrência, geometria e magnitude — ainda não testadas</h3>
+<p>A execução de E-001 não autorizou escolher uma representação principal nem ajustar modelos. <em>Coverage probability</em> significa, neste projeto, a probabilidade condicional de uma posição relativa pertencer a um conjunto de excedência; magnitude condicional responde quanto vento ocorre quando há excedência. São perguntas diferentes e devem permanecer separadas.</p>
+<h3 id="5-hazard-geográfico--futuro">5. Hazard geográfico — futuro</h3>
+<p>Um <em>footprint</em> relativo ao ciclone não é, por si só, hazard. A tradução exigirá incorporar a frequência dos ciclones, suas trajetórias, duração dos estados e distribuições condicionais. Nenhuma dessas combinações foi executada.</p>
+<h2 id="critério-permanente-de-avanço">Critério permanente de avanço</h2>
+<p>Uma etapa só muda de <strong>PROPOSTO</strong> para <strong>EM TESTE</strong> quando seu protocolo identifica dados e versão, unidade de análise, variáveis, método, métricas e critério de decisão. Ela só passa a <strong>ADOTADO</strong>, <strong>REJEITADO</strong> ou <strong>INCONCLUSIVO</strong> depois que resultados, diagnósticos, limitações e consequência para o projeto forem registrados.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/scientific_plan.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

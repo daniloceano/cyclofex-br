@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Conhecimento disponível, lacunas, evidência necessária e dependências.">
   <title>Questões abertas · cyclofex-br</title>
   <link rel="stylesheet" href="docs.css">
 </head>
@@ -11,68 +12,125 @@
   <header class="topbar">
     <div class="shell topbar-inner">
       <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
-      <a class="back" href="index.html">← Voltar ao painel</a>
+      <span class="report-label">Relatório científico vivo</span>
     </div>
   </header>
-  <div class="title-band"><div class="shell"><p class="eyebrow">Registro científico</p><p class="page-name">Questões abertas</p><p class="title-note">Conteúdo gerado do documento Markdown do projeto.</p></div></div>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Síntese</p>
+      <p class="page-name">Questões abertas</p>
+      <p class="title-note">Conhecimento disponível, lacunas, evidência necessária e dependências.</p>
+    </div>
+  </div>
   <div class="shell layout">
-    <nav class="side-nav" aria-label="Documentos do projeto">
-      <p class="side-label">Documentação</p>
-      <a href="open_questions.html">Questões abertas</a>
-      <a href="experiments.html">Experimentos</a>
-      <a href="decisions.html">Decisões</a>
-      <a href="methodology.html">Metodologia</a>
-      <a href="assumptions.html">Pressupostos</a>
-      <a href="data_dictionary.html">Dicionário de dados</a>
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html" class="active" aria-current="page">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="questões-abertas">Questões abertas</h1>
-<p>Este registro distingue o que ainda precisa ser decidido do que já tem evidência. IDs <code>Q-...</code> são persistentes; ao resolver uma questão, preserve a entrada e aponte para a evidência e a decisão correspondentes. Status possíveis: <code>OPEN</code>, <code>UNDER_TEST</code>, <code>RESOLVED</code>, <code>DEFERRED</code>.</p>
+<h2 id="como-este-registro-funciona">Como este registro funciona</h2>
+<p>Questões recebem IDs persistentes e continuam no histórico depois de resolvidas. Os status são <code>OPEN</code>, <code>UNDER_TEST</code>, <code>RESOLVED</code> e <code>DEFERRED</code>. Uma questão só é resolvida no escopo que sua resposta declara; incertezas remanescentes devem ser vinculadas a uma nova pergunta, e não ocultadas.</p>
+<h2 id="prioridades-atuais">Prioridades atuais</h2>
+<table>
+<thead>
+<tr>
+<th>Questão</th>
+<th>Status</th>
+<th>Dependência científica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004 — reprodução das fases</a></td>
+<td><code>OPEN</code></td>
+<td>Uso confirmatório do lifecycle e eventual reclassificação</td>
+</tr>
+<tr>
+<td><a href="#q-006--qual-definição-de-extremo-e-de-objeto-espacial-será-adotada">Q-006 — definição de extremo e objeto espacial</a></td>
+<td><code>OPEN</code></td>
+<td>Modelos posteriores; q95 em E-001 foi apenas uma escolha operacional preregistrada</td>
+</tr>
+<tr>
+<td><a href="#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências">Q-007 — escolha da orientação</a></td>
+<td><code>OPEN</code></td>
+<td>E-001 foi inconclusivo e não adotou representação principal</td>
+</tr>
+</tbody>
+</table>
 <h2 id="q-001--qual-é-a-unidade-de-uma-linha-e-como-ela-se-vincula-a-um-ciclone">Q-001 · Qual é a unidade de uma linha e como ela se vincula a um ciclone?</h2>
 <ul>
 <li><strong>Status:</strong> <code>RESOLVED</code></li>
-<li><strong>Resposta atual:</strong> a unidade de análise é o ciclone, identificado por <code>track_id</code>; há 1.781 ciclones distintos. Uma linha armazena um ponto de grade associado a um ciclone e instante. A chave mínima (<code>track_id</code>, <code>time</code>, <code>lat</code>, <code>lon</code>) não tem duplicatas no conjunto atual.</li>
-<li><strong>Evidência:</strong> <a href="../data/COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md"><code>COLUNAS_cyclone_exceedances_by_track_2010_2020_p90.md</code></a>, verificação direta do arquivo e <a href="decisions.html#d-002--usar-o-ciclone-como-unidade-de-análise">D-002</a>.</li>
+<li><strong>Por que importa:</strong> confundir pontos de grade com eventos independentes produziria pseudorreplicação e conclusões excessivamente precisas.</li>
+<li><strong>O que sabemos:</strong> a unidade científica fundamental é o ciclone, identificado por <code>track_id</code>; há 1.781 no recorte atual. Uma linha armazena um ponto de grade associado a um ciclone e instante. A chave <code>track_id + time + lat + lon</code> não tem duplicatas.</li>
+<li><strong>O que ainda não sabemos:</strong> análises futuras podem exigir estados ou <em>excursion sets</em> como unidade intermediária; isso deverá ser definido por pergunta, mantendo o agrupamento por ciclone.</li>
+<li><strong>Evidência que resolveu a questão:</strong> documentação das colunas, inspeção direta das chaves e <a href="decisions.html#d-002--usar-o-ciclone-como-unidade-de-análise">D-002</a>.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> contagens, desenho de treino e teste, inferência e validação.</li>
 </ul>
 <h2 id="q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência">Q-002 · Como foram gerados <code>wind_speed</code> e os indicadores de excedência?</h2>
 <ul>
-<li><strong>Status:</strong> <code>RESOLVED</code></li>
-<li><strong>Resposta atual:</strong> <code>wind_speed</code> é calculado como <code>sqrt(u10² + v10²)</code> a partir do ERA5 single-levels na grade nativa de 0,25°. Os percentis locais usam todos os 16.072 campos de 6 h entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC, ou seja, <strong>11 anos civis completos</strong>, sem estratificação e sem máscara terra/oceano. <code>numpy.percentile</code> foi usado ponto a ponto com o método padrão <code>linear</code>.</li>
-<li><strong>Seleção das linhas:</strong> um ponto é emitido quando <code>distance_km &lt;= 1100</code> e <code>wind_speed &gt; min(15,6; q90_local)</code>. As seis flags são calculadas depois da seleção, sempre com comparação estrita <code>&gt;</code>.</li>
-<li><strong>Explicação das 13.404 linhas com <code>exceeded_q90 = false</code>:</strong> elas entram pelo limiar fixo de 15,6 m/s em locais onde <code>q90_local &gt; 15,6</code>; no arquivo local, todas têm <code>15,6 &lt; wind_speed &lt;= q90_local</code>.</li>
-<li><strong>Evidência:</strong> reconstrução do fluxo e referências de código em <a href="solicitacao_agente_q002_q003.html#q-002--como-foram-gerados-wind_speed-e-os-indicadores-de-excedência"><code>solicitacao_agente_q002_q003.md</code></a>, acompanhada de verificação das contagens no arquivo local.</li>
-<li><strong>Ressalvas de proveniência:</strong> a versão/reprocessamento exato do ERA5 (<code>expver</code>) e uma versão formal do <code>local_percentiles.nc</code> não foram recuperados. Essas lacunas limitam a identificação exata dos insumos, mas não deixam a regra de cálculo ou seleção desconhecida.</li>
+<li><strong>Status:</strong> <code>RESOLVED</code> quanto à regra de cálculo e seleção; permanecem lacunas de versão dos insumos.</li>
+<li><strong>Por que importa:</strong> a seleção do arquivo condiciona todas as distribuições, ausências e comparações exploratórias.</li>
+<li><strong>O que sabemos:</strong> <code>wind_speed</code> é a magnitude do vento ERA5 a 10 m na grade de 0,25°. Os percentis locais usam 16.072 campos de 6 h de 2010–2020, sem estratificação ou máscara terra–oceano, com interpolação <code>linear</code> de percentis. Uma linha entra quando está a até 1.100 km e satisfaz <code>wind_speed &gt; min(15,6 m/s; q90_local)</code>; todas as flags usam comparação estrita <code>&gt;</code>.</li>
+<li><strong>O que ainda não sabemos:</strong> versão/reprocessamento ERA5 (<code>expver</code>) e versão formal do arquivo de percentis. As 13.404 linhas com <code>exceeded_q90 = false</code> são explicadas pelo limiar fixo em locais onde <code>q90_local &gt; 15,6</code>, mas a proveniência exata dos insumos continua incompleta.</li>
+<li><strong>Evidência necessária para fechar a proveniência restante:</strong> manifesto ou arquivos originais com versão, hash e metadados do ERA5 e dos percentis.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> reprodução literal do produto original. E-001 usou as flags existentes como entrada versionada e não apresentou o arquivo como reconstrução do ERA5 original.</li>
+<li><strong>Evidência atual:</strong> <a href="internal/q002_q003_provenance.html">investigação técnica de Q-002 e Q-003</a> e contagens verificadas no arquivo local.</li>
 </ul>
 <h2 id="q-003--quais-são-as-convenções-espaciais-e-temporais-usadas-neste-arquivo">Q-003 · Quais são as convenções espaciais e temporais usadas neste arquivo?</h2>
 <ul>
-<li><strong>Status:</strong> <code>RESOLVED</code></li>
-<li><strong>Centro e tempo:</strong> <code>lat_center</code> e <code>lon_center</code> vêm das colunas <code>lat vor</code> e <code>lon vor</code> do catálogo de tracks. A posição não é interpolada; cada hora de track é associada ao campo ERA5 de 6 h mais próximo, com diferença máxima de 3 h, mantendo uma posição por (<code>track_id</code>, instante ERA5).</li>
-<li><strong>Distância e domínio:</strong> <code>distance_km</code> usa haversine sobre esfera com raio de 6.371 km. O domínio regular de 0,25° vai de 10°S a 65°S e de 85°W a 15°W. O círculo de 1.100 km é truncado nas bordas sem sinalização em coluna.</li>
-<li><strong>Quadrante fixo:</strong> os códigos 1–4 são NO, NE, SE e SO, calculados pelos sinais de <code>Δlat</code> e <code>Δlon</code>. Os eixos pertencem ao norte e ao leste; o ponto coincidente com o centro cai em NE.</li>
-<li><strong>Quadrante relativo ao movimento:</strong> a direção usa diferença centrada entre centros vizinhos na série de 6 h, intervalo nominal de 12 h; nas pontas usa diferença simples de 6 h. O vetor é normalizado após corrigir longitude por <code>cos(lat)</code>. Deslocamento nulo usa fallback para leste. Os códigos são frente-esquerda, frente-direita, trás-direita e trás-esquerda.</li>
-<li><strong>Evidência:</strong> fórmulas, pseudocódigo e referências em <a href="solicitacao_agente_q002_q003.html#q-003--quais-convenções-espaciais-e-temporais-foram-usadas"><code>solicitacao_agente_q002_q003.md</code></a>, além das verificações locais de 0 chaves duplicadas, 1.833 estados com centro fora do domínio e 414.124 pontos-hora associados a mais de um ciclone.</li>
-<li><strong>Limitações conhecidas:</strong> a justificativa metodológica original do raio de 1.100 km não foi localizada e o número de casos que usou fallback de direção exige reprocessar o catálogo. Essas lacunas não deixam a convenção de cálculo desconhecida.</li>
+<li><strong>Status:</strong> <code>RESOLVED</code> quanto às convenções computacionais.</li>
+<li><strong>Por que importa:</strong> tempo, distância, domínio e orientação determinam quais pontos pertencem a cada estado e quadrante.</li>
+<li><strong>O que sabemos:</strong> centros vêm de <code>lat vor</code> e <code>lon vor</code>; a track é associada ao campo de 6 h mais próximo, sem interpolação e com diferença máxima de 3 h. A distância é haversine numa esfera de 6.371 km, o domínio é 65°S–10°S e 85°W–15°W, e o raio é 1.100 km. Quadrantes fixos e relativos ao movimento, inclusive desempates e fallback leste, estão reproduzidos.</li>
+<li><strong>O que ainda não sabemos:</strong> a justificativa científica do raio. E-001 substituiu o fallback leste por um critério explícito: 284 de 23.334 estados com suporte tinham translação abaixo de 5 km/h e foram excluídos da comparação pareada.</li>
+<li><strong>Evidência necessária para avaliar adequação:</strong> justificativa original ou análise de sensibilidade futura do raio. A confiabilidade do heading usada em E-001 está documentada no próprio experimento.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> reconstrução do suporte está resolvida; adoção científica de raio e representação depende de <a href="#q-006--qual-definição-de-extremo-e-de-objeto-espacial-será-adotada">Q-006</a>.</li>
+<li><strong>Evidência atual:</strong> <a href="internal/q002_q003_provenance.html">investigação técnica de Q-002 e Q-003</a>, zero chaves duplicadas, 1.833 estados presentes com centro fora do domínio e 414.124 pontos–hora ligados a mais de um ciclone.</li>
 </ul>
 <h2 id="q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004 · Como foram produzidas e como devem ser tratadas as fases?</h2>
 <ul>
 <li><strong>Status:</strong> <code>OPEN</code></li>
-<li><strong>Fatos confirmados:</strong> <code>phase</code> é cópia exata de <code>period</code> no arquivo oficial do <a href="https://zenodo.org/records/18133432">Zenodo 18133432</a>, adotado em <a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004</a>. A fonte declara uso do <a href="https://doi.org/10.21105/joss.07363">CycloPhaser</a> e contém literalmente <code>incipient</code>, <code>incipient 2</code>, <code>intensification</code>, <code>intensification 2</code>, <code>mature</code>, <code>mature 2</code>, <code>decay</code>, <code>decay 2</code>, <code>residual</code> e 50.069 horas serializadas como <code>nan</code>, interpretadas como nulas. Nos 20.101 estados presentes no Parquet, <code>phase == period</code> em todos os casos.</li>
-<li><strong>Evidência de proveniência:</strong> o catálogo horário canônico preserva os rótulos sem agrupamento. A validação reproduzível está em <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a>. O artigo e a <a href="https://cyclophaser.readthedocs.io/en/stable/overview.html">documentação do CycloPhaser</a> explicam o procedimento geral baseado na vorticidade central, sua tendência, filtragem, suavização, picos e vales.</li>
-<li><strong>Uso atual:</strong> apenas as figuras e resumos exploratórios agrupam ocorrências com sufixo às fases principais, conforme <a href="decisions.html#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003</a>. O dado canônico mantém os valores originais; <code>residual</code> e ausências permanecem separados.</li>
-<li><strong>Por que permanece aberta:</strong> o Zenodo não preserva a versão exata do CycloPhaser usada nessa execução, parâmetros, configuração de suavização e filtros, arquivos intermediários <code>periods.csv</code>, ambiente ou commit da execução. A presença dos rótulos demonstra sua origem no catálogo, mas não basta para reproduzir operacionalmente os limites de fase, os ciclos com sufixo <code>2</code>, <code>residual</code> e os intervalos nulos.</li>
-<li><strong>Evidência necessária para encerrar:</strong> identificação do ambiente/versão e configuração originais ou uma nova classificação versionada e validada contra o catálogo atual. Uma futura rodada com CycloPhaser 2.0 não deve substituir silenciosamente esses rótulos: exigirá novo produto, validação e decisão.</li>
+<li><strong>Por que importa:</strong> fases delimitam comparações científicas e podem se tornar covariáveis de modelos futuros; fronteiras não reproduzíveis limitam auditoria e sensibilidade.</li>
+<li><strong>O que sabemos:</strong> <code>phase</code> copia <code>period</code> do Zenodo 18133432. A fonte declara uso do CycloPhaser e contém <code>incipient</code>, <code>intensification</code>, <code>mature</code>, <code>decay</code>, repetições com sufixo <code>2</code>, <code>residual</code> e 50.069 horas nulas. Todos os 20.101 estados presentes correspondem exatamente ao recorte de vento. O sufixo indica repetição não contígua; <a href="decisions.html#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003</a> permite agrupamento preregistrado por tipo físico quando os valores literais também forem preservados.</li>
+<li><strong>O que ainda não sabemos:</strong> versão do CycloPhaser, parâmetros, suavização, filtros, configuração, ambiente e artefatos intermediários da execução original.</li>
+<li><strong>Evidência necessária:</strong> ambiente e configuração originais ou nova classificação versionada, preservada como produto distinto e validada contra o catálogo atual.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> análises confirmatórias por fase e qualquer substituição dos rótulos. A descrição dos rótulos fornecidos pode continuar com a limitação explícita.</li>
 </ul>
 <h2 id="q-005--qual-é-a-fonte-operacional-dos-estados-de-track-e-lifecycle">Q-005 · Qual é a fonte operacional dos estados de track e lifecycle?</h2>
 <ul>
 <li><strong>Status:</strong> <code>RESOLVED</code></li>
-<li><strong>Resposta atual:</strong> o arquivo <code>tracks_SAt_filtered_with_energetics.csv</code> do Zenodo 18133432, DOI <a href="https://doi.org/10.5281/zenodo.18133432"><code>10.5281/zenodo.18133432</code></a>, é a fonte canônica operacional. O catálogo Mendeley V4 permanece apenas como referência histórica da família de tracks porque IDs e universo de sistemas não são estáveis entre as duas bases.</li>
-<li><strong>Transformação validada:</strong> o CSV oficial gera 631.009 estados horários de 6.789 tracks e 109.857 estados associados ao ERA5 de 6 h. No período do Parquet atual, são 29.311 estados: 20.101 presentes e 9.210 ausentes; entre os ausentes, 3.233 têm suporte e 5.977 não intersectam o domínio.</li>
-<li><strong>Evidência:</strong> <a href="../outputs/00_data_acquisition/provenance_manifest.json"><code>provenance_manifest.json</code></a>, <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a> e <a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004</a>.</li>
+<li><strong>Por que importa:</strong> o recorte condicionado perde estados inteiros e a referência histórica usa outro namespace; sem fonte canônica, o denominador temporal seria ambíguo.</li>
+<li><strong>O que sabemos:</strong> o Zenodo 18133432 é a fonte operacional. Ele gera 631.009 horas de 6.789 tracks e 109.857 estados de 6 h. No período comparável, há 29.311 estados: 20.101 presentes, 3.233 ausentes com suporte e 5.977 sem suporte. O Mendeley V4 permanece referência histórica.</li>
+<li><strong>O que ainda não sabemos:</strong> nada que impeça o uso operacional atual; novas versões da fonte exigirão nova validação.</li>
+<li><strong>Evidência que resolveu a questão:</strong> <a href="../outputs/00_data_acquisition/provenance_manifest.json"><code>provenance_manifest.json</code></a>, <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a> e <a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004</a>.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> preparação da amostra, suporte espacial e reprodutibilidade de todas as análises posteriores.</li>
+</ul>
+<h2 id="q-006--qual-definição-de-extremo-e-de-objeto-espacial-será-adotada">Q-006 · Qual definição de extremo e de objeto espacial será adotada?</h2>
+<ul>
+<li><strong>Status:</strong> <code>OPEN</code></li>
+<li><strong>Por que importa:</strong> threshold, evento, suporte e denominador determinam o significado de ocorrência, geometria e magnitude. Sem essas definições, modelos distintos podem responder a perguntas incompatíveis.</li>
+<li><strong>O que sabemos:</strong> o produto atual oferece limiares fixos e quantis locais, mas foi criado como recorte experimental. Células e estados ausentes podem ser classificados apenas depois de verificar suporte. Evento, <em>excursion set</em>, <em>footprint</em> e hazard são objetos diferentes.</li>
+<li><strong>O que ainda não sabemos:</strong> threshold científico, período de referência, unidade do evento, tratamento de suporte parcial, raio adotado, estimando espacial e critério para comparar alternativas.</li>
+<li><strong>Evidência necessária:</strong> comparação preregistrada das definições candidatas sem escolher o threshold por aparência. E-001 fixou q95 exclusivamente para testar orientação e não resolveu esta pergunta mais ampla.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> modelos de ocorrência, geometria, magnitude e hazard. E-001 pôde ser executado porque tratou q95 como controle fixo, não como definição final.</li>
+</ul>
+<h2 id="q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências">Q-007 · A orientação pelo movimento organiza melhor as excedências?</h2>
+<ul>
+<li><strong>Status:</strong> <code>OPEN</code> após resultado <code>INCONCLUSIVE</code> de E-001.</li>
+<li><strong>Por que importa:</strong> uma representação principal inadequada pode borrar estrutura comum ou introduzir complexidade sem ganho global.</li>
+<li><strong>O que sabemos:</strong> <a href="e001_orientation.html">E-001</a> comparou os mesmos 1.784 ciclones, 23.050 estados, células e flags q95. <em>Motion-relative</em> reduziu A50, mas aumentou A75, A90 e RMS; a diferença de entropia incluiu zero e as fases discordaram. A rotação revelou assimetria atrás e à esquerda do movimento sem demonstrar maior concentração global.</li>
+<li><strong>O que ainda não sabemos:</strong> se weighting por ciclone, outro threshold preregistrado, normalização pelo tamanho ou estratificação física explicariam o conflito entre núcleo e cauda. Essas hipóteses não podem ser ajustadas retrospectivamente dentro de E-001.</li>
+<li><strong>Evidência necessária:</strong> novo protocolo que altere um fator por vez, preserve o pareamento e mantenha o ciclone como unidade de incerteza.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> escolha de representação para modelos espaciais posteriores. Conforme <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>, nenhuma representação foi adotada como superior.</li>
 </ul>
 
-      <div class="source-note">Fonte canônica: <a href="../docs/open_questions.md">documento Markdown</a>. Atualize as páginas com <code>python3 dashboard/build_docs.py</code> após editar a documentação.</div>
+      <div class="source-note">Fonte canônica: <a href="../docs/open_questions.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
     </main>
   </div>
-  <footer><div class="shell">cyclofex-br · <a href="index.html">Painel do projeto</a></div></footer>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
 </body>
 </html>

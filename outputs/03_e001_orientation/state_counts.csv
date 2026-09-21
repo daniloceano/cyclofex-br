@@ -1,0 +1,33 @@
+phase_literal,phase_group,support_status,heading_reliable,cyclones,states,q95_positive_states,q95_cells
+decay,decay,full_support,true,1042,3711,2592,1273303
+decay,decay,full_support,false,44,67,46,13726
+decay,decay,partial_support,true,781,3656,1878,986061
+decay,decay,partial_support,false,30,61,22,9771
+decay 2,decay,full_support,true,155,394,266,78630
+decay 2,decay,full_support,false,3,9,3,350
+decay 2,decay,partial_support,true,89,341,155,62761
+decay 2,decay,partial_support,false,7,11,5,173
+incipient,incipient,full_support,true,1149,2451,2031,721987
+incipient,incipient,full_support,false,17,19,17,3966
+incipient,incipient,partial_support,true,36,69,47,18078
+incipient,incipient,partial_support,false,1,1,1,139
+intensification,intensification,full_support,true,1632,6809,5705,3068392
+intensification,intensification,full_support,false,40,58,50,14938
+intensification,intensification,partial_support,true,568,1926,1390,888791
+intensification,intensification,partial_support,false,4,5,3,2995
+intensification 2,intensification,full_support,true,62,139,108,53904
+intensification 2,intensification,partial_support,true,56,184,98,36137
+intensification 2,intensification,partial_support,false,4,10,5,222
+mature,mature,full_support,true,678,1145,967,863567
+mature,mature,full_support,false,16,21,18,12335
+mature,mature,partial_support,true,497,1065,821,702403
+mature,mature,partial_support,false,10,11,7,7998
+mature 2,mature,full_support,true,3,5,5,8827
+mature 2,mature,partial_support,true,27,46,28,13527
+mature 2,mature,partial_support,false,2,2,2,493
+missing,missing,full_support,true,597,640,525,191452
+missing,missing,full_support,false,7,7,6,1063
+missing,missing,partial_support,true,184,185,103,44698
+missing,missing,partial_support,false,2,2,1,103
+residual,residual,full_support,true,46,143,113,38756
+residual,residual,partial_support,true,52,141,89,39296

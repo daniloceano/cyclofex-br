@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Linhagem, versões, produtos, código e comandos.">
+  <title>Proveniência e reprodutibilidade · cyclofex-br</title>
+  <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Auditoria</p>
+      <p class="page-name">Proveniência e reprodutibilidade</p>
+      <p class="title-note">Linhagem, versões, produtos, código e comandos.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html" class="active" aria-current="page">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="proveniência-e-reprodutibilidade">Proveniência e reprodutibilidade</h1>
+<h2 id="papel-desta-camada">Papel desta camada</h2>
+<p>A narrativa científica explica o que foi feito e o que significa. Esta página conecta cada afirmação aos dados, versões, produtos e código necessários para auditoria computacional. Os detalhes de implementação ficam na <a href="internal/index.html">referência técnica</a>.</p>
+<h2 id="linhagem-dos-dados">Linhagem dos dados</h2>
+<table>
+<thead>
+<tr>
+<th>Objeto científico</th>
+<th>Fonte ou produto</th>
+<th>Versão e integridade</th>
+<th>Transformação e evidência</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tracks e lifecycle horários</td>
+<td>Zenodo 18133432, <code>tracks_SAt_filtered_with_energetics.csv</code></td>
+<td>registro v1; MD5 <code>a413e7f8…1d63d72</code>; SHA-256 <code>bf1059ab…d63cc26</code></td>
+<td>Catálogo mínimo validado contra schema, contagens e ordem</td>
+</tr>
+<tr>
+<td>Catálogo horário canônico</td>
+<td><a href="../data/tracks_SAt_1979_2020.parquet"><code>tracks_SAt_1979_2020.parquet</code></a></td>
+<td>SHA-256 <code>7d8d628a…a71c553</code>; 631.009 linhas</td>
+<td>Seleção e renomeação de sete campos; fases sem agrupamento</td>
+</tr>
+<tr>
+<td>Estados de 6 h e suporte</td>
+<td><a href="../data/cyclone_states_era5_6h_1979_2020.parquet"><code>cyclone_states_era5_6h_1979_2020.parquet</code></a></td>
+<td>SHA-256 <code>4865bbc3…864782</code>; 109.857 linhas</td>
+<td>Vizinho temporal, deduplicação por estado e suporte de 1.100 km</td>
+</tr>
+<tr>
+<td>Vento e excedências</td>
+<td><code>cyclone_exceedances_by_track_2010_2020_p90.parquet</code></td>
+<td>SHA-256 <code>3913a1d8…d9efa0c</code>; 17.182.983 linhas</td>
+<td>Produto preexistente condicionado por intensidade</td>
+</tr>
+<tr>
+<td>Metadados estruturais</td>
+<td><a href="../outputs/01_data_overview/structural_summary.json"><code>structural_summary.json</code></a></td>
+<td>contém hash da entrada e schema</td>
+<td>Caracterização reproduzível do Parquet de vento</td>
+</tr>
+<tr>
+<td>Resultados exploratórios</td>
+<td><a href="../outputs/02_exploratory_analysis/analysis_summary.json"><code>analysis_summary.json</code></a> e tabelas/figuras associadas</td>
+<td>entrada identificada pelo mesmo SHA-256</td>
+<td>Consultas descritivas, figuras e exemplo determinístico</td>
+</tr>
+<tr>
+<td>E-001 — orientação</td>
+<td><a href="../outputs/03_e001_orientation/summary.json"><code>summary.json</code></a>, tabelas e figuras associadas</td>
+<td>protocolo, script, entradas e semente registrados no resumo</td>
+<td>Coordenadas contínuas, suporte reconstruído, métricas e bootstrap por ciclone</td>
+</tr>
+</tbody>
+</table>
+<p>O manifesto completo, com schemas, versões de ambiente e hashes dos scripts, está em <a href="../outputs/00_data_acquisition/provenance_manifest.json"><code>provenance_manifest.json</code></a>. Os checks e contagens da reconstrução estão em <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a>.</p>
+<h2 id="rastreabilidade-por-etapa-científica">Rastreabilidade por etapa científica</h2>
+<h3 id="dados-e-preparação">Dados e preparação</h3>
+<ul>
+<li><strong>Fonte:</strong> Zenodo 18133432; Mendeley V4 apenas como genealogia histórica.</li>
+<li><strong>Produtos:</strong> catálogos horário e de 6 h.</li>
+<li><strong>Código:</strong> <a href="../scripts/00_data_acquisition/download_tracks_zenodo.py"><code>download_tracks_zenodo.py</code></a> e <a href="../scripts/00_data_acquisition/prepare_tracks.py"><code>prepare_tracks.py</code></a>.</li>
+<li><strong>Decisão:</strong> <a href="decisions.html#d-004--adotar-o-zenodo-18133432-como-fonte-canônica-operacional-das-tracks-e-do-lifecycle">D-004</a>.</li>
+<li><strong>Questão ainda aberta:</strong> <a href="open_questions.html#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases">Q-004</a>.</li>
+</ul>
+<h3 id="caracterização-e-análise-exploratória">Caracterização e análise exploratória</h3>
+<ul>
+<li><strong>Entrada:</strong> recorte de vento com SHA-256 <code>3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c</code>.</li>
+<li><strong>Código:</strong> <a href="../scripts/01_data_overview/inspect_parquet.py"><code>inspect_parquet.py</code></a> e <a href="../scripts/02_exploratory_analysis/exploratory_analysis.py"><code>exploratory_analysis.py</code></a>.</li>
+<li><strong>Tabelas:</strong> <a href="../outputs/02_exploratory_analysis/phase_statistics.csv"><code>phase_statistics.csv</code></a>, <a href="../outputs/02_exploratory_analysis/quadrant_statistics.csv"><code>quadrant_statistics.csv</code></a>, <a href="../outputs/02_exploratory_analysis/cyclone_timestep_exceedances_by_phase.csv"><code>cyclone_timestep_exceedances_by_phase.csv</code></a> e <a href="../outputs/02_exploratory_analysis/phase_quadrant_exceedances.csv"><code>phase_quadrant_exceedances.csv</code></a>.</li>
+<li><strong>Figuras:</strong> <a href="assets/02_exploratory_analysis/all_tracks_by_phase.png">tracks</a>, <a href="assets/02_exploratory_analysis/wind_speed_boxplots.png">boxplots</a>, <a href="assets/02_exploratory_analysis/exceedance_occurrence_by_phase.png">ocorrências</a> e <a href="assets/02_exploratory_analysis/exceedances_by_phase_and_quadrant.png">fase por quadrante</a>.</li>
+<li><strong>Caso individual:</strong> <a href="assets/02_exploratory_analysis/max_wind_cyclone_animation.mp4">vídeo</a> e <a href="assets/02_exploratory_analysis/max_wind_cyclone_peak_frame.png">quadro do máximo</a>.</li>
+<li><strong>Decisões:</strong> <a href="decisions.html#d-002--usar-o-ciclone-como-unidade-de-análise">D-002</a> e <a href="decisions.html#d-003--agrupar-rótulos-phase-2-nas-figuras-exploratórias">D-003</a>.</li>
+</ul>
+<h3 id="e-001--orientação-pelo-movimento">E-001 — orientação pelo movimento</h3>
+<ul>
+<li><strong>Protocolo congelado:</strong> <a href="../scripts/03_e001_orientation/protocol.json"><code>protocol.json</code></a>, com q95, grade de 50 km, corte de 5 km/h, weighting, métricas, bootstrap e critério de decisão.</li>
+<li><strong>Código:</strong> <a href="../scripts/03_e001_orientation/e001_orientation.py"><code>e001_orientation.py</code></a> e <a href="../scripts/03_e001_orientation/test_orientation.py"><code>test_orientation.py</code></a>.</li>
+<li><strong>Resumo:</strong> <a href="../outputs/03_e001_orientation/summary.json"><code>summary.json</code></a>, incluindo hashes SHA-256 das três entradas, protocolo e script.</li>
+<li><strong>Tabelas:</strong> métricas por estrato e fase literal, comparações com IC, réplicas bootstrap, bins com suporte, distribuição da translação e contagens de estados.</li>
+<li><strong>Figuras:</strong> comparação global, estratos de fase, diagnóstico do heading e sanidade da rotação.</li>
+<li><strong>Semente e réplicas:</strong> <code>20260921</code>, 500 réplicas pareadas por <code>track_id</code>.</li>
+<li><strong>Decisão:</strong> <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
+</ul>
+<h2 id="reproduzir-a-preparação">Reproduzir a preparação</h2>
+<p>As dependências estão fixadas em <a href="../requirements.txt"><code>requirements.txt</code></a>. A sequência técnica é:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> <span class="at">-m</span> pip install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/00_data_acquisition/download_tracks_zenodo.py</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/00_data_acquisition/prepare_tracks.py</span></code></pre></div>
+<p>O download bruto fica em cache ignorado pelo Git. Ele só é reutilizado depois da validação de tamanho, MD5, SHA-256 e schema.</p>
+<h2 id="reproduzir-a-análise-exploratória">Reproduzir a análise exploratória</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/01_data_overview/inspect_parquet.py</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/02_exploratory_analysis/exploratory_analysis.py</span></code></pre></div>
+<p>A animação requer <code>ffmpeg</code>; o Cartopy pode baixar a costa Natural Earth para seu cache na primeira execução. Esses comandos reproduzem produtos existentes; eles não foram executados nesta reorganização documental.</p>
+<h2 id="reproduzir-e-001">Reproduzir E-001</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> <span class="at">-m</span> unittest scripts/03_e001_orientation/test_orientation.py</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/03_e001_orientation/e001_orientation.py</span></code></pre></div>
+<p>O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos de <code>outputs/03_e001_orientation/</code>. O horário de conclusão no JSON é o único campo não determinístico.</p>
+<h2 id="gerar-o-relatório-html">Gerar o relatório HTML</h2>
+<p>Os arquivos Markdown em <code>docs/</code> são as fontes canônicas. Com Pandoc disponível:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> dashboard/build_docs.py</span></code></pre></div>
+<p>O resultado é HTML estático: abrir <a href="../dashboard/index.html"><code>dashboard/index.html</code></a> não exige servidor, JavaScript ou acesso aos scripts científicos.</p>
+<h2 id="lacunas-de-reprodutibilidade-conhecidas">Lacunas de reprodutibilidade conhecidas</h2>
+<ul>
+<li>versão/reprocessamento exato do ERA5 do produto original;</li>
+<li>artefato versionado dos percentis locais;</li>
+<li>versão, ambiente e configuração da execução original do CycloPhaser;</li>
+<li>justificativa científica original do raio de 1.100 km;</li>
+<li>adequação científica do corte de heading de 5 km/h fora do escopo específico de E-001; o fallback leste não foi usado no experimento.</li>
+</ul>
+<p>Essas lacunas não são preenchidas por suposição. Elas aparecem também em <a href="open_questions.html">questões abertas</a> e <a href="limitations.html">limitações</a>.</p>
+
+      <div class="source-note">Fonte canônica: <a href="../docs/reproducibility.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

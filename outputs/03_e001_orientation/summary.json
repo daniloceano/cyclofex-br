@@ -1,0 +1,752 @@
+{
+  "comparisons": {
+    "all": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": -0.0159191774727675,
+          "ci95_high": 0.015149656357628927,
+          "ci95_low": -0.0413960813024665,
+          "probability_difference_below_zero": 0.846
+        },
+        "area50_km2": {
+          "bootstrap_median": -32500.0,
+          "ci95_high": -15000.0,
+          "ci95_low": -45000.0,
+          "probability_difference_below_zero": 1.0
+        },
+        "area75_km2": {
+          "bootstrap_median": 42500.0,
+          "ci95_high": 67500.0,
+          "ci95_low": 17500.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "area90_km2": {
+          "bootstrap_median": 95000.0,
+          "ci95_high": 123812.49999999994,
+          "ci95_low": 65000.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -25.444832067068504,
+          "ci95_high": -18.38680799925095,
+          "ci95_low": -31.735192660457848,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_x_km": {
+          "bootstrap_median": -24.47780128918314,
+          "ci95_high": -8.428957051507036,
+          "ci95_low": -41.60461762385907,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -327.46059154054427,
+          "ci95_high": -311.91988793610574,
+          "ci95_low": -342.6720294434219,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": -0.0022268295288085938,
+          "ci95_high": 0.005730056762695308,
+          "ci95_low": -0.010500681400299071,
+          "probability_difference_below_zero": 0.682
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 7.740018348918454,
+          "ci95_high": 9.766240152587008,
+          "ci95_low": 5.446531842836163,
+          "probability_difference_below_zero": 0.0
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.0374692096934086,
+        "area50_km2": 967500.0,
+        "area75_km2": 1817500.0,
+        "area90_km2": 2660000.0,
+        "centroid_distance_km": 219.92356574904207,
+        "centroid_x_km": -112.21211081394054,
+        "centroid_y_km": 189.14231932186186,
+        "entropy_nats": 7.1150546566188435,
+        "mass_total_state_equivalents": 16921.0,
+        "occupied_bins": 1600,
+        "rms_about_centroid_km": 672.0603931188265
+      },
+      "cyclones": 1784,
+      "eligible_states": 23050,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.022354857799833,
+        "area50_km2": 935000.0,
+        "area75_km2": 1862500.0,
+        "area90_km2": 2757500.0,
+        "centroid_distance_km": 194.57530674019543,
+        "centroid_x_km": -136.35521931011095,
+        "centroid_y_km": -138.80491403380748,
+        "entropy_nats": 7.1127623761301635,
+        "mass_total_state_equivalents": 16921.001953125,
+        "occupied_bins": 1600,
+        "rms_about_centroid_km": 679.7461695993269
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": -0.015114351893575684,
+        "area50_km2": -32500.0,
+        "area75_km2": 45000.0,
+        "area90_km2": 97500.0,
+        "centroid_distance_km": -25.34825900884664,
+        "centroid_x_km": -24.143108496170413,
+        "centroid_y_km": -327.94723335566937,
+        "entropy_nats": -0.0022922804886800208,
+        "rms_about_centroid_km": 7.685776480500408
+      },
+      "q95_positive_states": 16921
+    },
+    "decay": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": 0.009221385684365813,
+          "ci95_high": 0.052112399332411415,
+          "ci95_low": -0.03859081444437588,
+          "probability_difference_below_zero": 0.314
+        },
+        "area50_km2": {
+          "bootstrap_median": -35000.0,
+          "ci95_high": -5000.0,
+          "ci95_low": -67500.0,
+          "probability_difference_below_zero": 0.99
+        },
+        "area75_km2": {
+          "bootstrap_median": 27500.0,
+          "ci95_high": 72500.0,
+          "ci95_low": -20000.0,
+          "probability_difference_below_zero": 0.128
+        },
+        "area90_km2": {
+          "bootstrap_median": 90000.0,
+          "ci95_high": 137500.0,
+          "ci95_low": 41187.5,
+          "probability_difference_below_zero": 0.0
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -48.02904126829357,
+          "ci95_high": -33.27546912313102,
+          "ci95_low": -62.48435856751823,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_x_km": {
+          "bootstrap_median": -14.79159477962444,
+          "ci95_high": 12.177043499405876,
+          "ci95_low": -40.10786328682495,
+          "probability_difference_below_zero": 0.862
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -272.27931031009103,
+          "ci95_high": -243.29788656905725,
+          "ci95_low": -297.5796824902237,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": -0.00939488410949707,
+          "ci95_high": 0.0071932315826415925,
+          "ci95_low": -0.025848591327667238,
+          "probability_difference_below_zero": 0.884
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 12.372291958805306,
+          "ci95_high": 16.633554567625104,
+          "ci95_low": 8.250767464146211,
+          "probability_difference_below_zero": 0.0
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.0226871081843172,
+        "area50_km2": 962500.0,
+        "area75_km2": 1872500.0,
+        "area90_km2": 2732500.0,
+        "centroid_distance_km": 204.414410113234,
+        "centroid_x_km": -106.70292776097088,
+        "centroid_y_km": 174.355201439987,
+        "entropy_nats": 7.122445667556128,
+        "mass_total_state_equivalents": 4891.0,
+        "occupied_bins": 1599,
+        "rms_about_centroid_km": 688.778654633063
+      },
+      "cyclones": 1532,
+      "eligible_states": 8102,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.034480264567049,
+        "area50_km2": 927500.0,
+        "area75_km2": 1907500.0,
+        "area90_km2": 2832500.0,
+        "centroid_distance_km": 155.98501257832805,
+        "centroid_x_km": -120.8674870116626,
+        "centroid_y_km": -98.60210308379193,
+        "entropy_nats": 7.112915212756464,
+        "mass_total_state_equivalents": 4891.0,
+        "occupied_bins": 1600,
+        "rms_about_centroid_km": 701.2626517038493
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": 0.011793156382731818,
+        "area50_km2": -35000.0,
+        "area75_km2": 35000.0,
+        "area90_km2": 100000.0,
+        "centroid_distance_km": -48.429397534905945,
+        "centroid_x_km": -14.164559250691724,
+        "centroid_y_km": -272.95730452377893,
+        "entropy_nats": -0.009530454799663524,
+        "rms_about_centroid_km": 12.483997070786359
+      },
+      "q95_positive_states": 4891
+    },
+    "full_support": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": -0.03093104714724637,
+          "ci95_high": -0.0019847353181042977,
+          "ci95_low": -0.0573011922722518,
+          "probability_difference_below_zero": 0.984
+        },
+        "area50_km2": {
+          "bootstrap_median": -32500.0,
+          "ci95_high": -17500.0,
+          "ci95_low": -48812.5,
+          "probability_difference_below_zero": 1.0
+        },
+        "area75_km2": {
+          "bootstrap_median": 32500.0,
+          "ci95_high": 58812.49999999994,
+          "ci95_low": 5000.0,
+          "probability_difference_below_zero": 0.006
+        },
+        "area90_km2": {
+          "bootstrap_median": 77500.0,
+          "ci95_high": 107500.0,
+          "ci95_low": 47500.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -18.32357381454416,
+          "ci95_high": -9.840319991763065,
+          "ci95_low": -26.15142787772626,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_x_km": {
+          "bootstrap_median": -58.097699635403984,
+          "ci95_high": -40.02571150486048,
+          "ci95_low": -76.34191136053775,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -283.6945969445276,
+          "ci95_high": -266.0561314296544,
+          "ci95_low": -302.0376085511985,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": -0.004605531692504883,
+          "ci95_high": 0.0031780004501342756,
+          "ci95_low": -0.012333452701568604,
+          "probability_difference_below_zero": 0.852
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 4.663180089820344,
+          "ci95_high": 6.72385359091565,
+          "ci95_low": 2.3752758330423265,
+          "probability_difference_below_zero": 0.0
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.0445664531119239,
+        "area50_km2": 1062500.0,
+        "area75_km2": 1930000.0,
+        "area90_km2": 2760000.0,
+        "centroid_distance_km": 192.40088780361285,
+        "centroid_x_km": -78.55288834178351,
+        "centroid_y_km": 175.63469293047348,
+        "entropy_nats": 7.160906744190145,
+        "mass_total_state_equivalents": 12312.0,
+        "occupied_bins": 1599,
+        "rms_about_centroid_km": 695.9428420117364
+      },
+      "cyclones": 1781,
+      "eligible_states": 15437,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.011448126870809,
+        "area50_km2": 1030000.0,
+        "area75_km2": 1965000.0,
+        "area90_km2": 2840000.0,
+        "centroid_distance_km": 174.00621500406447,
+        "centroid_x_km": -136.21024647626484,
+        "centroid_y_km": -108.28172336509931,
+        "entropy_nats": 7.156275185394254,
+        "mass_total_state_equivalents": 12312.0,
+        "occupied_bins": 1600,
+        "rms_about_centroid_km": 700.6438061179028
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": -0.03311832624111477,
+        "area50_km2": -32500.0,
+        "area75_km2": 35000.0,
+        "area90_km2": 80000.0,
+        "centroid_distance_km": -18.394672799548374,
+        "centroid_x_km": -57.65735813448133,
+        "centroid_y_km": -283.9164162955728,
+        "entropy_nats": -0.004631558795891166,
+        "rms_about_centroid_km": 4.700964106166452
+      },
+      "q95_positive_states": 12312
+    },
+    "incipient": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": 0.019467937800938584,
+          "ci95_high": 0.05294480877692295,
+          "ci95_low": -0.02684848774915353,
+          "probability_difference_below_zero": 0.224
+        },
+        "area50_km2": {
+          "bootstrap_median": 50000.0,
+          "ci95_high": 85000.0,
+          "ci95_low": 15000.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "area75_km2": {
+          "bootstrap_median": 90000.0,
+          "ci95_high": 137500.0,
+          "ci95_low": 32500.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "area90_km2": {
+          "bootstrap_median": 82500.0,
+          "ci95_high": 142500.0,
+          "ci95_low": 22500.0,
+          "probability_difference_below_zero": 0.006
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -39.637026676428675,
+          "ci95_high": -21.438786027076638,
+          "ci95_low": -56.62857658716925,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_x_km": {
+          "bootstrap_median": 47.76302699581443,
+          "ci95_high": 79.42667704384219,
+          "ci95_low": 13.353756089053967,
+          "probability_difference_below_zero": 0.004
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -383.3320687313602,
+          "ci95_high": -344.6126992418516,
+          "ci95_low": -416.1607146313141,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": 0.029357433319091797,
+          "ci95_high": 0.04641886949539183,
+          "ci95_low": 0.011922013759613038,
+          "probability_difference_below_zero": 0.0
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 12.618824725930324,
+          "ci95_high": 18.702626690983692,
+          "ci95_low": 6.77599573649442,
+          "probability_difference_below_zero": 0.0
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.013514840630072,
+        "area50_km2": 1072500.0,
+        "area75_km2": 1907500.0,
+        "area90_km2": 2757500.0,
+        "centroid_distance_km": 263.2605405715852,
+        "centroid_x_km": -173.6869249920092,
+        "centroid_y_km": 197.8357002890616,
+        "entropy_nats": 7.160638120407645,
+        "mass_total_state_equivalents": 2078.0,
+        "occupied_bins": 1592,
+        "rms_about_centroid_km": 737.6012629837893
+      },
+      "cyclones": 1155,
+      "eligible_states": 2520,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.0386178141619133,
+        "area50_km2": 1122500.0,
+        "area75_km2": 2000000.0,
+        "area90_km2": 2837500.0,
+        "centroid_distance_km": 224.11988634629276,
+        "centroid_x_km": -126.50016835328228,
+        "centroid_y_km": -185.00656978190375,
+        "entropy_nats": 7.189842993221921,
+        "mass_total_state_equivalents": 2078.0,
+        "occupied_bins": 1592,
+        "rms_about_centroid_km": 750.1034882060293
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": 0.02510297353184132,
+        "area50_km2": 50000.0,
+        "area75_km2": 92500.0,
+        "area90_km2": 80000.0,
+        "centroid_distance_km": -39.14065422529242,
+        "centroid_x_km": 47.18675663872693,
+        "centroid_y_km": -382.84227007096536,
+        "entropy_nats": 0.029204872814275973,
+        "rms_about_centroid_km": 12.502225222239986
+      },
+      "q95_positive_states": 2078
+    },
+    "intensification": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": 0.007709265081268457,
+          "ci95_high": 0.03666632981435159,
+          "ci95_low": -0.02217025404906483,
+          "probability_difference_below_zero": 0.324
+        },
+        "area50_km2": {
+          "bootstrap_median": -47500.0,
+          "ci95_high": -32500.0,
+          "ci95_low": -62500.0,
+          "probability_difference_below_zero": 1.0
+        },
+        "area75_km2": {
+          "bootstrap_median": -10000.0,
+          "ci95_high": 15000.0,
+          "ci95_low": -32500.0,
+          "probability_difference_below_zero": 0.742
+        },
+        "area90_km2": {
+          "bootstrap_median": 55000.0,
+          "ci95_high": 87500.0,
+          "ci95_low": 22500.0,
+          "probability_difference_below_zero": 0.0
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -7.088843096887928,
+          "ci95_high": 0.06309308596803015,
+          "ci95_low": -13.876626444328359,
+          "probability_difference_below_zero": 0.974
+        },
+        "centroid_x_km": {
+          "bootstrap_median": -54.385936897619295,
+          "ci95_high": -29.825242908058495,
+          "ci95_low": -78.59110755396361,
+          "probability_difference_below_zero": 1.0
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -347.9065994283671,
+          "ci95_high": -327.7812451812518,
+          "ci95_low": -366.2828244071731,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": -0.014413118362426758,
+          "ci95_high": -0.005240392684936525,
+          "ci95_low": -0.02324390411376953,
+          "probability_difference_below_zero": 1.0
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 2.398518485663658,
+          "ci95_high": 4.632348593979812,
+          "ci95_low": -0.043924607492237845,
+          "probability_difference_below_zero": 0.026
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.0460421282034351,
+        "area50_km2": 887500.0,
+        "area75_km2": 1705000.0,
+        "area90_km2": 2500000.0,
+        "centroid_distance_km": 221.18386499139612,
+        "centroid_x_km": -98.9639189727499,
+        "centroid_y_km": 197.80911221196848,
+        "entropy_nats": 7.059107407769769,
+        "mass_total_state_equivalents": 7301.00048828125,
+        "occupied_bins": 1599,
+        "rms_about_centroid_km": 649.9643250815866
+      },
+      "cyclones": 1731,
+      "eligible_states": 9058,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.0547421229454192,
+        "area50_km2": 840000.0,
+        "area75_km2": 1695000.0,
+        "area90_km2": 2557500.0,
+        "centroid_distance_km": 214.163067768453,
+        "centroid_x_km": -152.41304571128546,
+        "centroid_y_km": -150.45292650196143,
+        "entropy_nats": 7.04484769174918,
+        "mass_total_state_equivalents": 7301.0,
+        "occupied_bins": 1599,
+        "rms_about_centroid_km": 652.3316961262469
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": 0.00869999474198413,
+        "area50_km2": -47500.0,
+        "area75_km2": -10000.0,
+        "area90_km2": 57500.0,
+        "centroid_distance_km": -7.020797222943116,
+        "centroid_x_km": -53.44912673853557,
+        "centroid_y_km": -348.2620387139299,
+        "entropy_nats": -0.014259716020589508,
+        "rms_about_centroid_km": 2.367371044660331
+      },
+      "q95_positive_states": 7301
+    },
+    "mature": {
+      "bootstrap": {
+        "anisotropy_axis_ratio": {
+          "bootstrap_median": -0.07337189677286926,
+          "ci95_high": -0.03365750389122921,
+          "ci95_low": -0.11135077918328418,
+          "probability_difference_below_zero": 1.0
+        },
+        "area50_km2": {
+          "bootstrap_median": -10000.0,
+          "ci95_high": 7500.0,
+          "ci95_low": -25000.0,
+          "probability_difference_below_zero": 0.828
+        },
+        "area75_km2": {
+          "bootstrap_median": -10000.0,
+          "ci95_high": 22500.0,
+          "ci95_low": -42500.0,
+          "probability_difference_below_zero": 0.722
+        },
+        "area90_km2": {
+          "bootstrap_median": 47500.0,
+          "ci95_high": 108812.49999999994,
+          "ci95_low": -6312.499999999996,
+          "probability_difference_below_zero": 0.04
+        },
+        "centroid_distance_km": {
+          "bootstrap_median": -9.993534850522792,
+          "ci95_high": 2.073588447237925,
+          "ci95_low": -22.90866009819966,
+          "probability_difference_below_zero": 0.946
+        },
+        "centroid_x_km": {
+          "bootstrap_median": -43.38871025205471,
+          "ci95_high": -12.51590378308089,
+          "ci95_low": -72.91829983005972,
+          "probability_difference_below_zero": 0.998
+        },
+        "centroid_y_km": {
+          "bootstrap_median": -356.6674589928079,
+          "ci95_high": -330.0384391422167,
+          "ci95_low": -384.39653051305606,
+          "probability_difference_below_zero": 1.0
+        },
+        "entropy_nats": {
+          "bootstrap_median": 0.0076351165771484375,
+          "ci95_high": 0.026344776153564446,
+          "ci95_low": -0.008360636234283448,
+          "probability_difference_below_zero": 0.166
+        },
+        "rms_about_centroid_km": {
+          "bootstrap_median": 3.710662636649488,
+          "ci95_high": 8.80388525034816,
+          "ci95_low": -0.9499766684135181,
+          "probability_difference_below_zero": 0.058
+        }
+      },
+      "centered": {
+        "anisotropy_axis_ratio": 1.1190525063191419,
+        "area50_km2": 665000.0,
+        "area75_km2": 1400000.0,
+        "area90_km2": 2202500.0,
+        "centroid_distance_km": 227.9570782940585,
+        "centroid_x_km": -108.33151051971663,
+        "centroid_y_km": 200.57096841985893,
+        "entropy_nats": 6.893271524593242,
+        "mass_total_state_equivalents": 1820.9998779296875,
+        "occupied_bins": 1587,
+        "rms_about_centroid_km": 572.205684496766
+      },
+      "cyclones": 1116,
+      "eligible_states": 2261,
+      "motion_relative": {
+        "anisotropy_axis_ratio": 1.0433447529685485,
+        "area50_km2": 655000.0,
+        "area75_km2": 1392500.0,
+        "area90_km2": 2255000.0,
+        "centroid_distance_km": 218.32503049634866,
+        "centroid_x_km": -152.991525749355,
+        "centroid_y_km": -155.75433217126266,
+        "entropy_nats": 6.900573015127376,
+        "mass_total_state_equivalents": 1821.0,
+        "occupied_bins": 1592,
+        "rms_about_centroid_km": 575.802801581854
+      },
+      "point_difference": {
+        "anisotropy_axis_ratio": -0.07570775335059343,
+        "area50_km2": -10000.0,
+        "area75_km2": -7500.0,
+        "area90_km2": 52500.0,
+        "centroid_distance_km": -9.632047797709845,
+        "centroid_x_km": -44.66001522963836,
+        "centroid_y_km": -356.3253005911216,
+        "entropy_nats": 0.007301490534134203,
+        "rms_about_centroid_km": 3.59711708508803
+      },
+      "q95_positive_states": 1821
+    }
+  },
+  "completed_utc": "2026-09-21T15:24:48.925889Z",
+  "decision": {
+    "checks": {
+      "area50_and_area90_point_same_direction": false,
+      "area75_ci_below_zero": false,
+      "entropy_ci_below_zero": false,
+      "favorable_phase_groups_of_four": 1,
+      "heading_loss_below_10_percent": true,
+      "support_change_not_comparable_explanation": true
+    },
+    "conclusion": "evidence ambiguous",
+    "exceedance_entropy_difference": -0.0022922804886800208,
+    "experiment_status": "INCONCLUSIVE",
+    "support_entropy_difference": 0.0007892967435223497
+  },
+  "experiment": {
+    "id": "E-001",
+    "status": "INCONCLUSIVE"
+  },
+  "grid": {
+    "bin_area_km2": 2500.0,
+    "bins_per_axis": 44,
+    "total_bins": 1936
+  },
+  "population": {
+    "base_cyclones": 1784,
+    "base_states": 23334,
+    "eligible_cyclones": 1784,
+    "eligible_states": 23050,
+    "median_speed_kmh": 42.682407879958035,
+    "minimum_speed_kmh": 0.3106645739536404,
+    "p01_speed_kmh": 4.545036437065068,
+    "p99_speed_kmh": 108.13268968652905,
+    "q95_exceedance_cells": 9090570,
+    "q95_positive_cyclones": 1757,
+    "q95_positive_states": 16921,
+    "reliable_states": 23050,
+    "unreliable_fraction": 0.012171080826262106,
+    "unreliable_states": 284
+  },
+  "protocol": {
+    "bin_size_km": 50.0,
+    "bootstrap_replicates": 500,
+    "bootstrap_seed": 20260921,
+    "bootstrap_unit": "track_id",
+    "created_utc": "2026-09-21T00:00:00Z",
+    "decision_rule": "Evidencia favoravel requer entropia e A75 menores com IC bootstrap pareado de 95% abaixo de zero, A50 e A90 na mesma direcao, maioria dos quatro estratos de fase na mesma direcao, perda de heading inferior a 10% e diagnostico de suporte sem mudanca comparavel que explique o efeito. Evidencia contraria exige padrao simetrico a favor de centered; demais combinacoes sao inconclusivas.",
+    "diagnostic_metrics": [
+      "rms_about_centroid_km",
+      "centroid_x_km",
+      "centroid_y_km",
+      "centroid_distance_km",
+      "anisotropy_axis_ratio"
+    ],
+    "experiment_id": "E-001",
+    "heading_rule": "Diferenca centrada entre estados vizinhos do catalogo completo de 6 h; diferenca simples nas extremidades; vetor no plano tangente local",
+    "phase_rule": "Sufixos ' 2' sao agregados apenas nos quatro estratos fisicos; resultados por rotulo literal tambem sao preservados",
+    "phase_strata": [
+      "incipient",
+      "intensification",
+      "mature",
+      "decay"
+    ],
+    "population": "Estados ERA5 de 6 h entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC com suporte espacial e heading confiavel",
+    "primary_differences": "motion-relative minus centered; valores negativos favorecem maior concentracao para entropia, areas e RMS",
+    "primary_metrics": [
+      "entropy_nats",
+      "area50_km2",
+      "area75_km2",
+      "area90_km2"
+    ],
+    "primary_threshold": "exceeded_q95",
+    "protocol_frozen_before_primary_results": true,
+    "relative_domain_km": [
+      -1100.0,
+      1100.0
+    ],
+    "smoothing_for_primary_metrics": false,
+    "state_weighting": "Cada estado com pelo menos uma excedencia q95 tem massa total um; estados sem q95 permanecem na auditoria de suporte, mas nao definem distribuicao espacial condicional",
+    "support_radius_km": 1100.0,
+    "threshold_definition": "wind_speed > q95 local",
+    "title": "Efeito da orientacao pelo movimento na organizacao espacial das excedencias",
+    "translation_speed_min_kmh": 5.0,
+    "translation_speed_rationale": "Equivale a 30 km em 6 h, aproximadamente uma celula da grade original de 0,25 grau; deslocamentos menores nao definem orientacao fisica estavel"
+  },
+  "reproducibility": {
+    "bootstrap_seed": 20260921,
+    "input_sha256": {
+      "cyclone_exceedances_by_track_2010_2020_p90.parquet": "3913a1d8ab49856212e1e5a19275b3644ae947dcf940872fb2f40a884d9efa0c",
+      "cyclone_states_era5_6h_1979_2020.parquet": "4865bbc39f273d2360b5735cb26b132d9d01e7af085df94e08fdcd16ce864782",
+      "tracks_SAt_1979_2020.parquet": "7d8d628a8d54f9273e1c6280f22bb0082a470d4767393bd3b224a64e8a71c553"
+    },
+    "protocol_sha256": "555a47aa16e9e34183999b7f570e42b4b8ea535ac1fdd47205616c2920d90b72",
+    "script_sha256": "54d86f327e3fe7b405dca602c8d76f8aeca206bde34a5d29ca9b8d913efdf567"
+  },
+  "sanity_checks": {
+    "center_maps_to_origin": true,
+    "front_and_right_sign_checks": true,
+    "maximum_distance_preservation_error_km": 2.2737367544323206e-13,
+    "maximum_inverse_error_km": 2.3437142008433856e-13,
+    "states": [
+      {
+        "distance_preservation_max_error_km": 2.2737367544323206e-13,
+        "inverse_max_error_km": 2.2914314707516465e-13,
+        "q95_cells": 819,
+        "time": "2014-07-15T12:00:00",
+        "track_id": 20140618,
+        "translation_speed_kmh": 27.81409908671621
+      },
+      {
+        "distance_preservation_max_error_km": 2.2737367544323206e-13,
+        "inverse_max_error_km": 1.6077746776921858e-13,
+        "q95_cells": 1028,
+        "time": "2015-04-21T06:00:00",
+        "track_id": 20150306,
+        "translation_speed_kmh": 43.67107994651403
+      },
+      {
+        "distance_preservation_max_error_km": 2.2737367544323206e-13,
+        "inverse_max_error_km": 2.3437142008433856e-13,
+        "q95_cells": 1024,
+        "time": "2015-07-17T18:00:00",
+        "track_id": 20150608,
+        "translation_speed_kmh": 61.629082235875494
+      }
+    ]
+  },
+  "support_metrics": {
+    "centered": {
+      "anisotropy_axis_ratio": 1.005803134000893,
+      "area50_km2": 1745000.0,
+      "area75_km2": 2727500.0,
+      "area90_km2": 3370000.0,
+      "centroid_distance_km": 56.219156894588735,
+      "centroid_x_km": -47.64938268194345,
+      "centroid_y_km": -29.83504536561143,
+      "entropy_nats": 7.341736543997044,
+      "mass_total_state_equivalents": 136177047.0,
+      "occupied_bins": 1600,
+      "rms_about_centroid_km": 774.3070332741424
+    },
+    "motion_relative": {
+      "anisotropy_axis_ratio": 1.0058475043956236,
+      "area50_km2": 1757500.0,
+      "area75_km2": 2740000.0,
+      "area90_km2": 3375000.0,
+      "centroid_distance_km": 51.834128934635814,
+      "centroid_x_km": 38.518291742660566,
+      "centroid_y_km": -34.6859931909083,
+      "entropy_nats": 7.342525840740566,
+      "mass_total_state_equivalents": 136177047.0,
+      "occupied_bins": 1600,
+      "rms_about_centroid_km": 774.6131603253033
+    }
+  },
+  "support_validation": {
+    "expected_support_cells": 136177047,
+    "reconstructed_support_cells": 136177047,
+    "states_with_count_mismatch": 0
+  }
+}

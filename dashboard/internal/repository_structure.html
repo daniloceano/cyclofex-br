@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Responsabilidades, diretórios e convenções.">
+  <title>Estrutura do repositório · cyclofex-br</title>
+  <link rel="stylesheet" href="../docs.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true">↗</span>cyclofex-br</a>
+      <span class="report-label">Relatório científico vivo</span>
+    </div>
+  </header>
+  <div class="title-band">
+    <div class="shell">
+      <p class="eyebrow">Documentação interna</p>
+      <p class="page-name">Estrutura do repositório</p>
+      <p class="title-note">Responsabilidades, diretórios e convenções.</p>
+    </div>
+  </div>
+  <div class="shell layout">
+    <nav class="side-nav" aria-label="Relatório científico">
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="../index.html">Visão geral</a><a href="../scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="../data.html">Dados</a><a href="../data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="../exploratory_analysis.html">Análise exploratória</a><a href="../e001_orientation.html">E-001 · Orientação</a><a href="../experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="../methodology.html">Metodologia atual</a><a href="../results.html">Resultados e evidências</a><a href="../limitations.html">Limitações</a><a href="../open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="../decisions.html">Decisões</a><a href="../reproducibility.html">Proveniência e reprodução</a><a href="index.html">Referência técnica</a></div>
+    </nav>
+    <main id="conteudo" class="document">
+      <h1 id="estrutura-do-repositório">Estrutura do repositório</h1>
+<h2 id="mapa">Mapa</h2>
+<pre class="text"><code>cyclofex-br/
+├── data/                 dados derivados versionados e documentação herdada
+├── docs/                 fontes Markdown do relatório científico
+│   └── internal/         referência técnica e operacional
+├── scripts/              código organizado por etapa ou análise
+├── outputs/              produtos reproduzíveis organizados pela mesma etapa
+├── dashboard/            HTML estático gerado e estilos
+├── README.md             ponto de entrada do repositório
+└── requirements.txt      dependências Python</code></pre>
+<h2 id="correspondência-códigoproduto">Correspondência código–produto</h2>
+<p>O registro <a href="../decisions.html#d-001--organizar-código-e-produtos-por-análise">D-001</a> mantém a correspondência <code>scripts/&lt;etapa&gt;/</code> ↔︎ <code>outputs/&lt;etapa&gt;/</code>. Subdiretórios só devem ser criados quando houver uma etapa real e produto correspondente.</p>
+<table>
+<thead>
+<tr>
+<th>Etapa</th>
+<th>Código</th>
+<th>Produtos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aquisição e preparação</td>
+<td><code>scripts/00_data_acquisition/</code></td>
+<td><code>outputs/00_data_acquisition/</code> e catálogos em <code>data/</code></td>
+</tr>
+<tr>
+<td>Caracterização estrutural</td>
+<td><code>scripts/01_data_overview/</code></td>
+<td><code>outputs/01_data_overview/</code></td>
+</tr>
+<tr>
+<td>Análise exploratória</td>
+<td><code>scripts/02_exploratory_analysis/</code></td>
+<td><code>outputs/02_exploratory_analysis/</code></td>
+</tr>
+<tr>
+<td>E-001 — orientação</td>
+<td><code>scripts/03_e001_orientation/</code></td>
+<td><code>outputs/03_e001_orientation/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="convenções">Convenções</h2>
+<ul>
+<li>Arquivos científicos canônicos usam Markdown; HTML é sempre derivado.</li>
+<li>Produtos não devem ser copiados para criar uma segunda fonte de verdade. O dashboard referencia <code>outputs/</code> diretamente.</li>
+<li>Dados brutos reconstruíveis podem permanecer em cache ignorado pelo Git; produtos mínimos e manifestos preservam a linhagem.</li>
+<li>Um novo experimento só recebe diretório de código e saída quando seu protocolo está pronto para execução.</li>
+<li>IDs <code>D-...</code>, <code>Q-...</code>, <code>A-...</code> e <code>E-...</code> são persistentes; itens substituídos permanecem no histórico com status apropriado.</li>
+</ul>
+
+      <div class="source-note">Fonte canônica: <a href="../../docs/internal/repository_structure.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
+    </main>
+  </div>
+  <footer>
+    <div class="shell footer-inner">
+      <span>cyclofex-br · relatório científico vivo</span>
+      <a href="../index.html">Visão geral</a>
+    </div>
+  </footer>
+</body>
+</html>

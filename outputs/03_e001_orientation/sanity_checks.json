@@ -1,0 +1,32 @@
+{
+  "center_maps_to_origin": true,
+  "front_and_right_sign_checks": true,
+  "maximum_distance_preservation_error_km": 2.2737367544323206e-13,
+  "maximum_inverse_error_km": 2.3437142008433856e-13,
+  "states": [
+    {
+      "distance_preservation_max_error_km": 2.2737367544323206e-13,
+      "inverse_max_error_km": 2.2914314707516465e-13,
+      "q95_cells": 819,
+      "time": "2014-07-15T12:00:00",
+      "track_id": 20140618,
+      "translation_speed_kmh": 27.81409908671621
+    },
+    {
+      "distance_preservation_max_error_km": 2.2737367544323206e-13,
+      "inverse_max_error_km": 1.6077746776921858e-13,
+      "q95_cells": 1028,
+      "time": "2015-04-21T06:00:00",
+      "track_id": 20150306,
+      "translation_speed_kmh": 43.67107994651403
+    },
+    {
+      "distance_preservation_max_error_km": 2.2737367544323206e-13,
+      "inverse_max_error_km": 2.3437142008433856e-13,
+      "q95_cells": 1024,
+      "time": "2015-07-17T18:00:00",
+      "track_id": 20150608,
+      "translation_speed_kmh": 61.629082235875494
+    }
+  ]
+}
