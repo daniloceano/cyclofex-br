@@ -15,6 +15,7 @@ A narrativa científica explica o que foi feito e o que significa. Esta página 
 | Metadados estruturais | [`structural_summary.json`](../outputs/01_data_overview/structural_summary.json) | contém hash da entrada e schema | Caracterização reproduzível do Parquet de vento |
 | Resultados exploratórios | [`analysis_summary.json`](../outputs/02_exploratory_analysis/analysis_summary.json) e tabelas/figuras associadas | entrada identificada pelo mesmo SHA-256 | Consultas descritivas, figuras e exemplo determinístico |
 | E-001 — orientação | [`summary.json`](../outputs/03_e001_orientation/summary.json), tabelas e figuras associadas | protocolo, script, entradas e semente registrados no resumo | Coordenadas contínuas, suporte reconstruído, métricas e bootstrap por ciclone |
+| E-002 — weighting | [`summary.json`](../outputs/04_e002_weighting/summary.json), contribuições, métricas, mapas e bootstrap | protocolo, scripts, entradas, resumo de E-001 e semente registrados | Regressão de E-001, quatro distribuições, concentração, TV, fases e incerteza |
 
 O manifesto completo, com schemas, versões de ambiente e hashes dos scripts, está em [`provenance_manifest.json`](../outputs/00_data_acquisition/provenance_manifest.json). Os checks e contagens da reconstrução estão em [`validation_report.json`](../outputs/00_data_acquisition/validation_report.json).
 
@@ -47,6 +48,17 @@ O manifesto completo, com schemas, versões de ambiente e hashes dos scripts, es
 - **Semente e réplicas:** `20260921`, 500 réplicas pareadas por `track_id`.
 - **Decisão:** [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001).
 
+### E-002 — sensibilidade ao weighting
+
+- **Protocolo congelado:** [`protocol.json`](../scripts/04_e002_weighting/protocol.json), com isolamento do weighting, fórmulas, população esperada, métricas, bootstrap e critério de robustez.
+- **Código:** [`e002_weighting.py`](../scripts/04_e002_weighting/e002_weighting.py) e [`test_weighting.py`](../scripts/04_e002_weighting/test_weighting.py); a geometria é importada da implementação congelada de E-001.
+- **Resumo:** [`summary.json`](../outputs/04_e002_weighting/summary.json), incluindo hashes das três entradas, protocolo, script e resumo de E-001.
+- **Tabelas:** contribuições por `track_id`, concentração por fase, quatro conjuntos de métricas, contrastes, probabilidades por bin e 10.000 diferenças bootstrap.
+- **Figuras:** distribuição de estados positivos, contribuição acumulada, dois contrastes de weighting, comparação de orientação sob *equal-cyclone* e intervalos.
+- **Semente e réplicas:** `20260921`, 500 réplicas por `track_id`.
+- **Regressão:** contagens exatas; áreas *equal-state* idênticas e métricas contínuas e resumos bootstrap dentro de $10^{-6}$.
+- **Decisão:** [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado).
+
 ## Reproduzir a preparação
 
 As dependências estão fixadas em [`requirements.txt`](../requirements.txt). A sequência técnica é:
@@ -78,6 +90,15 @@ A animação requer `ffmpeg`; o Cartopy pode baixar a costa Natural Earth para s
 
 O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos de `outputs/03_e001_orientation/`. O horário de conclusão no JSON é o único campo não determinístico.
 
+## Reproduzir E-002
+
+```sh
+.venv/bin/python scripts/04_e002_weighting/test_weighting.py
+.venv/bin/python scripts/04_e002_weighting/e002_weighting.py
+```
+
+Os caminhos são resolvidos a partir do próprio script; a execução também foi validada fora da raiz usando o caminho absoluto do interpretador e do arquivo. Os produtos de E-002 são determinísticos, inclusive a data científica fixada no protocolo. O pipeline valida hashes, população, métricas e bootstrap *equal-state* antes de aceitar os resultados novos.
+
 ## Gerar o relatório HTML
 
 Os arquivos Markdown em `docs/` são as fontes canônicas. Com Pandoc disponível:
@@ -94,6 +115,6 @@ O resultado é HTML estático: abrir [`dashboard/index.html`](../dashboard/index
 - artefato versionado dos percentis locais;
 - versão, ambiente e configuração da execução original do CycloPhaser;
 - justificativa científica original do raio de 1.100 km;
-- adequação científica do corte de heading de 5 km/h fora do escopo específico de E-001; o fallback leste não foi usado no experimento.
+- adequação científica do corte de heading de 5 km/h fora do escopo específico de E-001/E-002; o fallback leste não foi usado nos experimentos.
 
 Essas lacunas não são preenchidas por suposição. Elas aparecem também em [questões abertas](open_questions.md) e [limitações](limitations.md).

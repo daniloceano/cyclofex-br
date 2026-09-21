@@ -43,6 +43,15 @@ O primeiro comando atualiza o resumo estrutural. O segundo atualiza tabelas, fig
 
 O primeiro comando verifica a geometria; o segundo valida hashes, calcula headings do catálogo completo, agrega q95 e suporte na grade relativa, executa o bootstrap e atualiza `outputs/03_e001_orientation/`. Mudanças em `protocol.json` caracterizam outro protocolo e exigem novo registro científico.
 
+## E-002 — weighting
+
+```sh
+.venv/bin/python scripts/04_e002_weighting/test_weighting.py
+.venv/bin/python scripts/04_e002_weighting/e002_weighting.py
+```
+
+O teste verifica identidades de normalização. O pipeline reutiliza as funções espaciais de E-001, valida hashes e toda a população antes de calcular *equal-state* e *equal-cyclone*. Ele exige regressão das métricas e do bootstrap *equal-state*, produz diagnósticos de contribuição, métricas globais e por fase, TV, bootstrap por ciclone e figuras em `outputs/04_e002_weighting/`. Os caminhos são independentes do diretório corrente.
+
 ## Geração do dashboard
 
 ```sh

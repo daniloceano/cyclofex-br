@@ -24,7 +24,7 @@
   </div>
   <div class="shell layout">
     <nav class="side-nav" aria-label="Relatório científico">
-      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html" class="active" aria-current="page">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="e002_weighting.html">E-002 · Weighting</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html" class="active" aria-current="page">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="proveniência-e-reprodutibilidade">Proveniência e reprodutibilidade</h1>
@@ -83,6 +83,12 @@
 <td>protocolo, script, entradas e semente registrados no resumo</td>
 <td>Coordenadas contínuas, suporte reconstruído, métricas e bootstrap por ciclone</td>
 </tr>
+<tr>
+<td>E-002 — weighting</td>
+<td><a href="../outputs/04_e002_weighting/summary.json"><code>summary.json</code></a>, contribuições, métricas, mapas e bootstrap</td>
+<td>protocolo, scripts, entradas, resumo de E-001 e semente registrados</td>
+<td>Regressão de E-001, quatro distribuições, concentração, TV, fases e incerteza</td>
+</tr>
 </tbody>
 </table>
 <p>O manifesto completo, com schemas, versões de ambiente e hashes dos scripts, está em <a href="../outputs/00_data_acquisition/provenance_manifest.json"><code>provenance_manifest.json</code></a>. Os checks e contagens da reconstrução estão em <a href="../outputs/00_data_acquisition/validation_report.json"><code>validation_report.json</code></a>.</p>
@@ -114,6 +120,17 @@
 <li><strong>Semente e réplicas:</strong> <code>20260921</code>, 500 réplicas pareadas por <code>track_id</code>.</li>
 <li><strong>Decisão:</strong> <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
 </ul>
+<h3 id="e-002--sensibilidade-ao-weighting">E-002 — sensibilidade ao weighting</h3>
+<ul>
+<li><strong>Protocolo congelado:</strong> <a href="../scripts/04_e002_weighting/protocol.json"><code>protocol.json</code></a>, com isolamento do weighting, fórmulas, população esperada, métricas, bootstrap e critério de robustez.</li>
+<li><strong>Código:</strong> <a href="../scripts/04_e002_weighting/e002_weighting.py"><code>e002_weighting.py</code></a> e <a href="../scripts/04_e002_weighting/test_weighting.py"><code>test_weighting.py</code></a>; a geometria é importada da implementação congelada de E-001.</li>
+<li><strong>Resumo:</strong> <a href="../outputs/04_e002_weighting/summary.json"><code>summary.json</code></a>, incluindo hashes das três entradas, protocolo, script e resumo de E-001.</li>
+<li><strong>Tabelas:</strong> contribuições por <code>track_id</code>, concentração por fase, quatro conjuntos de métricas, contrastes, probabilidades por bin e 10.000 diferenças bootstrap.</li>
+<li><strong>Figuras:</strong> distribuição de estados positivos, contribuição acumulada, dois contrastes de weighting, comparação de orientação sob <em>equal-cyclone</em> e intervalos.</li>
+<li><strong>Semente e réplicas:</strong> <code>20260921</code>, 500 réplicas por <code>track_id</code>.</li>
+<li><strong>Regressão:</strong> contagens exatas; áreas <em>equal-state</em> idênticas e métricas contínuas e resumos bootstrap dentro de <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>10</mn><mrow><mi>−</mi><mn>6</mn></mrow></msup><annotation encoding="application/x-tex">10^{-6}</annotation></semantics></math>.</li>
+<li><strong>Decisão:</strong> <a href="decisions.html#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado">D-006</a>.</li>
+</ul>
 <h2 id="reproduzir-a-preparação">Reproduzir a preparação</h2>
 <p>As dependências estão fixadas em <a href="../requirements.txt"><code>requirements.txt</code></a>. A sequência técnica é:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">-m</span> venv .venv</span>
@@ -129,9 +146,13 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> <span class="at">-m</span> unittest scripts/03_e001_orientation/test_orientation.py</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/03_e001_orientation/e001_orientation.py</span></code></pre></div>
 <p>O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos de <code>outputs/03_e001_orientation/</code>. O horário de conclusão no JSON é o único campo não determinístico.</p>
+<h2 id="reproduzir-e-002">Reproduzir E-002</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/04_e002_weighting/test_weighting.py</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/04_e002_weighting/e002_weighting.py</span></code></pre></div>
+<p>Os caminhos são resolvidos a partir do próprio script; a execução também foi validada fora da raiz usando o caminho absoluto do interpretador e do arquivo. Os produtos de E-002 são determinísticos, inclusive a data científica fixada no protocolo. O pipeline valida hashes, população, métricas e bootstrap <em>equal-state</em> antes de aceitar os resultados novos.</p>
 <h2 id="gerar-o-relatório-html">Gerar o relatório HTML</h2>
 <p>Os arquivos Markdown em <code>docs/</code> são as fontes canônicas. Com Pandoc disponível:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> dashboard/build_docs.py</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> dashboard/build_docs.py</span></code></pre></div>
 <p>O resultado é HTML estático: abrir <a href="../dashboard/index.html"><code>dashboard/index.html</code></a> não exige servidor, JavaScript ou acesso aos scripts científicos.</p>
 <h2 id="lacunas-de-reprodutibilidade-conhecidas">Lacunas de reprodutibilidade conhecidas</h2>
 <ul>
@@ -139,7 +160,7 @@
 <li>artefato versionado dos percentis locais;</li>
 <li>versão, ambiente e configuração da execução original do CycloPhaser;</li>
 <li>justificativa científica original do raio de 1.100 km;</li>
-<li>adequação científica do corte de heading de 5 km/h fora do escopo específico de E-001; o fallback leste não foi usado no experimento.</li>
+<li>adequação científica do corte de heading de 5 km/h fora do escopo específico de E-001/E-002; o fallback leste não foi usado nos experimentos.</li>
 </ul>
 <p>Essas lacunas não são preenchidas por suposição. Elas aparecem também em <a href="open_questions.html">questões abertas</a> e <a href="limitations.html">limitações</a>.</p>
 

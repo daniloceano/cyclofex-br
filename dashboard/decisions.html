@@ -24,7 +24,7 @@
   </div>
   <div class="shell layout">
     <nav class="side-nav" aria-label="Relatório científico">
-      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html" class="active" aria-current="page">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="e002_weighting.html">E-002 · Weighting</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html" class="active" aria-current="page">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="decisões">Decisões</h1>
@@ -92,6 +92,20 @@
 <li><strong>Justificativa:</strong> as famílias de métricas e os estratos de fase não satisfizeram o critério preregistrado. A rotação mudou a forma e concentrou o núcleo, mas não organizou consistentemente a distribuição inteira.</li>
 <li><strong>Experimento relacionado:</strong> E-001, status <code>INCONCLUSIVE</code>.</li>
 <li><strong>Revisar se:</strong> um protocolo posterior isolar weighting, threshold, tamanho ou outra explicação sem ajustar retrospectivamente E-001.</li>
+</ul>
+<p><strong>Revisão posterior, sem alteração do registro histórico.</strong> E-002 isolou weighting e classificou a conclusão como robusta: sob <em>equal-cyclone</em>, A50 continuou favorecendo <em>motion-relative</em>, enquanto A75, A90 e RMS favoreceram <em>centered</em>. D-005 permanece vigente; E-001 continua <code>INCONCLUSIVE</code> sob seu protocolo original.</p>
+<h2 id="d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado">D-006 · Usar o weighting que corresponde ao estimando declarado</h2>
+<ul>
+<li><strong>Data:</strong> 2026-09-21</li>
+<li><strong>Status:</strong> <code>ADOPTED</code></li>
+<li><strong>Questão:</strong> <em>equal-state</em> ou <em>equal-cyclone</em> deve ser a representação universal das excedências q95?</li>
+<li><strong>Alternativas consideradas:</strong> substituir <em>equal-state</em> por <em>equal-cyclone</em> em todas as análises; preservar <em>equal-state</em> sempre; ou declarar o estimando-alvo e manter ambos para perguntas diferentes.</li>
+<li><strong>Evidência disponível:</strong> <a href="e002_weighting.html">E-002</a> encontrou contribuição desigual em <em>equal-state</em> — os 10% superiores receberam 22,52% da massa e <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></msub><mo>=</mo><mn>1.288</mn><mo>,</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">N_{eff}=1.288,8</annotation></semantics></math> entre 1.757 ciclones positivos —, mas nenhum weighting é um erro. A distância de variação total foi aproximadamente 0,079 nas duas orientações, e a conclusão de E-001 permaneceu robusta.</li>
+<li><strong>Decisão atual:</strong> usar <em>equal-state</em> quando o estimando for a distribuição de um estado q95-positivo selecionado ao acaso; usar <em>equal-cyclone</em> quando o estimando for a distribuição média entre ciclones q95-positivos. Toda análise deve declarar qual população resume e, quando a escolha puder afetar a conclusão, apresentar o outro weighting como sensibilidade.</li>
+<li><strong>Não decidido:</strong> nenhuma orientação foi promovida a principal; <em>equal-cyclone</em> não foi escolhido apenas porque <code>track_id</code> é a unidade inferencial.</li>
+<li><strong>Justificativa:</strong> weighting define a população descritiva, enquanto bootstrap por ciclone define como a dependência é respeitada na incerteza. Confundir essas funções apagaria uma diferença científica real entre estimandos.</li>
+<li><strong>Experimento relacionado:</strong> E-002, status <code>ADOPTED</code>, classificação <code>ROBUST_TO_WEIGHTING</code>.</li>
+<li><strong>Revisar se:</strong> uma pergunta futura definir outra população-alvo, ou dados completos permitirem um estimando temporal ou climatológico distinto.</li>
 </ul>
 
       <div class="source-note">Fonte canônica: <a href="../docs/decisions.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>

@@ -24,7 +24,7 @@
   </div>
   <div class="shell layout">
     <nav class="side-nav" aria-label="Relatório científico">
-      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html" class="active" aria-current="page">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="e002_weighting.html">E-002 · Weighting</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html" class="active" aria-current="page">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="limitações">Limitações</h1>
@@ -61,7 +61,7 @@
 <h2 id="dependência-e-potencial-de-viés">Dependência e potencial de viés</h2>
 <ul>
 <li>Pontos do mesmo estado e estados do mesmo ciclone são dependentes. Tratar linhas como unidades independentes produziria pseudorreplicação.</li>
-<li>Ciclones longos, estados com maior área selecionada e fases mais frequentes contribuem mais linhas às estatísticas pontuais.</li>
+<li>Ciclones longos, estados com maior área selecionada e fases mais frequentes contribuem mais linhas às estatísticas pontuais. E-002 quantificou especificamente o efeito do número de estados q95-positivos: os 10% superiores reuniram 22,52% da massa <em>equal-state</em>.</li>
 <li>A seleção por intensidade altera distribuições, contagens e contrastes por fase ou quadrante.</li>
 <li>Suporte parcial e trajetórias fora do domínio podem gerar cobertura desigual ligada à posição do ciclone.</li>
 <li>A análise atual não quantifica como essas fontes de seleção se combinam.</li>
@@ -71,12 +71,12 @@
 <li>Não foi escolhido threshold científico definitivo.</li>
 <li>Evento, <em>excursion set</em> e <em>footprint</em> ainda não têm definição operacional adotada.</li>
 <li>Não foram estimadas <em>coverage probabilities</em> nem magnitude condicional.</li>
-<li>A orientação <em>centered</em> versus <em>motion-relative</em> foi comparada em E-001, mas o resultado foi inconclusivo; weighting alternativo, threshold sensitivity e normalização por tamanho não foram testados.</li>
-<li>E-001 usou bootstrap por ciclone para a diferença pareada, mas não houve validação fora da amostra nem estudo completo de sensibilidade ou robustez.</li>
+<li>A orientação <em>centered</em> versus <em>motion-relative</em> foi comparada em E-001, mas o resultado foi inconclusivo. E-002 mostrou que essa conclusão é robusta a <em>equal-state</em> versus <em>equal-cyclone</em>; sensibilidade ao threshold e normalização por tamanho não foram testadas.</li>
+<li>E-001 e E-002 usaram bootstrap por ciclone para diferenças específicas, mas não houve validação fora da amostra, remoção de ciclones influentes nem estudo abrangente de generalização.</li>
 <li>Não foi calculado hazard geográfico.</li>
 </ul>
 <h2 id="consequência-para-as-conclusões">Consequência para as conclusões</h2>
-<p>Os resultados atuais sustentam descrição, formulação de hipóteses e a conclusão limitada de E-001: a rotação não organizou consistentemente a distribuição q95 sob o protocolo fixado. Eles não sustentam causalidade, probabilidades populacionais, generalização climatológica, avaliação de risco, escolha definitiva de orientação ou escolha de um modelo. A página <a href="results.html">resultados e evidências</a> registra explicitamente, para cada achado, o que pode e o que não pode ser concluído.</p>
+<p>Os resultados atuais sustentam descrição, formulação de hipóteses, a conclusão limitada de E-001 e sua robustez ao weighting demonstrada em E-002. Eles não sustentam causalidade, probabilidades populacionais, generalização climatológica, avaliação de risco, escolha definitiva de orientação ou escolha de um modelo. A página <a href="results.html">resultados e evidências</a> registra explicitamente, para cada achado, o que pode e o que não pode ser concluído.</p>
 
       <div class="source-note">Fonte canônica: <a href="../docs/limitations.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>
     </main>

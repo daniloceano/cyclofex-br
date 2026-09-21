@@ -24,7 +24,7 @@
   </div>
   <div class="shell layout">
     <nav class="side-nav" aria-label="Relatório científico">
-      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html" class="active" aria-current="page">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="e002_weighting.html">E-002 · Weighting</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html" class="active" aria-current="page">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="questões-abertas">Questões abertas</h1>
@@ -53,7 +53,22 @@
 <tr>
 <td><a href="#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências">Q-007 — escolha da orientação</a></td>
 <td><code>OPEN</code></td>
-<td>E-001 foi inconclusivo e não adotou representação principal</td>
+<td>E-001 foi inconclusivo; E-002 mostrou que isso é robusto ao weighting</td>
+</tr>
+<tr>
+<td><a href="#q-009--o-lifecycle-acrescenta-informação-além-da-intensidade">Q-009 — lifecycle além da intensidade</a></td>
+<td><code>DEFERRED</code></td>
+<td>Experimento posterior à sensibilidade ao threshold</td>
+</tr>
+<tr>
+<td><a href="#q-010--os-padrões-são-estáveis-e-generalizam-para-outros-ciclones">Q-010 — generalização por ciclone</a></td>
+<td><code>DEFERRED</code></td>
+<td>Validação antes do modelo probabilístico completo</td>
+</tr>
+<tr>
+<td><a href="#q-011--qual-arquitetura-deve-representar-a-ocorrência-probabilística">Q-011 — arquitetura de ocorrência</a></td>
+<td><code>DEFERRED</code></td>
+<td>Somente depois de threshold, lifecycle e generalização</td>
 </tr>
 </tbody>
 </table>
@@ -110,17 +125,53 @@
 <li><strong>Por que importa:</strong> threshold, evento, suporte e denominador determinam o significado de ocorrência, geometria e magnitude. Sem essas definições, modelos distintos podem responder a perguntas incompatíveis.</li>
 <li><strong>O que sabemos:</strong> o produto atual oferece limiares fixos e quantis locais, mas foi criado como recorte experimental. Células e estados ausentes podem ser classificados apenas depois de verificar suporte. Evento, <em>excursion set</em>, <em>footprint</em> e hazard são objetos diferentes.</li>
 <li><strong>O que ainda não sabemos:</strong> threshold científico, período de referência, unidade do evento, tratamento de suporte parcial, raio adotado, estimando espacial e critério para comparar alternativas.</li>
-<li><strong>Evidência necessária:</strong> comparação preregistrada das definições candidatas sem escolher o threshold por aparência. E-001 fixou q95 exclusivamente para testar orientação e não resolveu esta pergunta mais ampla.</li>
+<li><strong>Evidência necessária:</strong> comparação preregistrada das definições candidatas sem escolher o threshold por aparência. E-001 e E-002 fixaram q95 exclusivamente para isolar orientação e weighting e não resolveram esta pergunta mais ampla. O próximo experimento proposto considera q90, q95, q99 e thresholds físicos.</li>
 <li><strong>Parte do projeto que depende da resposta:</strong> modelos de ocorrência, geometria, magnitude e hazard. E-001 pôde ser executado porque tratou q95 como controle fixo, não como definição final.</li>
 </ul>
 <h2 id="q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências">Q-007 · A orientação pelo movimento organiza melhor as excedências?</h2>
 <ul>
-<li><strong>Status:</strong> <code>OPEN</code> após resultado <code>INCONCLUSIVE</code> de E-001.</li>
+<li><strong>Status:</strong> <code>OPEN</code> após E-001 <code>INCONCLUSIVE</code>; E-002 resolveu apenas a explicação concorrente de weighting.</li>
 <li><strong>Por que importa:</strong> uma representação principal inadequada pode borrar estrutura comum ou introduzir complexidade sem ganho global.</li>
-<li><strong>O que sabemos:</strong> <a href="e001_orientation.html">E-001</a> comparou os mesmos 1.784 ciclones, 23.050 estados, células e flags q95. <em>Motion-relative</em> reduziu A50, mas aumentou A75, A90 e RMS; a diferença de entropia incluiu zero e as fases discordaram. A rotação revelou assimetria atrás e à esquerda do movimento sem demonstrar maior concentração global.</li>
-<li><strong>O que ainda não sabemos:</strong> se weighting por ciclone, outro threshold preregistrado, normalização pelo tamanho ou estratificação física explicariam o conflito entre núcleo e cauda. Essas hipóteses não podem ser ajustadas retrospectivamente dentro de E-001.</li>
+<li><strong>O que sabemos:</strong> <a href="e001_orientation.html">E-001</a> comparou os mesmos 1.784 ciclones, 23.050 estados, células e flags q95. <em>Motion-relative</em> reduziu A50, mas aumentou A75, A90 e RMS; a diferença de entropia incluiu zero e as fases discordaram. <a href="e002_weighting.html">E-002</a> deu massa total igual aos ciclones e preservou o conflito: ΔA50 = −22.500 km², ΔA75 = +27.500 km², ΔA90 = +77.500 km² e ΔRMS = +8,21 km.</li>
+<li><strong>O que ainda não sabemos:</strong> se outro threshold preregistrado, normalização pelo tamanho ou estratificação física explicam o conflito entre núcleo e cauda. Weighting por ciclone deixou de ser uma explicação suficiente, mas as demais hipóteses não podem ser ajustadas retrospectivamente dentro de E-001.</li>
 <li><strong>Evidência necessária:</strong> novo protocolo que altere um fator por vez, preserve o pareamento e mantenha o ciclone como unidade de incerteza.</li>
 <li><strong>Parte do projeto que depende da resposta:</strong> escolha de representação para modelos espaciais posteriores. Conforme <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>, nenhuma representação foi adotada como superior.</li>
+</ul>
+<h2 id="q-008--a-conclusão-de-e-001-depende-do-weighting-por-estado">Q-008 · A conclusão de E-001 depende do weighting por estado?</h2>
+<ul>
+<li><strong>Status:</strong> <code>RESOLVED</code> no escopo q95 de E-002.</li>
+<li><strong>Por que importa:</strong> ciclones com mais estados q95-positivos recebem mais massa em <em>equal-state</em> e poderiam determinar o conflito entre núcleo e cauda.</li>
+<li><strong>O que sabemos:</strong> <a href="e002_weighting.html">E-002</a> encontrou <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></msub><mo>=</mo><mn>1.288</mn><mo>,</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">N_{eff}=1.288,8</annotation></semantics></math> em <em>equal-state</em> e 1.757 em <em>equal-cyclone</em>. Embora aproximadamente 8% da massa tenha sido redistribuída, <em>motion-relative</em> continuou reduzindo A50 e aumentando A75, A90 e RMS.</li>
+<li><strong>Resposta:</strong> a conclusão qualitativa de E-001 é robusta ao weighting por estado versus por ciclone. Isso não torna os mapas idênticos nem escolhe um estimando universal.</li>
+<li><strong>Evidência que resolveu a questão:</strong> regressão exata de E-001, quatro distribuições, TV, métricas por fase e bootstrap por <code>track_id</code> em E-002.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> <a href="decisions.html#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado">D-006</a> separa os estimandos e mantém a escolha de orientação aberta.</li>
+</ul>
+<h2 id="q-009--o-lifecycle-acrescenta-informação-além-da-intensidade">Q-009 · O lifecycle acrescenta informação além da intensidade?</h2>
+<ul>
+<li><strong>Status:</strong> <code>DEFERRED</code>; ainda não testado.</li>
+<li><strong>Por que importa:</strong> diferenças entre fases podem refletir mudança física do ciclo de vida ou apenas seleção por intensidade.</li>
+<li><strong>O que sabemos:</strong> análises descritivas e estratos de E-001/E-002 mostram heterogeneidade, mas não controlam intensidade.</li>
+<li><strong>O que ainda não sabemos:</strong> se fase preserva informação espacial ou preditiva condicional à intensidade do ciclone.</li>
+<li><strong>Evidência necessária:</strong> experimento independente, posterior à sensibilidade ao threshold, com intensidade explicitamente controlada e validação por ciclone.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> seleção de covariáveis para um futuro modelo de ocorrência.</li>
+</ul>
+<h2 id="q-010--os-padrões-são-estáveis-e-generalizam-para-outros-ciclones">Q-010 · Os padrões são estáveis e generalizam para outros ciclones?</h2>
+<ul>
+<li><strong>Status:</strong> <code>DEFERRED</code>; ainda não testado de forma abrangente.</li>
+<li><strong>Por que importa:</strong> intervalos internos não demonstram desempenho em eventos não usados na construção.</li>
+<li><strong>O que sabemos:</strong> E-001 e E-002 reamostraram <code>track_id</code> para incerteza local; E-002 também quantificou concentração de contribuição.</li>
+<li><strong>O que ainda não sabemos:</strong> influência de eventos individuais, estabilidade após remoção e generalização fora da amostra.</li>
+<li><strong>Evidência necessária:</strong> bootstrap ampliado, influência ou remoção, <em>leave-one-cyclone-out</em> ou validação por grupos e estabilidade de superfícies e métricas.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> qualquer modelo probabilístico completo e afirmação de generalização.</li>
+</ul>
+<h2 id="q-011--qual-arquitetura-deve-representar-a-ocorrência-probabilística">Q-011 · Qual arquitetura deve representar a ocorrência probabilística?</h2>
+<ul>
+<li><strong>Status:</strong> <code>DEFERRED</code>; ainda não testado.</li>
+<li><strong>Por que importa:</strong> um modelo complexo não deve ser adotado antes de fixar estimando, threshold e estratégia de validação.</li>
+<li><strong>O que sabemos:</strong> posição <em>storm-relative</em>, lifecycle, intensidade, translação, tamanho e heterogeneidade entre ciclones são candidatas conceituais.</li>
+<li><strong>O que ainda não sabemos:</strong> família estatística, necessidade de GAM/GAMM, conjunto de covariáveis e ganho sobre benchmarks simples.</li>
+<li><strong>Evidência necessária:</strong> protocolo posterior às etapas de threshold, lifecycle e generalização, com validação em ciclones não usados no ajuste.</li>
+<li><strong>Parte do projeto que depende da resposta:</strong> ocorrência probabilística; magnitude condicional e hazard permanecem etapas separadas.</li>
 </ul>
 
       <div class="source-note">Fonte canônica: <a href="../docs/open_questions.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>

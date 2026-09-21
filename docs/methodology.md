@@ -2,7 +2,7 @@
 
 ## Escopo
 
-Esta página descreve somente métodos efetivamente usados e decisões vigentes. Não existe metodologia adotada para estimar *footprints* probabilísticos ou hazard. O primeiro teste formal, [E-001](e001_orientation.md), comparou duas orientações e foi inconclusivo; portanto, nenhuma delas foi promovida a representação principal.
+Esta página descreve somente métodos efetivamente usados e decisões vigentes. Não existe metodologia adotada para estimar *footprints* probabilísticos ou hazard. [E-001](e001_orientation.md) comparou duas orientações e foi inconclusivo; [E-002](e002_weighting.md) mostrou que essa conclusão é robusta a weighting por estado versus por ciclone. Nenhuma orientação foi promovida a representação principal.
 
 ## Unidade de análise
 
@@ -26,6 +26,8 @@ Dois sistemas de quadrantes foram usados na análise exploratória:
 Na análise exploratória, a direção relativa ao movimento reproduziu a regra herdada, inclusive o fallback leste. Em E-001, a direção foi recalculada do catálogo completo: diferenças centradas no plano tangente local, diferenças simples nas pontas e exclusão de velocidades abaixo de 5 km/h. Foram excluídos 284 de 23.334 estados com suporte; nenhum heading físico foi inventado para movimento quase nulo.
 
 E-001 usou coordenadas azimutais equidistantes em km, rotação contínua para frente/direita e bins comuns de 50 km. A distribuição q95 atribuiu massa total um a cada estado q95-positivo. O bootstrap reamostrou `track_id`, preservando todos os estados e células de cada ciclone. A comparação encontrou métricas conflitantes e não autorizou escolher *centered* ou *motion-relative* como representação superior.
+
+E-002 reutilizou literalmente essa população e geometria e alterou apenas o weighting. *Equal-state* atribui massa total um a cada estado q95-positivo e estima a distribuição da população de estados. *Equal-cyclone* divide massa total um entre os estados positivos de cada ciclone e estima a distribuição média da população de ciclones q95-positivos. Conforme [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado), o estimando-alvo deve ser declarado; nenhum dos dois substitui universalmente o outro.
 
 ## Definição observacional do vento
 
@@ -61,7 +63,7 @@ As estatísticas pontuais são rotuladas como tais. Contagens por estado reduzem
 
 ## O que esta metodologia permite concluir
 
-Ela permite reproduzir a amostra de estados, distinguir suporte de ausência, descrever o recorte condicionado e concluir que a orientação pelo movimento não melhorou consistentemente a concentração q95 sob o protocolo de E-001. Não permite atribuir causalidade às fases, tratar pixels como réplicas, generalizar para climatologia completa, escolher definitivamente uma orientação, escolher um modelo probabilístico ou estimar hazard.
+Ela permite reproduzir a amostra de estados, distinguir suporte de ausência, descrever o recorte condicionado, concluir que a orientação pelo movimento não melhorou consistentemente a concentração q95 em E-001 e que essa conclusão é robusta ao weighting testado em E-002. Não permite atribuir causalidade às fases, tratar pixels como réplicas, generalizar para climatologia completa, escolher definitivamente uma orientação, escolher um modelo probabilístico ou estimar hazard.
 
 ## Auditoria técnica
 

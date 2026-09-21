@@ -28,6 +28,12 @@ PUBLISHED_MEDIA = (
     ("03_e001_orientation", "orientation_comparison.png"),
     ("03_e001_orientation", "orientation_by_phase.png"),
     ("03_e001_orientation", "rotation_sanity_checks.png"),
+    ("04_e002_weighting", "positive_states_per_cyclone.png"),
+    ("04_e002_weighting", "cumulative_cyclone_contribution.png"),
+    ("04_e002_weighting", "centered_weighting_comparison.png"),
+    ("04_e002_weighting", "motion_weighting_comparison.png"),
+    ("04_e002_weighting", "representation_equal_cyclone.png"),
+    ("04_e002_weighting", "metric_differences_bootstrap.png"),
 )
 
 PAGES = {
@@ -37,6 +43,7 @@ PAGES = {
     "data_preparation.md": ("data_preparation.html", "Preparação dos dados", "Base científica", "Como foi construída e validada a amostra de estados ciclone–tempo."),
     "exploratory_analysis.md": ("exploratory_analysis.html", "Análise exploratória", "Análises", "Perguntas, método descritivo, resultados, interpretação e limites."),
     "e001_orientation.md": ("e001_orientation.html", "E-001 · Orientação", "Experimento", "Comparação formal entre coordenadas centered e motion-relative."),
+    "e002_weighting.md": ("e002_weighting.html", "E-002 · Weighting", "Experimento", "Sensibilidade a peso por estado versus por ciclone."),
     "experiments.md": ("experiments.html", "Experimentos", "Análises", "Caderno estruturado de testes planejados, executados e negativos."),
     "methodology.md": ("methodology.html", "Metodologia atual", "Síntese", "Procedimentos efetivamente adotados e alcance das conclusões."),
     "results.md": ("results.html", "Resultados e evidências", "Síntese", "O que foi observado, o que significa e o que ainda não demonstra."),
@@ -57,7 +64,7 @@ PAGES = {
 NAVIGATION = [
     ("Projeto", [("index.md", "Visão geral"), ("scientific_plan.md", "Plano científico")]),
     ("Base científica", [("data.md", "Dados"), ("data_preparation.md", "Preparação dos dados")]),
-    ("Análises", [("exploratory_analysis.md", "Análise exploratória"), ("e001_orientation.md", "E-001 · Orientação"), ("experiments.md", "Experimentos")]),
+    ("Análises", [("exploratory_analysis.md", "Análise exploratória"), ("e001_orientation.md", "E-001 · Orientação"), ("e002_weighting.md", "E-002 · Weighting"), ("experiments.md", "Experimentos")]),
     ("Síntese", [
         ("methodology.md", "Metodologia atual"),
         ("results.md", "Resultados e evidências"),

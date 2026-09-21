@@ -8,7 +8,7 @@ O **cyclofex-br** investiga como ventos extremos associados a ciclones extratrop
 
 A ideia de trabalho é representar cada campo de vento em coordenadas relativas ao centro e, quando pertinente, ao movimento do ciclone. Essa representação *storm-relative* descreve uma posição por sua distância e direção em relação à tempestade, em vez de usar apenas latitude e longitude. Ela poderá permitir que ocorrência, geometria e magnitude das excedências sejam estudadas separadamente antes de qualquer combinação probabilística.
 
-Essa ideia orienta o projeto, mas **não foi confirmada como representação superior**. E-001 mostrou que alinhar pelo movimento concentra o núcleo das excedências q95, porém dispersa suas regiões intermediária e externa. O objeto observado nesta etapa são ciclones extratropicais, seus estados ao longo do tempo e os ventos ERA5 a 10 m situados até 1.100 km de seus centros, dentro do domínio atualmente disponível.
+Essa ideia orienta o projeto, mas **não foi confirmada como representação superior**. E-001 mostrou que alinhar pelo movimento concentra o núcleo das excedências q95, porém dispersa suas regiões intermediária e externa; E-002 confirmou que essa conclusão é robusta a peso igual por estado versus por ciclone. O objeto observado nesta etapa são ciclones extratropicais, seus estados ao longo do tempo e os ventos ERA5 a 10 m situados até 1.100 km de seus centros, dentro do domínio atualmente disponível.
 
 ## Estratégia científica
 
@@ -33,6 +33,7 @@ Consulte o [plano científico](scientific_plan.md) para distinguir o que foi pro
 | Recorte de vento disponível | **CARACTERIZADO** | 1.781 ciclones, 20.101 estados e 17.182.983 linhas espaciais entre 2010 e 2020. |
 | Análise exploratória | **CONCLUÍDA** | Tracks, distribuições pontuais de vento, ocorrência de excedências, quadrantes e um caso individual foram descritos. |
 | E-001 — orientação espacial | **INCONCLUSIVO** | Primeiro experimento formal: 1.784 ciclones, comparação pareada e bootstrap por ciclone; métricas de concentração discordaram. |
+| E-002 — weighting | **ADOTADO: ROBUSTO** | Peso igual por ciclone redistribuiu cerca de 8% da massa, mas preservou o conflito entre núcleo e cauda de E-001. |
 | Modelo probabilístico e hazard | **AINDA NÃO TESTADOS** | Não há *coverage probability*, *footprint* probabilístico ou estimativa de hazard. |
 
 ## O que a análise existente encontrou
@@ -43,14 +44,16 @@ Esses são **resultados descritivos do recorte armazenado**. Eles são consisten
 
 O primeiro experimento formal encontrou um resultado diferente e mais específico: a representação *motion-relative* reduziu a área A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. A diferença de entropia foi pequena e incerta. A rotação revelou assimetria, mas não maior organização espacial global. O relatório completo está em [E-001](e001_orientation.md).
 
+O segundo experimento formal mostrou que *equal-state* concentra contribuição nos sistemas com mais estados positivos: os 10% superiores recebem 22,52% da massa, e o número efetivo é 1.288,8 entre 1.757 ciclones q95-positivos. Sob *equal-cyclone*, o conflito de orientação permanece: ΔA50 = −22.500 km², ΔA75 = +27.500 km², ΔA90 = +77.500 km² e ΔRMS = +8,21 km. O relatório completo está em [E-002](e002_weighting.md).
+
 ## Consequência científica atual
 
-E-001 foi encerrado como **INCONCLUSIVE**. Nenhuma representação foi adotada como cientificamente superior: *centered* permanece uma referência simples e *motion-relative*, um diagnóstico de assimetria. Definição final de extremo, weighting por ciclone, normalização por tamanho e modelagem probabilística continuam abertas e não foram incorporadas retrospectivamente ao experimento.
+E-001 permanece **INCONCLUSIVE**, e E-002 classificou essa conclusão como **ROBUSTA AO WEIGHTING**. Nenhuma representação foi adotada como cientificamente superior. Também não existe weighting universal: *equal-state* descreve estados q95-positivos e *equal-cyclone* descreve ciclones q95-positivos. O próximo teste proposto é a sensibilidade ao threshold; lifecycle versus intensidade, generalização por ciclone e modelagem probabilística continuam futuros.
 
 ## Como navegar
 
 - **Entender a base empírica:** [Dados](data.md) → [Preparação dos dados](data_preparation.md).
-- **Ler o que já foi analisado:** [Análise exploratória](exploratory_analysis.md) → [E-001](e001_orientation.md) → [Resultados e evidências](results.md).
+- **Ler o que já foi analisado:** [Análise exploratória](exploratory_analysis.md) → [E-001](e001_orientation.md) → [E-002](e002_weighting.md) → [Resultados e evidências](results.md).
 - **Distinguir execução de proposta:** [Metodologia atual](methodology.md) → [Plano científico](scientific_plan.md) → [Experimentos](experiments.md).
 - **Auditar incertezas e escolhas:** [Limitações](limitations.md) → [Questões abertas](open_questions.md) → [Decisões](decisions.md).
 - **Reproduzir tecnicamente:** [Proveniência e reprodutibilidade](reproducibility.md) → [Referência técnica](internal/README.md).

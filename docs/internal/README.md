@@ -10,7 +10,7 @@ Esta área responde **como reproduzir e manter** o projeto. Ela contém caminhos
 - [Fluxos computacionais](computational_workflows.md): ambiente, comandos, cache, geração de resultados e dashboard.
 - [Referência dos dados](data_reference.md): arquivos, schemas, campos, unidades de linha, hashes e contratos.
 - [Investigação de Q-002 e Q-003](q002_q003_provenance.md): reconstrução detalhada do código legado de vento, thresholds, tempo e quadrantes.
-- [Auditoria humana simulada](human_audit.md): verificação das 16 perguntas que um pesquisador externo deve conseguir responder.
+- [Auditoria humana simulada](human_audit.md): verificação das 17 perguntas que um pesquisador externo deve conseguir responder.
 - [Padrão permanente da documentação](../documentation_guidelines.md): regras obrigatórias para modificar o relatório científico.
 
 ## Limite entre as camadas

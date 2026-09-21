@@ -24,6 +24,7 @@ O registro [D-001](../decisions.md#d-001--organizar-código-e-produtos-por-anál
 | Caracterização estrutural | `scripts/01_data_overview/` | `outputs/01_data_overview/` |
 | Análise exploratória | `scripts/02_exploratory_analysis/` | `outputs/02_exploratory_analysis/` |
 | E-001 — orientação | `scripts/03_e001_orientation/` | `outputs/03_e001_orientation/` |
+| E-002 — weighting | `scripts/04_e002_weighting/` | `outputs/04_e002_weighting/` |
 
 ## Convenções
 

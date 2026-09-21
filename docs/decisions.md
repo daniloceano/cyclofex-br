@@ -65,3 +65,18 @@ Decisões mantêm IDs `D-...` mesmo quando forem substituídas. Status possívei
 - **Justificativa:** as famílias de métricas e os estratos de fase não satisfizeram o critério preregistrado. A rotação mudou a forma e concentrou o núcleo, mas não organizou consistentemente a distribuição inteira.
 - **Experimento relacionado:** E-001, status `INCONCLUSIVE`.
 - **Revisar se:** um protocolo posterior isolar weighting, threshold, tamanho ou outra explicação sem ajustar retrospectivamente E-001.
+
+**Revisão posterior, sem alteração do registro histórico.** E-002 isolou weighting e classificou a conclusão como robusta: sob *equal-cyclone*, A50 continuou favorecendo *motion-relative*, enquanto A75, A90 e RMS favoreceram *centered*. D-005 permanece vigente; E-001 continua `INCONCLUSIVE` sob seu protocolo original.
+
+## D-006 · Usar o weighting que corresponde ao estimando declarado
+
+- **Data:** 2026-09-21
+- **Status:** `ADOPTED`
+- **Questão:** *equal-state* ou *equal-cyclone* deve ser a representação universal das excedências q95?
+- **Alternativas consideradas:** substituir *equal-state* por *equal-cyclone* em todas as análises; preservar *equal-state* sempre; ou declarar o estimando-alvo e manter ambos para perguntas diferentes.
+- **Evidência disponível:** [E-002](e002_weighting.md) encontrou contribuição desigual em *equal-state* — os 10% superiores receberam 22,52% da massa e $N_{eff}=1.288,8$ entre 1.757 ciclones positivos —, mas nenhum weighting é um erro. A distância de variação total foi aproximadamente 0,079 nas duas orientações, e a conclusão de E-001 permaneceu robusta.
+- **Decisão atual:** usar *equal-state* quando o estimando for a distribuição de um estado q95-positivo selecionado ao acaso; usar *equal-cyclone* quando o estimando for a distribuição média entre ciclones q95-positivos. Toda análise deve declarar qual população resume e, quando a escolha puder afetar a conclusão, apresentar o outro weighting como sensibilidade.
+- **Não decidido:** nenhuma orientação foi promovida a principal; *equal-cyclone* não foi escolhido apenas porque `track_id` é a unidade inferencial.
+- **Justificativa:** weighting define a população descritiva, enquanto bootstrap por ciclone define como a dependência é respeitada na incerteza. Confundir essas funções apagaria uma diferença científica real entre estimandos.
+- **Experimento relacionado:** E-002, status `ADOPTED`, classificação `ROBUST_TO_WEIGHTING`.
+- **Revisar se:** uma pergunta futura definir outra população-alvo, ou dados completos permitirem um estimando temporal ou climatológico distinto.

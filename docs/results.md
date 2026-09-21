@@ -87,6 +87,16 @@ Para evitar que a quantidade de pixels domine a leitura, esta figura conta cada 
 
 **Não permite concluir.** O resultado não prova que *centered* seja fisicamente superior, não resolve weighting por ciclone, não escolhe threshold definitivo e não constitui uma probabilidade espacial.
 
+## Evidência 8 — a conclusão de orientação é robusta ao weighting
+
+**Resultado.** [E-002](e002_weighting.md) mostrou que os 10% de ciclones q95-positivos com mais estados recebiam 22,52% da massa *equal-state*, ante 10,02% com peso igual. O número efetivo aumentou de 1.288,8 para 1.757 ciclones ao usar *equal-cyclone*. A mudança redistribuiu 7,92% da massa *centered* e 7,86% da massa *motion-relative* e aumentou RMS em 41,16 e 41,68 km, respectivamente.
+
+Sob *equal-cyclone*, *motion-relative minus centered* foi −22.500 km² em A50, +27.500 km² em A75, +77.500 km² em A90 e +8,21 km em RMS. Os IC95% foram [−42.500; −5.000], [0; +52.500], [+48.688; +107.500] e [+5,57; +11,07], respectivamente; o IC de ΔH incluiu zero.
+
+**Interpretação.** Sistemas com mais estados positivos tinham influência agregada material, mas não explicavam o conflito entre núcleo e cauda. A conclusão `INCONCLUSIVE` de E-001 é robusta a este weighting.
+
+**Não permite concluir.** Robustez ao weighting não escolhe uma orientação, não torna os dois estimandos intercambiáveis e não demonstra robustez a threshold, influência individual ou amostras futuras.
+
 ## Síntese científica atual
 
-A infraestrutura observacional está validada para continuar: fonte, estados, suporte e regras do recorte são conhecidos o suficiente para formular experimentos. A exploração sugere variação por fase e estrutura setorial; E-001 mostrou que alinhar pelo movimento muda a forma, mas não aumenta consistentemente a concentração. O projeto ainda não estimou ocorrência probabilística, magnitude condicional, *footprint* ou hazard.
+A infraestrutura observacional está validada para continuar: fonte, estados, suporte e regras do recorte são conhecidos o suficiente para formular experimentos. A exploração sugere variação por fase e estrutura setorial; E-001 mostrou que alinhar pelo movimento muda a forma, mas não aumenta consistentemente a concentração, e E-002 mostrou que essa conclusão é robusta a peso por estado versus por ciclone. O próximo teste proposto é a sensibilidade ao threshold. O projeto ainda não estimou ocorrência probabilística, magnitude condicional, *footprint* ou hazard.

@@ -10,7 +10,10 @@ Questões recebem IDs persistentes e continuam no histórico depois de resolvida
 | --- | --- | --- |
 | [Q-004 — reprodução das fases](#q-004--como-foram-produzidas-e-como-devem-ser-tratadas-as-fases) | `OPEN` | Uso confirmatório do lifecycle e eventual reclassificação |
 | [Q-006 — definição de extremo e objeto espacial](#q-006--qual-definição-de-extremo-e-de-objeto-espacial-será-adotada) | `OPEN` | Modelos posteriores; q95 em E-001 foi apenas uma escolha operacional preregistrada |
-| [Q-007 — escolha da orientação](#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências) | `OPEN` | E-001 foi inconclusivo e não adotou representação principal |
+| [Q-007 — escolha da orientação](#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências) | `OPEN` | E-001 foi inconclusivo; E-002 mostrou que isso é robusto ao weighting |
+| [Q-009 — lifecycle além da intensidade](#q-009--o-lifecycle-acrescenta-informação-além-da-intensidade) | `DEFERRED` | Experimento posterior à sensibilidade ao threshold |
+| [Q-010 — generalização por ciclone](#q-010--os-padrões-são-estáveis-e-generalizam-para-outros-ciclones) | `DEFERRED` | Validação antes do modelo probabilístico completo |
+| [Q-011 — arquitetura de ocorrência](#q-011--qual-arquitetura-deve-representar-a-ocorrência-probabilística) | `DEFERRED` | Somente depois de threshold, lifecycle e generalização |
 
 ## Q-001 · Qual é a unidade de uma linha e como ela se vincula a um ciclone?
 
@@ -65,14 +68,50 @@ Questões recebem IDs persistentes e continuam no histórico depois de resolvida
 - **Por que importa:** threshold, evento, suporte e denominador determinam o significado de ocorrência, geometria e magnitude. Sem essas definições, modelos distintos podem responder a perguntas incompatíveis.
 - **O que sabemos:** o produto atual oferece limiares fixos e quantis locais, mas foi criado como recorte experimental. Células e estados ausentes podem ser classificados apenas depois de verificar suporte. Evento, *excursion set*, *footprint* e hazard são objetos diferentes.
 - **O que ainda não sabemos:** threshold científico, período de referência, unidade do evento, tratamento de suporte parcial, raio adotado, estimando espacial e critério para comparar alternativas.
-- **Evidência necessária:** comparação preregistrada das definições candidatas sem escolher o threshold por aparência. E-001 fixou q95 exclusivamente para testar orientação e não resolveu esta pergunta mais ampla.
+- **Evidência necessária:** comparação preregistrada das definições candidatas sem escolher o threshold por aparência. E-001 e E-002 fixaram q95 exclusivamente para isolar orientação e weighting e não resolveram esta pergunta mais ampla. O próximo experimento proposto considera q90, q95, q99 e thresholds físicos.
 - **Parte do projeto que depende da resposta:** modelos de ocorrência, geometria, magnitude e hazard. E-001 pôde ser executado porque tratou q95 como controle fixo, não como definição final.
 
 ## Q-007 · A orientação pelo movimento organiza melhor as excedências?
 
-- **Status:** `OPEN` após resultado `INCONCLUSIVE` de E-001.
+- **Status:** `OPEN` após E-001 `INCONCLUSIVE`; E-002 resolveu apenas a explicação concorrente de weighting.
 - **Por que importa:** uma representação principal inadequada pode borrar estrutura comum ou introduzir complexidade sem ganho global.
-- **O que sabemos:** [E-001](e001_orientation.md) comparou os mesmos 1.784 ciclones, 23.050 estados, células e flags q95. *Motion-relative* reduziu A50, mas aumentou A75, A90 e RMS; a diferença de entropia incluiu zero e as fases discordaram. A rotação revelou assimetria atrás e à esquerda do movimento sem demonstrar maior concentração global.
-- **O que ainda não sabemos:** se weighting por ciclone, outro threshold preregistrado, normalização pelo tamanho ou estratificação física explicariam o conflito entre núcleo e cauda. Essas hipóteses não podem ser ajustadas retrospectivamente dentro de E-001.
+- **O que sabemos:** [E-001](e001_orientation.md) comparou os mesmos 1.784 ciclones, 23.050 estados, células e flags q95. *Motion-relative* reduziu A50, mas aumentou A75, A90 e RMS; a diferença de entropia incluiu zero e as fases discordaram. [E-002](e002_weighting.md) deu massa total igual aos ciclones e preservou o conflito: ΔA50 = −22.500 km², ΔA75 = +27.500 km², ΔA90 = +77.500 km² e ΔRMS = +8,21 km.
+- **O que ainda não sabemos:** se outro threshold preregistrado, normalização pelo tamanho ou estratificação física explicam o conflito entre núcleo e cauda. Weighting por ciclone deixou de ser uma explicação suficiente, mas as demais hipóteses não podem ser ajustadas retrospectivamente dentro de E-001.
 - **Evidência necessária:** novo protocolo que altere um fator por vez, preserve o pareamento e mantenha o ciclone como unidade de incerteza.
 - **Parte do projeto que depende da resposta:** escolha de representação para modelos espaciais posteriores. Conforme [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001), nenhuma representação foi adotada como superior.
+
+## Q-008 · A conclusão de E-001 depende do weighting por estado?
+
+- **Status:** `RESOLVED` no escopo q95 de E-002.
+- **Por que importa:** ciclones com mais estados q95-positivos recebem mais massa em *equal-state* e poderiam determinar o conflito entre núcleo e cauda.
+- **O que sabemos:** [E-002](e002_weighting.md) encontrou $N_{eff}=1.288,8$ em *equal-state* e 1.757 em *equal-cyclone*. Embora aproximadamente 8% da massa tenha sido redistribuída, *motion-relative* continuou reduzindo A50 e aumentando A75, A90 e RMS.
+- **Resposta:** a conclusão qualitativa de E-001 é robusta ao weighting por estado versus por ciclone. Isso não torna os mapas idênticos nem escolhe um estimando universal.
+- **Evidência que resolveu a questão:** regressão exata de E-001, quatro distribuições, TV, métricas por fase e bootstrap por `track_id` em E-002.
+- **Parte do projeto que depende da resposta:** [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado) separa os estimandos e mantém a escolha de orientação aberta.
+
+## Q-009 · O lifecycle acrescenta informação além da intensidade?
+
+- **Status:** `DEFERRED`; ainda não testado.
+- **Por que importa:** diferenças entre fases podem refletir mudança física do ciclo de vida ou apenas seleção por intensidade.
+- **O que sabemos:** análises descritivas e estratos de E-001/E-002 mostram heterogeneidade, mas não controlam intensidade.
+- **O que ainda não sabemos:** se fase preserva informação espacial ou preditiva condicional à intensidade do ciclone.
+- **Evidência necessária:** experimento independente, posterior à sensibilidade ao threshold, com intensidade explicitamente controlada e validação por ciclone.
+- **Parte do projeto que depende da resposta:** seleção de covariáveis para um futuro modelo de ocorrência.
+
+## Q-010 · Os padrões são estáveis e generalizam para outros ciclones?
+
+- **Status:** `DEFERRED`; ainda não testado de forma abrangente.
+- **Por que importa:** intervalos internos não demonstram desempenho em eventos não usados na construção.
+- **O que sabemos:** E-001 e E-002 reamostraram `track_id` para incerteza local; E-002 também quantificou concentração de contribuição.
+- **O que ainda não sabemos:** influência de eventos individuais, estabilidade após remoção e generalização fora da amostra.
+- **Evidência necessária:** bootstrap ampliado, influência ou remoção, *leave-one-cyclone-out* ou validação por grupos e estabilidade de superfícies e métricas.
+- **Parte do projeto que depende da resposta:** qualquer modelo probabilístico completo e afirmação de generalização.
+
+## Q-011 · Qual arquitetura deve representar a ocorrência probabilística?
+
+- **Status:** `DEFERRED`; ainda não testado.
+- **Por que importa:** um modelo complexo não deve ser adotado antes de fixar estimando, threshold e estratégia de validação.
+- **O que sabemos:** posição *storm-relative*, lifecycle, intensidade, translação, tamanho e heterogeneidade entre ciclones são candidatas conceituais.
+- **O que ainda não sabemos:** família estatística, necessidade de GAM/GAMM, conjunto de covariáveis e ganho sobre benchmarks simples.
+- **Evidência necessária:** protocolo posterior às etapas de threshold, lifecycle e generalização, com validação em ciclones não usados no ajuste.
+- **Parte do projeto que depende da resposta:** ocorrência probabilística; magnitude condicional e hazard permanecem etapas separadas.

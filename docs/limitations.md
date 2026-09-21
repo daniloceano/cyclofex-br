@@ -35,7 +35,7 @@ Estas limitações definem o alcance da evidência atual. Elas não são notas l
 ## Dependência e potencial de viés
 
 - Pontos do mesmo estado e estados do mesmo ciclone são dependentes. Tratar linhas como unidades independentes produziria pseudorreplicação.
-- Ciclones longos, estados com maior área selecionada e fases mais frequentes contribuem mais linhas às estatísticas pontuais.
+- Ciclones longos, estados com maior área selecionada e fases mais frequentes contribuem mais linhas às estatísticas pontuais. E-002 quantificou especificamente o efeito do número de estados q95-positivos: os 10% superiores reuniram 22,52% da massa *equal-state*.
 - A seleção por intensidade altera distribuições, contagens e contrastes por fase ou quadrante.
 - Suporte parcial e trajetórias fora do domínio podem gerar cobertura desigual ligada à posição do ciclone.
 - A análise atual não quantifica como essas fontes de seleção se combinam.
@@ -45,10 +45,10 @@ Estas limitações definem o alcance da evidência atual. Elas não são notas l
 - Não foi escolhido threshold científico definitivo.
 - Evento, *excursion set* e *footprint* ainda não têm definição operacional adotada.
 - Não foram estimadas *coverage probabilities* nem magnitude condicional.
-- A orientação *centered* versus *motion-relative* foi comparada em E-001, mas o resultado foi inconclusivo; weighting alternativo, threshold sensitivity e normalização por tamanho não foram testados.
-- E-001 usou bootstrap por ciclone para a diferença pareada, mas não houve validação fora da amostra nem estudo completo de sensibilidade ou robustez.
+- A orientação *centered* versus *motion-relative* foi comparada em E-001, mas o resultado foi inconclusivo. E-002 mostrou que essa conclusão é robusta a *equal-state* versus *equal-cyclone*; sensibilidade ao threshold e normalização por tamanho não foram testadas.
+- E-001 e E-002 usaram bootstrap por ciclone para diferenças específicas, mas não houve validação fora da amostra, remoção de ciclones influentes nem estudo abrangente de generalização.
 - Não foi calculado hazard geográfico.
 
 ## Consequência para as conclusões
 
-Os resultados atuais sustentam descrição, formulação de hipóteses e a conclusão limitada de E-001: a rotação não organizou consistentemente a distribuição q95 sob o protocolo fixado. Eles não sustentam causalidade, probabilidades populacionais, generalização climatológica, avaliação de risco, escolha definitiva de orientação ou escolha de um modelo. A página [resultados e evidências](results.md) registra explicitamente, para cada achado, o que pode e o que não pode ser concluído.
+Os resultados atuais sustentam descrição, formulação de hipóteses, a conclusão limitada de E-001 e sua robustez ao weighting demonstrada em E-002. Eles não sustentam causalidade, probabilidades populacionais, generalização climatológica, avaliação de risco, escolha definitiva de orientação ou escolha de um modelo. A página [resultados e evidências](results.md) registra explicitamente, para cada achado, o que pode e o que não pode ser concluído.

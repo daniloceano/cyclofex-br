@@ -1,0 +1,57 @@
+{
+  "experiment_id": "E-002",
+  "title": "Sensibilidade da estrutura espacial ao weighting por estado versus por ciclone",
+  "protocol_frozen_before_primary_results": true,
+  "completed_date": "2026-09-21",
+  "isolation_principle": "Alterar somente o weighting e reutilizar literalmente periodo, q95 local, catalogo, suporte, heading, corte de 5 km/h, transformacao, dominio, bins, fases, estados sem suporte e ausencia de smoothing de E-001",
+  "primary_threshold": "exceeded_q95",
+  "threshold_definition": "wind_speed > q95 local",
+  "population": "A mesma populacao comparavel de E-001: estados ERA5 de 6 h entre 2010-01-01 00:00 e 2020-12-31 18:00 UTC com suporte espacial e heading >= 5 km/h",
+  "support_radius_km": 1100.0,
+  "relative_domain_km": [-1100.0, 1100.0],
+  "bin_size_km": 50.0,
+  "smoothing_for_primary_metrics": false,
+  "translation_speed_min_kmh": 5.0,
+  "phase_strata": [
+    "incipient",
+    "intensification",
+    "mature",
+    "decay"
+  ],
+  "phase_rule": "Sufixos ' 2' sao agregados aos quatro estratos fisicos, exatamente como em E-001",
+  "equal_state_weight": "Para o ciclone j, estado q95-positivo t e suas m_jt celulas excedentes, cada celula recebe 1/m_jt; a distribuicao agregada e normalizada globalmente",
+  "equal_cyclone_weight": "Para o ciclone j com n_j estados q95-positivos, o estado t e suas m_jt celulas excedentes, cada celula recebe 1/(n_j*m_jt); a distribuicao e normalizada entre ciclones incluidos",
+  "phase_weighting_rule": "Em cada estrato de fase, n_j conta apenas os estados q95-positivos do ciclone naquele estrato, de modo que cada ciclone representado na fase recebe massa total um",
+  "bootstrap_unit": "track_id",
+  "bootstrap_replicates": 500,
+  "bootstrap_seed": 20260921,
+  "bootstrap_scope": "Reamostrar todos os ciclones elegiveis com reposicao, preservando seus estados e celulas; recalcular equal-state e equal-cyclone em cada replica",
+  "primary_metrics": [
+    "entropy_nats",
+    "area50_km2",
+    "area75_km2",
+    "area90_km2",
+    "rms_about_centroid_km"
+  ],
+  "diagnostic_metrics": [
+    "centroid_x_km",
+    "centroid_y_km",
+    "centroid_distance_km",
+    "anisotropy_axis_ratio"
+  ],
+  "map_distance": "Total variation: 0.5 vezes a soma, entre bins, do valor absoluto da diferenca entre probabilidades equal-cyclone e equal-state",
+  "contribution_concentration": "HHI = soma dos quadrados das fracoes de massa por ciclone; N_eff = 1/HHI",
+  "robustness_decision_rule": {
+    "ROBUST_TO_WEIGHTING": "Sob equal-cyclone permanece o conflito qualitativo de E-001: A50 aponta em sentido oposto a A75, A90 e RMS, e as cinco metricas de concentracao nao favorecem consistentemente uma representacao",
+    "SENSITIVE_TO_WEIGHTING": "Sob equal-cyclone as cinco metricas principais passam a apontar no mesmo sentido e os intervalos de H e A75 excluem zero nesse sentido, ou o criterio simetrico de E-001 passa a sustentar claramente uma representacao",
+    "PARTIALLY_SENSITIVE": "O weighting muda magnitudes, sinais ou algumas metricas de modo claro, mas nao satisfaz nem a preservacao do conflito nucleo-cauda nem evidencia consistente para uma representacao"
+  },
+  "expected_e001_population": {
+    "eligible_cyclones": 1784,
+    "eligible_states": 23050,
+    "q95_positive_states": 16921,
+    "q95_exceedance_cells": 9090570,
+    "heading_excluded_states": 284
+  },
+  "created_utc": "2026-09-21T00:00:00Z"
+}

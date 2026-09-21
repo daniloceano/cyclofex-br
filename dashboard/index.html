@@ -24,7 +24,7 @@
   </div>
   <div class="shell layout">
     <nav class="side-nav" aria-label="Relatório científico">
-      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html" class="active" aria-current="page">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
+      <div class="nav-group"><p class="side-label">Projeto</p><a href="index.html" class="active" aria-current="page">Visão geral</a><a href="scientific_plan.html">Plano científico</a></div><div class="nav-group"><p class="side-label">Base científica</p><a href="data.html">Dados</a><a href="data_preparation.html">Preparação dos dados</a></div><div class="nav-group"><p class="side-label">Análises</p><a href="exploratory_analysis.html">Análise exploratória</a><a href="e001_orientation.html">E-001 · Orientação</a><a href="e002_weighting.html">E-002 · Weighting</a><a href="experiments.html">Experimentos</a></div><div class="nav-group"><p class="side-label">Síntese</p><a href="methodology.html">Metodologia atual</a><a href="results.html">Resultados e evidências</a><a href="limitations.html">Limitações</a><a href="open_questions.html">Questões abertas</a></div><div class="nav-group"><p class="side-label">Auditoria</p><a href="decisions.html">Decisões</a><a href="reproducibility.html">Proveniência e reprodução</a><a href="internal/index.html">Referência técnica</a></div>
     </nav>
     <main id="conteudo" class="document">
       <h1 id="visão-geral-do-projeto">Visão geral do projeto</h1>
@@ -32,7 +32,7 @@
 <p>O <strong>cyclofex-br</strong> investiga como ventos extremos associados a ciclones extratropicais se organizam no Atlântico Sul. O centro de um ciclone descreve sua trajetória, mas não informa sozinho onde os ventos mais intensos ocorrem, quanto espaço ocupam ou como essa organização muda durante o ciclo de vida. Essa lacuna precisa ser resolvida antes que padrões relativos ao ciclone possam ser traduzidos, no futuro, em <em>hazard</em> geográfico — a frequência e a intensidade esperadas do fenômeno em posições fixas da superfície.</p>
 <h2 id="ideia-central-e-objeto-estudado">Ideia central e objeto estudado</h2>
 <p>A ideia de trabalho é representar cada campo de vento em coordenadas relativas ao centro e, quando pertinente, ao movimento do ciclone. Essa representação <em>storm-relative</em> descreve uma posição por sua distância e direção em relação à tempestade, em vez de usar apenas latitude e longitude. Ela poderá permitir que ocorrência, geometria e magnitude das excedências sejam estudadas separadamente antes de qualquer combinação probabilística.</p>
-<p>Essa ideia orienta o projeto, mas <strong>não foi confirmada como representação superior</strong>. E-001 mostrou que alinhar pelo movimento concentra o núcleo das excedências q95, porém dispersa suas regiões intermediária e externa. O objeto observado nesta etapa são ciclones extratropicais, seus estados ao longo do tempo e os ventos ERA5 a 10 m situados até 1.100 km de seus centros, dentro do domínio atualmente disponível.</p>
+<p>Essa ideia orienta o projeto, mas <strong>não foi confirmada como representação superior</strong>. E-001 mostrou que alinhar pelo movimento concentra o núcleo das excedências q95, porém dispersa suas regiões intermediária e externa; E-002 confirmou que essa conclusão é robusta a peso igual por estado versus por ciclone. O objeto observado nesta etapa são ciclones extratropicais, seus estados ao longo do tempo e os ventos ERA5 a 10 m situados até 1.100 km de seus centros, dentro do domínio atualmente disponível.</p>
 <h2 id="estratégia-científica">Estratégia científica</h2>
 <p>O trabalho segue uma sequência deliberada:</p>
 <ol type="1">
@@ -85,6 +85,11 @@
 <td>Primeiro experimento formal: 1.784 ciclones, comparação pareada e bootstrap por ciclone; métricas de concentração discordaram.</td>
 </tr>
 <tr>
+<td>E-002 — weighting</td>
+<td><strong>ADOTADO: ROBUSTO</strong></td>
+<td>Peso igual por ciclone redistribuiu cerca de 8% da massa, mas preservou o conflito entre núcleo e cauda de E-001.</td>
+</tr>
+<tr>
 <td>Modelo probabilístico e hazard</td>
 <td><strong>AINDA NÃO TESTADOS</strong></td>
 <td>Não há <em>coverage probability</em>, <em>footprint</em> probabilístico ou estimativa de hazard.</td>
@@ -95,12 +100,13 @@
 <p>No recorte condicionado de 2010–2020, a fase madura apresentou a maior mediana pontual de velocidade do vento (15,58 m/s) e o maior percentil 95 pontual (19,77 m/s). As medianas entre quadrantes foram próximas: 14,47–14,90 m/s nos quadrantes geográficos e 14,51–14,78 m/s nos quadrantes relativos ao movimento.</p>
 <p>Esses são <strong>resultados descritivos do recorte armazenado</strong>. Eles são consistentes com ventos pontualmente mais intensos na fase madura, mas não constituem um teste entre fases, não corrigem a contribuição desigual dos ciclones e não demonstram causalidade, probabilidade espacial ou hazard. A interpretação completa está na <a href="exploratory_analysis.html">análise exploratória</a> e a síntese, em <a href="results.html">resultados e evidências</a>.</p>
 <p>O primeiro experimento formal encontrou um resultado diferente e mais específico: a representação <em>motion-relative</em> reduziu a área A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. A diferença de entropia foi pequena e incerta. A rotação revelou assimetria, mas não maior organização espacial global. O relatório completo está em <a href="e001_orientation.html">E-001</a>.</p>
+<p>O segundo experimento formal mostrou que <em>equal-state</em> concentra contribuição nos sistemas com mais estados positivos: os 10% superiores recebem 22,52% da massa, e o número efetivo é 1.288,8 entre 1.757 ciclones q95-positivos. Sob <em>equal-cyclone</em>, o conflito de orientação permanece: ΔA50 = −22.500 km², ΔA75 = +27.500 km², ΔA90 = +77.500 km² e ΔRMS = +8,21 km. O relatório completo está em <a href="e002_weighting.html">E-002</a>.</p>
 <h2 id="consequência-científica-atual">Consequência científica atual</h2>
-<p>E-001 foi encerrado como <strong>INCONCLUSIVE</strong>. Nenhuma representação foi adotada como cientificamente superior: <em>centered</em> permanece uma referência simples e <em>motion-relative</em>, um diagnóstico de assimetria. Definição final de extremo, weighting por ciclone, normalização por tamanho e modelagem probabilística continuam abertas e não foram incorporadas retrospectivamente ao experimento.</p>
+<p>E-001 permanece <strong>INCONCLUSIVE</strong>, e E-002 classificou essa conclusão como <strong>ROBUSTA AO WEIGHTING</strong>. Nenhuma representação foi adotada como cientificamente superior. Também não existe weighting universal: <em>equal-state</em> descreve estados q95-positivos e <em>equal-cyclone</em> descreve ciclones q95-positivos. O próximo teste proposto é a sensibilidade ao threshold; lifecycle versus intensidade, generalização por ciclone e modelagem probabilística continuam futuros.</p>
 <h2 id="como-navegar">Como navegar</h2>
 <ul>
 <li><strong>Entender a base empírica:</strong> <a href="data.html">Dados</a> → <a href="data_preparation.html">Preparação dos dados</a>.</li>
-<li><strong>Ler o que já foi analisado:</strong> <a href="exploratory_analysis.html">Análise exploratória</a> → <a href="e001_orientation.html">E-001</a> → <a href="results.html">Resultados e evidências</a>.</li>
+<li><strong>Ler o que já foi analisado:</strong> <a href="exploratory_analysis.html">Análise exploratória</a> → <a href="e001_orientation.html">E-001</a> → <a href="e002_weighting.html">E-002</a> → <a href="results.html">Resultados e evidências</a>.</li>
 <li><strong>Distinguir execução de proposta:</strong> <a href="methodology.html">Metodologia atual</a> → <a href="scientific_plan.html">Plano científico</a> → <a href="experiments.html">Experimentos</a>.</li>
 <li><strong>Auditar incertezas e escolhas:</strong> <a href="limitations.html">Limitações</a> → <a href="open_questions.html">Questões abertas</a> → <a href="decisions.html">Decisões</a>.</li>
 <li><strong>Reproduzir tecnicamente:</strong> <a href="reproducibility.html">Proveniência e reprodutibilidade</a> → <a href="internal/index.html">Referência técnica</a>.</li>
