@@ -59,14 +59,14 @@ Decisões mantêm IDs `D-...` mesmo quando forem substituídas. Status possívei
 - **Data:** 2026-09-21
 - **Status:** `PROVISIONAL`
 - **Questão:** a orientação pelo movimento deve substituir a centralização geográfica como representação principal?
-- **Alternativas consideradas:** adotar *motion-relative*, manter *centered* como representação científica principal ou preservar a questão aberta.
-- **Evidência disponível:** em [E-001](e001_orientation.md), *motion-relative* reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. O IC bootstrap da diferença de entropia incluiu zero, e somente uma das quatro fases teve entropia e A75 pontualmente menores em conjunto.
-- **Decisão atual:** não adotar nenhuma das duas representações como cientificamente superior. Usar *centered* apenas como referência simples e *motion-relative* como diagnóstico de assimetria quando necessário, sempre identificando que a escolha permanece aberta.
+- **Alternativas consideradas:** adotar quadrantes rotacionados pelo movimento (`motion-relative`), manter quadrantes fixos (`centered`) como representação científica principal ou preservar a questão aberta.
+- **Evidência disponível:** em [E-001](e001_orientation.md), os quadrantes rotacionados reduziram A50 em 32.500 km², mas aumentaram A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. O IC bootstrap da diferença de entropia incluiu zero, e somente uma das quatro fases teve entropia e A75 pontualmente menores em conjunto.
+- **Decisão atual:** não adotar nenhuma das duas representações como cientificamente superior. Usar quadrantes fixos apenas como referência simples e quadrantes rotacionados como diagnóstico de assimetria quando necessário, sempre identificando que a escolha permanece aberta.
 - **Justificativa:** as famílias de métricas e os estratos de fase não satisfizeram o critério preregistrado. A rotação mudou a forma e concentrou o núcleo, mas não organizou consistentemente a distribuição inteira.
 - **Experimento relacionado:** E-001, status `INCONCLUSIVE`.
 - **Revisar se:** um protocolo posterior isolar weighting, threshold, tamanho ou outra explicação sem ajustar retrospectivamente E-001.
 
-**Revisão posterior, sem alteração do registro histórico.** E-002 isolou weighting e classificou a conclusão como robusta: sob *equal-cyclone*, A50 continuou favorecendo *motion-relative*, enquanto A75, A90 e RMS favoreceram *centered*. D-005 permanece vigente; E-001 continua `INCONCLUSIVE` sob seu protocolo original.
+**Revisão posterior, sem alteração do registro histórico.** E-002 isolou weighting e classificou a conclusão como robusta: sob *equal-cyclone*, A50 continuou favorecendo os quadrantes rotacionados, enquanto A75, A90 e RMS favoreceram os quadrantes fixos. D-005 permanece vigente; E-001 continua `INCONCLUSIVE` sob seu protocolo original.
 
 ## D-006 · Usar o weighting que corresponde ao estimando declarado
 

@@ -41,10 +41,10 @@ O manifesto completo, com schemas, versões de ambiente e hashes dos scripts, es
 ### E-001 — orientação pelo movimento
 
 - **Protocolo congelado:** [`protocol.json`](../scripts/03_e001_orientation/protocol.json), com q95, grade de 50 km, corte de 5 km/h, weighting, métricas, bootstrap e critério de decisão.
-- **Código:** [`e001_orientation.py`](../scripts/03_e001_orientation/e001_orientation.py) e [`test_orientation.py`](../scripts/03_e001_orientation/test_orientation.py).
+- **Código:** [`e001_orientation.py`](../scripts/03_e001_orientation/e001_orientation.py), [`test_orientation.py`](../scripts/03_e001_orientation/test_orientation.py) e [`methodology_figures.py`](../scripts/03_e001_orientation/methodology_figures.py). O último reproduz o fluxograma, a grade real, a comparação dos sistemas de referência e os exemplos didáticos das métricas; ele consulta um estado real somente para ilustrar o binning e não altera os resultados.
 - **Resumo:** [`summary.json`](../outputs/03_e001_orientation/summary.json), incluindo hashes SHA-256 das três entradas, protocolo e script.
 - **Tabelas:** métricas por estrato e fase literal, comparações com IC, réplicas bootstrap, bins com suporte, distribuição da translação e contagens de estados.
-- **Figuras:** comparação global, estratos de fase, diagnóstico do heading e sanidade da rotação.
+- **Figuras:** comparação global, estratos de fase, diagnóstico do heading, sanidade da rotação, fluxograma experimental, grade real com um estado observado, comparação entre quadrantes fixos e rotacionados e exemplos didáticos das métricas.
 - **Semente e réplicas:** `20260921`, 500 réplicas pareadas por `track_id`.
 - **Decisão:** [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001).
 
@@ -86,9 +86,10 @@ A animação requer `ffmpeg`; o Cartopy pode baixar a costa Natural Earth para s
 ```sh
 .venv/bin/python -m unittest scripts/03_e001_orientation/test_orientation.py
 .venv/bin/python scripts/03_e001_orientation/e001_orientation.py
+.venv/bin/python scripts/03_e001_orientation/methodology_figures.py
 ```
 
-O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos de `outputs/03_e001_orientation/`. O horário de conclusão no JSON é o único campo não determinístico.
+O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos analíticos de `outputs/03_e001_orientation/`. O horário de conclusão no JSON é o único campo não determinístico. O terceiro comando recria separadamente o fluxograma, a grade 44 × 44 com um estado real, a comparação dos sistemas de referência e os exemplos usados para explicar entropia, áreas de concentração e métricas geométricas.
 
 ## Reproduzir E-002
 

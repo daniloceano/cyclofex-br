@@ -113,10 +113,10 @@
 <h3 id="e-001--orientação-pelo-movimento">E-001 — orientação pelo movimento</h3>
 <ul>
 <li><strong>Protocolo congelado:</strong> <a href="../scripts/03_e001_orientation/protocol.json"><code>protocol.json</code></a>, com q95, grade de 50 km, corte de 5 km/h, weighting, métricas, bootstrap e critério de decisão.</li>
-<li><strong>Código:</strong> <a href="../scripts/03_e001_orientation/e001_orientation.py"><code>e001_orientation.py</code></a> e <a href="../scripts/03_e001_orientation/test_orientation.py"><code>test_orientation.py</code></a>.</li>
+<li><strong>Código:</strong> <a href="../scripts/03_e001_orientation/e001_orientation.py"><code>e001_orientation.py</code></a>, <a href="../scripts/03_e001_orientation/test_orientation.py"><code>test_orientation.py</code></a> e <a href="../scripts/03_e001_orientation/methodology_figures.py"><code>methodology_figures.py</code></a>. O último reproduz o fluxograma, a grade real, a comparação dos sistemas de referência e os exemplos didáticos das métricas; ele consulta um estado real somente para ilustrar o binning e não altera os resultados.</li>
 <li><strong>Resumo:</strong> <a href="../outputs/03_e001_orientation/summary.json"><code>summary.json</code></a>, incluindo hashes SHA-256 das três entradas, protocolo e script.</li>
 <li><strong>Tabelas:</strong> métricas por estrato e fase literal, comparações com IC, réplicas bootstrap, bins com suporte, distribuição da translação e contagens de estados.</li>
-<li><strong>Figuras:</strong> comparação global, estratos de fase, diagnóstico do heading e sanidade da rotação.</li>
+<li><strong>Figuras:</strong> comparação global, estratos de fase, diagnóstico do heading, sanidade da rotação, fluxograma experimental, grade real com um estado observado, comparação entre quadrantes fixos e rotacionados e exemplos didáticos das métricas.</li>
 <li><strong>Semente e réplicas:</strong> <code>20260921</code>, 500 réplicas pareadas por <code>track_id</code>.</li>
 <li><strong>Decisão:</strong> <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
 </ul>
@@ -144,8 +144,9 @@
 <p>A animação requer <code>ffmpeg</code>; o Cartopy pode baixar a costa Natural Earth para seu cache na primeira execução. Esses comandos reproduzem produtos existentes; eles não foram executados nesta reorganização documental.</p>
 <h2 id="reproduzir-e-001">Reproduzir E-001</h2>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> <span class="at">-m</span> unittest scripts/03_e001_orientation/test_orientation.py</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/03_e001_orientation/e001_orientation.py</span></code></pre></div>
-<p>O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos de <code>outputs/03_e001_orientation/</code>. O horário de conclusão no JSON é o único campo não determinístico.</p>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/03_e001_orientation/e001_orientation.py</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/03_e001_orientation/methodology_figures.py</span></code></pre></div>
+<p>O experimento valida os hashes antes de executar, processa as excedências em lotes, reconstrói o suporte sem materializar um produto de 136 milhões de linhas e sobrescreve deterministicamente os produtos analíticos de <code>outputs/03_e001_orientation/</code>. O horário de conclusão no JSON é o único campo não determinístico. O terceiro comando recria separadamente o fluxograma, a grade 44 × 44 com um estado real, a comparação dos sistemas de referência e os exemplos usados para explicar entropia, áreas de concentração e métricas geométricas.</p>
 <h2 id="reproduzir-e-002">Reproduzir E-002</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/04_e002_weighting/test_weighting.py</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">.venv/bin/python</span> scripts/04_e002_weighting/e002_weighting.py</span></code></pre></div>

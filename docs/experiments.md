@@ -12,7 +12,7 @@ E-001 permanece **INCONCLUSIVE** sob seu protocolo original. E-002 foi concluíd
 
 - **Status:** `INCONCLUSIVE`
 - **Datas:** planejamento, execução e encerramento em 21 de setembro de 2026
-- **Hipótese:** H2 — *motion-relative* reduz a dispersão espacial em relação a *centered*.
+- **Hipótese:** H2 — quadrantes rotacionados pelo movimento (`motion-relative`) reduzem a dispersão espacial em relação aos quadrantes fixos (`centered`).
 - **Threshold principal:** q95 local, fixado antes dos resultados.
 - **Unidade inferencial:** ciclone (`track_id`), com bootstrap pareado por ciclone.
 - **Decisão associada:** [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001).
@@ -30,7 +30,7 @@ Como as famílias de métricas e as fases não concordaram, a hipótese não ati
 - **Pergunta:** a estrutura q95 e a conclusão de E-001 mudam quando cada ciclone q95-positivo recebe a mesma massa total, em vez de cada estado q95-positivo?
 - **Hipótese:** a distribuição pode ser sensível à participação adicional de ciclones com mais estados, mas o conflito núcleo–cauda de E-001 deve permanecer se for uma propriedade geral dos ciclones.
 - **Protocolo:** alterar somente o weighting; preservar população, q95, suporte, heading de 5 km/h, coordenadas, domínio, bins, fases e ausência de smoothing de E-001; construir quatro distribuições; comparar H, A50, A75, A90, RMS e TV; reamostrar `track_id` 500 vezes.
-- **Conclusão:** `ROBUST_TO_WEIGHTING`. Sob *equal-cyclone*, *motion-relative minus centered* foi −22.500 km² em A50, +27.500 km² em A75, +77.500 km² em A90 e +8,21 km em RMS; o conflito de E-001 permaneceu.
+- **Conclusão:** `ROBUST_TO_WEIGHTING`. Sob *equal-cyclone*, a diferença quadrantes rotacionados menos fixos (`motion_relative − centered`) foi −22.500 km² em A50, +27.500 km² em A75, +77.500 km² em A90 e +8,21 km em RMS; o conflito de E-001 permaneceu.
 - **Decisão associada:** [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado); [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001) permanece vigente.
 
 O experimento reproduziu exatamente 1.784 ciclones, 23.050 estados, 16.921 estados q95-positivos, 9.090.570 células excedentes e 284 exclusões por heading. Os 10% de ciclones positivos com mais estados receberam 22,52% da massa *equal-state*; o número efetivo foi 1.288,8 sob *equal-state* e 1.757 sob *equal-cyclone*. O weighting redistribuiu 7,92% da massa *centered* e 7,86% da massa *motion-relative*, mas não tornou uma orientação consistentemente superior.

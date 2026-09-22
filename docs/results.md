@@ -81,11 +81,11 @@ Para evitar que a quantidade de pixels domine a leitura, esta figura conta cada 
 
 ## Evidência 7 — orientar pelo movimento não concentrou toda a distribuição q95
 
-**Resultado.** [E-001](e001_orientation.md) comparou 1.784 ciclones e 23.050 estados nas mesmas células e bins. *Motion-relative* reduziu A50 em 32.500 km², mas aumentou A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km. A diferença de entropia foi −0,0023 nat, com IC bootstrap de 95% entre −0,0105 e +0,0057. Apenas a intensificação teve entropia e A75 pontualmente menores em conjunto.
+**Resultado.** [E-001](e001_orientation.md) comparou 1.784 ciclones e 23.050 estados nas mesmas células e bins. Os quadrantes rotacionados pelo movimento (`motion-relative`) reduziram A50 em 32.500 km², mas aumentaram A75 em 45.000 km², A90 em 97.500 km² e RMS em 7,69 km em relação aos quadrantes fixos (`centered`). A diferença de entropia foi −0,0023 nat, com IC bootstrap de 95% entre −0,0105 e +0,0057. Apenas a intensificação teve entropia e A75 pontualmente menores em conjunto.
 
 **Interpretação.** A rotação concentrou o núcleo e revelou assimetria atrás e à esquerda do movimento, mas dispersou as regiões intermediária e externa. Não houve melhora global consistente segundo o critério preregistrado.
 
-**Não permite concluir.** O resultado não prova que *centered* seja fisicamente superior, não resolve weighting por ciclone, não escolhe threshold definitivo e não constitui uma probabilidade espacial.
+**Não permite concluir.** O resultado não prova que os quadrantes fixos sejam fisicamente superiores, não resolve weighting por ciclone, não escolhe threshold definitivo e não constitui uma probabilidade espacial.
 
 ## Evidência 8 — a conclusão de orientação é robusta ao weighting
 

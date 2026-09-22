@@ -9,7 +9,7 @@
 
 Um ciclone é identificado por `track_id`. Um **estado ciclone–tempo** representa esse ciclone em um campo ERA5 de 6 h. Uma célula q95-positiva é uma posição observável onde a velocidade do vento a 10 m excedeu estritamente o percentil 95 local. O conjunto dessas células num estado é um *excursion set*: uma realização observada de excedências, não um *footprint* probabilístico.
 
-E-001 comparou coordenadas *centered*, nas quais o centro do ciclone é deslocado para a origem e o norte permanece para cima, com coordenadas *motion-relative*, que também giram o campo para colocar o deslocamento do ciclone para a frente. Cada estado q95-positivo recebeu massa total um. Assim, ciclones com mais estados positivos participaram mais vezes do mapa agregado.
+E-001 comparou quadrantes fixos (`centered`), nos quais o centro do ciclone é deslocado para a origem e o norte permanece para cima, com quadrantes rotacionados pelo movimento (`motion-relative`), que também giram o campo para colocar o deslocamento do ciclone para a frente. “Quadrantes” nomeia o sistema de referência; as coordenadas usadas nas métricas são contínuas. Cada estado q95-positivo recebeu peso normalizado total um — não massa física nem magnitude do vento. Assim, ciclones com mais estados positivos participaram mais vezes do mapa agregado.
 
 ## Problema
 
@@ -19,7 +19,7 @@ A unidade científica fundamental do projeto é o ciclone, mas a distribuição 
 
 **Pergunta principal.** A estrutura espacial das excedências q95 muda de forma relevante quando cada ciclone recebe o mesmo peso total, em vez de cada estado q95-positivo receber o mesmo peso?
 
-**Pergunta secundária.** A conclusão `INCONCLUSIVE` de E-001 sobre *centered* versus *motion-relative* permanece quando se remove a participação proporcionalmente maior dos ciclones com muitos estados positivos?
+**Pergunta secundária.** A conclusão `INCONCLUSIVE` de E-001 sobre quadrantes fixos versus rotacionados permanece quando se remove a participação proporcionalmente maior dos ciclones com muitos estados positivos?
 
 ## Hipótese
 

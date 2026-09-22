@@ -31,7 +31,7 @@ Para apresentação, `intensification 2`, `mature 2` e `decay 2` foram reunidas 
 - Para fase e quadrante, foram comparadas contagens de pontos q90 e a porcentagem das linhas do recorte que também excedem q95.
 - O exemplo individual foi escolhido por regra anterior ao exame visual: o ciclone que contém o maior `wind_speed` do arquivo.
 
-Os quadrantes geográficos são noroeste, nordeste, sudeste e sudoeste. Os quadrantes *motion-relative* giram com o deslocamento do ciclone e representam frente–esquerda, frente–direita, trás–direita e trás–esquerda. Essa exploração formulou a hipótese depois testada com coordenadas contínuas em [E-001](e001_orientation.md); o resultado formal foi inconclusivo.
+Os quadrantes fixos (`fixed_quadrant`) são noroeste, nordeste, sudeste e sudoeste. Os quadrantes rotacionados pelo movimento (`rotated_quadrant`) acompanham o deslocamento do ciclone e representam frente–esquerda, frente–direita, trás–direita e trás–esquerda. Essa exploração formulou a hipótese depois testada com coordenadas contínuas em [E-001](e001_orientation.md); o resultado formal foi inconclusivo.
 
 ## Resultados
 

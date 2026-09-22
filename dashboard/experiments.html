@@ -36,7 +36,7 @@
 <ul>
 <li><strong>Status:</strong> <code>INCONCLUSIVE</code></li>
 <li><strong>Datas:</strong> planejamento, execução e encerramento em 21 de setembro de 2026</li>
-<li><strong>Hipótese:</strong> H2 — <em>motion-relative</em> reduz a dispersão espacial em relação a <em>centered</em>.</li>
+<li><strong>Hipótese:</strong> H2 — quadrantes rotacionados pelo movimento (<code>motion-relative</code>) reduzem a dispersão espacial em relação aos quadrantes fixos (<code>centered</code>).</li>
 <li><strong>Threshold principal:</strong> q95 local, fixado antes dos resultados.</li>
 <li><strong>Unidade inferencial:</strong> ciclone (<code>track_id</code>), com bootstrap pareado por ciclone.</li>
 <li><strong>Decisão associada:</strong> <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a>.</li>
@@ -51,7 +51,7 @@
 <li><strong>Pergunta:</strong> a estrutura q95 e a conclusão de E-001 mudam quando cada ciclone q95-positivo recebe a mesma massa total, em vez de cada estado q95-positivo?</li>
 <li><strong>Hipótese:</strong> a distribuição pode ser sensível à participação adicional de ciclones com mais estados, mas o conflito núcleo–cauda de E-001 deve permanecer se for uma propriedade geral dos ciclones.</li>
 <li><strong>Protocolo:</strong> alterar somente o weighting; preservar população, q95, suporte, heading de 5 km/h, coordenadas, domínio, bins, fases e ausência de smoothing de E-001; construir quatro distribuições; comparar H, A50, A75, A90, RMS e TV; reamostrar <code>track_id</code> 500 vezes.</li>
-<li><strong>Conclusão:</strong> <code>ROBUST_TO_WEIGHTING</code>. Sob <em>equal-cyclone</em>, <em>motion-relative minus centered</em> foi −22.500 km² em A50, +27.500 km² em A75, +77.500 km² em A90 e +8,21 km em RMS; o conflito de E-001 permaneceu.</li>
+<li><strong>Conclusão:</strong> <code>ROBUST_TO_WEIGHTING</code>. Sob <em>equal-cyclone</em>, a diferença quadrantes rotacionados menos fixos (<code>motion_relative − centered</code>) foi −22.500 km² em A50, +27.500 km² em A75, +77.500 km² em A90 e +8,21 km em RMS; o conflito de E-001 permaneceu.</li>
 <li><strong>Decisão associada:</strong> <a href="decisions.html#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado">D-006</a>; <a href="decisions.html#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001">D-005</a> permanece vigente.</li>
 </ul>
 <p>O experimento reproduziu exatamente 1.784 ciclones, 23.050 estados, 16.921 estados q95-positivos, 9.090.570 células excedentes e 284 exclusões por heading. Os 10% de ciclones positivos com mais estados receberam 22,52% da massa <em>equal-state</em>; o número efetivo foi 1.288,8 sob <em>equal-state</em> e 1.757 sob <em>equal-cyclone</em>. O weighting redistribuiu 7,92% da massa <em>centered</em> e 7,86% da massa <em>motion-relative</em>, mas não tornou uma orientação consistentemente superior.</p>

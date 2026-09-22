@@ -44,6 +44,7 @@ a:focus-visible { outline: 3px solid #e79646; outline-offset: 3px; border-radius
 .document code { padding: 1px 4px; background: #edf3f4; border-radius: 4px; overflow-wrap: anywhere; font-size: .88em; }
 .document pre { max-width: 100%; overflow-x: auto; margin: 17px 0 22px; padding: 16px 18px; border-radius: 10px; background: #102c3c; color: #eff7f6; line-height: 1.5; }
 .document pre code { padding: 0; background: transparent; color: inherit; }
+.document math[display="block"] { display: block; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
 .document table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: 17px 0 22px; font-size: .85rem; }
 .document th, .document td { min-width: 130px; padding: 10px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
 .document th { background: #eaf3f3; white-space: nowrap; }

@@ -75,6 +75,10 @@ Apresente primeiro a necessidade científica, a origem e o significado das unida
 
 Defina quando aparecer pela primeira vez na página: *storm-relative*, *motion-relative*, lifecycle, *excursion set*, *coverage probability*, *footprint*, hazard, threshold, quantil local, unidade de análise e suporte espacial.
 
+Ao comparar sistemas de referência, prefira os termos intuitivos **quadrantes fixos** (`centered`) e **quadrantes rotacionados pelo movimento** (`motion-relative`). Esclareça que “quadrantes” nomeia a orientação dos eixos: análises com coordenadas contínuas não são reduzidas a quatro categorias. Preserve `centered` e `motion_relative` como identificadores técnicos em código, tabelas e arquivos reprodutíveis.
+
+Não use “massa” isoladamente para ponderação estatística. Prefira **peso normalizado de ocorrências** e defina `p_i` como a proporção desse peso no bin; deixe explícito que não se trata de massa física nem de magnitude do vento.
+
 Preserve sempre:
 
 - evento ≠ climatologia;

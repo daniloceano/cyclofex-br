@@ -45,7 +45,7 @@ Estas limitações definem o alcance da evidência atual. Elas não são notas l
 - Não foi escolhido threshold científico definitivo.
 - Evento, *excursion set* e *footprint* ainda não têm definição operacional adotada.
 - Não foram estimadas *coverage probabilities* nem magnitude condicional.
-- A orientação *centered* versus *motion-relative* foi comparada em E-001, mas o resultado foi inconclusivo. E-002 mostrou que essa conclusão é robusta a *equal-state* versus *equal-cyclone*; sensibilidade ao threshold e normalização por tamanho não foram testadas.
+- Quadrantes fixos (`centered`) e rotacionados pelo movimento (`motion-relative`) foram comparados em E-001, mas o resultado foi inconclusivo. E-002 mostrou que essa conclusão é robusta a *equal-state* versus *equal-cyclone*; sensibilidade ao threshold e normalização por tamanho não foram testadas.
 - E-001 e E-002 usaram bootstrap por ciclone para diferenças específicas, mas não houve validação fora da amostra, remoção de ciclones influentes nem estudo abrangente de generalização.
 - Não foi calculado hazard geográfico.
 

@@ -39,9 +39,10 @@ O primeiro comando atualiza o resumo estrutural. O segundo atualiza tabelas, fig
 ```sh
 .venv/bin/python -m unittest scripts/03_e001_orientation/test_orientation.py
 .venv/bin/python scripts/03_e001_orientation/e001_orientation.py
+.venv/bin/python scripts/03_e001_orientation/methodology_figures.py
 ```
 
-O primeiro comando verifica a geometria; o segundo valida hashes, calcula headings do catálogo completo, agrega q95 e suporte na grade relativa, executa o bootstrap e atualiza `outputs/03_e001_orientation/`. Mudanças em `protocol.json` caracterizam outro protocolo e exigem novo registro científico.
+O primeiro comando verifica a geometria; o segundo valida hashes, calcula headings do catálogo completo, agrega q95 e suporte na grade relativa, executa o bootstrap e atualiza os produtos analíticos em `outputs/03_e001_orientation/`. O terceiro recria o fluxograma, a grade real com um estado observado, a comparação entre quadrantes fixos e rotacionados e as figuras didáticas das métricas, sem recalcular ou modificar o experimento. Mudanças em `protocol.json` caracterizam outro protocolo e exigem novo registro científico.
 
 ## E-002 — weighting
 
