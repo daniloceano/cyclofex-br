@@ -430,6 +430,105 @@ def geometry_metrics_figure() -> None:
     save(figure, "geometric_metrics_example.png")
 
 
+def bootstrap_scheme_figure() -> None:
+    """Didactic scheme of the cyclone-level bootstrap used for the intervals."""
+    population = [
+        ("C1", 3),
+        ("C2", 5),
+        ("C3", 2),
+        ("C4", 4),
+    ]
+    colors = {"C1": BLUE, "C2": TEAL, "C3": PURPLE, "C4": ORANGE}
+    replicas = [
+        ["C2", "C2", "C4", "C1"],
+        ["C1", "C3", "C3", "C4"],
+        ["C4", "C1", "C2", "C2"],
+    ]
+    sizes = dict(population)
+
+    figure, axes = plt.subplots(
+        1,
+        2,
+        figsize=(15.0, 5.9),
+        constrained_layout=True,
+        gridspec_kw={"width_ratios": [1.35, 1.0]},
+    )
+    figure.suptitle(
+        "Exemplo esquemático · por que a reamostragem é por ciclone, não por célula",
+        fontsize=15,
+        fontweight="bold",
+        color=INK,
+    )
+
+    axis = axes[0]
+    axis.set_xlim(0, 16.4)
+    axis.set_ylim(0, 6.2)
+    axis.axis("off")
+
+    def draw_row(y: float, label: str, entries: list[str], note: str) -> None:
+        axis.text(0.0, y + 0.30, label, ha="left", va="center", color=INK, fontsize=11, fontweight="bold")
+        x = 2.55
+        for name in entries:
+            width = sizes[name] * 0.52
+            box = FancyBboxPatch(
+                (x, y - 0.02), width, 0.64,
+                boxstyle="round,pad=0.015,rounding_size=0.05",
+                linewidth=1.3, edgecolor=colors[name], facecolor=WHITE,
+            )
+            axis.add_patch(box)
+            for index in range(sizes[name]):
+                axis.add_patch(
+                    Rectangle(
+                        (x + 0.09 + index * 0.49, y + 0.13), 0.36, 0.38,
+                        facecolor=colors[name], edgecolor="none", alpha=0.55,
+                    )
+                )
+            axis.text(x + width / 2, y + 0.80, name, ha="center", va="bottom",
+                      color=colors[name], fontsize=10.2, fontweight="bold")
+            x += width + 0.42
+        axis.text(16.3, y + 0.30, note, ha="right", va="center", color=MUTED, fontsize=9.6)
+
+    draw_row(5.05, "População", [name for name, _ in population], "cada bloco = um estado do ciclone")
+    for index, replica in enumerate(replicas):
+        draw_row(3.75 - index * 1.25, f"Réplica {index + 1}", replica, "sorteio com reposição")
+
+    axis.text(
+        0.0, 0.33,
+        "Um ciclone sorteado entra inteiro: todos os seus estados e todas as suas células vão juntos.\n"
+        "C3 pode não entrar numa réplica; C2 pode entrar duas vezes e contar em dobro.",
+        ha="left", va="center", color=INK, fontsize=10.4, linespacing=1.45,
+    )
+
+    axis = axes[1]
+    generator = np.random.default_rng(20260921)
+    differences = generator.normal(loc=-0.0023, scale=0.0041, size=500)
+    low, high = np.percentile(differences, [2.5, 97.5])
+    axis.hist(differences, bins=26, color="#cfe0e8", edgecolor=BLUE, linewidth=0.8)
+    axis.axvline(0.0, color=MUTED, linewidth=1.3, linestyle=":")
+    axis.axvline(low, color=RED, linewidth=1.6)
+    axis.axvline(high, color=RED, linewidth=1.6)
+    axis.axvline(float(np.mean(differences)), color=ORANGE, linewidth=1.8)
+    axis.set_title("Distribuição das 500 diferenças recalculadas", fontsize=12, color=INK)
+    axis.set_xlabel("diferença da métrica numa réplica (unidade da métrica)")
+    axis.set_ylabel("número de réplicas")
+    axis.tick_params(labelsize=9.5)
+    axis.text(
+        0.02, 0.96,
+        "valores ilustrativos,\nnão são o bootstrap de E-001",
+        transform=axis.transAxes, ha="left", va="top", color=MUTED, fontsize=9.4, linespacing=1.4,
+    )
+    axis.annotate(
+        "percentis 2,5 e 97,5\ndelimitam o IC de 95%",
+        xy=(high, axis.get_ylim()[1] * 0.52), xytext=(high + 0.0018, axis.get_ylim()[1] * 0.80),
+        color=RED, fontsize=9.6, linespacing=1.4,
+        arrowprops={"arrowstyle": "-|>", "color": RED, "linewidth": 1.2},
+    )
+    for spine in ("top", "right"):
+        axis.spines[spine].set_visible(False)
+
+    save(figure, "bootstrap_scheme.png")
+
+
 def main() -> None:
     workflow_figure()
     bin_grid_figure()
@@ -437,6 +536,7 @@ def main() -> None:
     binning_entropy_figure()
     concentration_area_figure()
     geometry_metrics_figure()
+    bootstrap_scheme_figure()
     for filename in (
         "methodology_flow.png",
         "bin_grid_real_state.png",
@@ -444,6 +544,7 @@ def main() -> None:
         "binning_entropy_example.png",
         "concentration_area_example.png",
         "geometric_metrics_example.png",
+        "bootstrap_scheme.png",
     ):
         print(f"Wrote {(OUTPUT / filename).relative_to(ROOT)}")
 

@@ -37,6 +37,7 @@
 <ol type="1">
 <li><strong>Contexto autossuficiente:</strong> cada página e seção reintroduz os conceitos indispensáveis; não depende da memória de outra página.</li>
 <li><strong>Raciocínio linear:</strong> contexto → problema → pergunta → dados → método → resultado → interpretação → limitações → consequência.</li>
+<li><strong>Método na ordem cognitiva:</strong> dentro do método, intuição → procedimento → formalização → exemplo → interpretação; nunca fórmula antes de ideia. Ver <a href="#como-explicar-metodologia">como explicar metodologia</a>.</li>
 <li><strong>Ciência separada da implementação:</strong> nomes de arquivos e scripts aparecem em reprodutibilidade ou na camada técnica.</li>
 <li><strong>Terminologia definida:</strong> na primeira ocorrência relevante de cada página, explique termos científicos em linguagem simples.</li>
 <li><strong>Resultado separado de interpretação:</strong> observação, significado e conclusão não permitida devem ser distinguíveis.</li>
@@ -62,7 +63,193 @@
 <p>Não organize a página pela ordem de funções de um script.</p>
 <h2 id="estrutura-obrigatória-para-experimentos">Estrutura obrigatória para experimentos</h2>
 <p>Cada experimento <code>E-XXX</code> deve conter: contexto; pergunta; hipótese; explicações concorrentes quando pertinentes; motivação; dados e critérios de inclusão/exclusão; representação e variáveis; método; métricas; critério de decisão registrado antes do resultado; resultado; interpretação; robustez e diagnósticos; limitações; conclusão; consequência para o projeto; reprodutibilidade; status, datas e vínculos a questões e decisões.</p>
+<p>A seção de método não é um bloco único: ela se organiza em <strong>visão geral com fluxograma</strong>, <strong>passo a passo</strong>, <strong>formalização</strong>, <strong>exemplo concreto</strong>, <strong>métricas</strong>, <strong>incerteza</strong> e <strong>síntese metodológica</strong>, conforme <a href="#como-explicar-metodologia">como explicar metodologia</a>. Todo experimento formal precisa de um fluxograma científico-metodológico, salvo justificativa explícita na própria página.</p>
 <p>Se uma seção não se aplicar, explique por quê. Resultados negativos, rejeitados e inconclusivos permanecem no histórico. O template canônico está em <a href="../experiments.html#template-obrigatório-para-novos-experimentos">experimentos</a>.</p>
+<h2 id="como-explicar-metodologia">Como explicar metodologia</h2>
+<p>As regras desta seção são <strong>permanentes</strong> e valem para toda descrição metodológica do projeto: experimentos formais <code>E-XXX</code>, páginas de método, preparação de dados e qualquer texto que descreva uma transformação, uma métrica ou um procedimento de incerteza. Elas não substituem o rigor: exigem o <strong>mesmo</strong> rigor numa sequência que um pesquisador externo consiga acompanhar sem abrir o código.</p>
+<p>O critério de sucesso é direto: depois de ler a seção, o leitor deve conseguir reconstruir mentalmente o experimento e explicá-lo com as próprias palavras.</p>
+<h3 id="ordem-cognitiva">Ordem cognitiva</h3>
+<p>Toda descrição metodológica segue a ordem em que um ser humano compreende um procedimento, e não a ordem em que ele é implementado:</p>
+<blockquote>
+<p>ideia → objeto → passo a passo → formalização → exemplo concreto → resultado da transformação → interpretação → limitações e casos especiais.</p>
+</blockquote>
+<p>Nenhuma seção começa despejando fórmulas para explicá-las depois. O leitor precisa responder “o que estamos tentando fazer?” antes de encontrar “como fazemos isso matematicamente?”.</p>
+<p>A mesma ordem se aplica em três níveis simultâneos, sempre nesta direção:</p>
+<ol type="1">
+<li><strong>Intuição</strong> — o que estamos fazendo e por quê. <em>“Queremos impedir que estados com muitas células extremas pesem mais apenas por terem mais pixels.”</em></li>
+<li><strong>Procedimento</strong> — como fazemos. <em>“Dividimos o peso total do estado igualmente entre suas células excedentes.”</em></li>
+<li><strong>Formalização</strong> — a definição matemática, com todos os símbolos definidos.</li>
+</ol>
+<p>Inverter essa ordem — matemática primeiro, intuição depois — é um defeito editorial, mesmo quando o conteúdo está correto.</p>
+<h3 id="contexto-local-antes-do-método">Contexto local antes do método</h3>
+<p>Toda subseção metodológica reestabelece o contexto de que precisa, mesmo que o conceito já tenha aparecido antes na página. Antes da primeira operação, deixe explícito:</p>
+<ul>
+<li>qual objeto está sendo manipulado;</li>
+<li>por que essa transformação é necessária;</li>
+<li>qual problema científico ou estatístico ela resolve;</li>
+<li>qual será o produto da etapa.</li>
+</ul>
+<p>Não presuma que o leitor guardou a definição introduzida quinze parágrafos antes.</p>
+<h3 id="objetos-antes-de-símbolos">Objetos antes de símbolos</h3>
+<p>Antes de qualquer equação, descreva em linguagem natural o que será calculado. Só então nomeie a variável, defina o símbolo, apresente a equação e interprete o resultado.</p>
+<p><strong>Nenhum símbolo pode aparecer em texto, equação, tabela ou figura antes de ser definido.</strong> Escrever “normalizamos por <code>M_i</code> e calculamos <code>p_j</code>” antes de dizer o que são <code>M_i</code> e <code>p_j</code> é proibido, ainda que a definição venha logo abaixo.</p>
+<p>Para cada símbolo, registre nome, significado, unidade quando existir, natureza (física, estatística ou adimensional), domínio de valores relevante e interpretação. O checklist completo está em <a href="#regras-para-equações">regras para equações</a>.</p>
+<p>No texto corrido, use nomes semânticos junto do símbolo — “o peso total do estado <code>M_i</code>”, “a proporção espacial <code>p_i</code>”, “o peso do ciclone <code>w_j</code>” — em vez de repetir apenas a letra. Isso reduz a carga de memória do leitor.</p>
+<h3 id="passo-a-passo-uma-operação-de-cada-vez">Passo a passo: uma operação de cada vez</h3>
+<p>Não agrupe várias transformações conceituais no mesmo parágrafo nem no mesmo bloco de equações. Se o método é <code>A → B → C → D</code>, escreva um passo para cada seta, cada um respondendo, nesta ordem:</p>
+<ol type="1">
+<li><strong>O que entra?</strong> — o objeto produzido pela etapa anterior.</li>
+<li><strong>O que queremos obter?</strong> — o novo objeto.</li>
+<li><strong>Por que isso é necessário?</strong> — o problema que a operação resolve.</li>
+<li><strong>Como é calculado?</strong> — explicação verbal primeiro, equações depois.</li>
+<li><strong>O que significa cada termo?</strong> — todos os símbolos.</li>
+<li><strong>Exemplo concreto</strong> — um caso numérico ou espacial pequeno.</li>
+<li><strong>O que sai desta etapa?</strong> — o objeto que alimenta a próxima.</li>
+</ol>
+<p>Use essa lógica como estrutura de raciocínio, não como formulário mecânico: quando uma etapa for trivial, comprima-a em prosa, mas preserve a sequência. O leitor nunca deve precisar inferir qual objeto produzido por uma equação será usado na equação seguinte.</p>
+<h3 id="entrada-operação-e-saída">Entrada, operação e saída</h3>
+<p>Toda transformação importante — projeção de coordenadas, heading, rotação, binning, weighting, normalização, bootstrap, cálculo de métricas — declara explicitamente seu contrato:</p>
+<blockquote>
+<p><strong>entrada</strong> → <strong>operação</strong> → <strong>saída</strong></p>
+</blockquote>
+<p>Exemplo: <em>entrada</em>, coordenadas geográficas da célula e do centro do ciclone; <em>operação</em>, projeção azimutal equidistante; <em>saída</em>, posição <code>(x, y)</code> em quilômetros relativa ao centro. Sem esse contrato, o leitor não consegue encadear as etapas nem auditar o que foi preservado e o que foi descartado.</p>
+<h3 id="equações-introduzidas-progressivamente">Equações introduzidas progressivamente</h3>
+<p>Uma equação nunca deve fazer trabalho demais. Quando o resultado final depende de vários níveis, construa-o por partes — peso da célula, peso do estado, peso do ciclone, peso do bin, normalização global — e só então, se ajudar, apresente a fórmula compacta como <strong>síntese</strong>.</p>
+<p>A fórmula geral é bem-vinda, mas jamais como primeiro contato. A sequência recomendada é: construção intuitiva → equações simples → exemplo → equação geral → interpretação.</p>
+<p>Toda equação relevante é seguida de uma leitura em linguagem comum. Não assuma que a equação se explica sozinha. Depois de <code>M_i = Σ_j m_ij</code>, escreva o que ela diz: quanto peso existe no estado inteiro antes da normalização.</p>
+<h3 id="exemplos-numéricos-concretos">Exemplos numéricos concretos</h3>
+<p>Um exemplo numérico pequeno é <strong>obrigatório</strong> sempre que o método envolver weighting, normalização, agregação, probabilidades, bins, transformação de coordenadas, cálculo de métricas, bootstrap, seleção, thresholds ou combinação hierárquica de estados e ciclones.</p>
+<p>O exemplo usa números simples, mostra a aritmética e verifica a normalização. Quando existirem variantes do método, mostre o mesmo exemplo sob cada variante, para que a diferença fique visível em números e não apenas em prosa.</p>
+<p>Exemplos abstratos não satisfazem esta regra. Um exemplo aritmético explícito é preferível a qualquer quantidade de explicação verbal adicional.</p>
+<h3 id="exemplos-espaciais-e-esquemas">Exemplos espaciais e esquemas</h3>
+<p>Quando o método envolver posições, use um esquema pequeno. Um diagrama em texto já resolve muitos casos:</p>
+<pre><code>Estado A          C = centro do ciclone
+[ ][X][X]         X = célula que excedeu o threshold
+[ ][C][X]
+[ ][ ][ ]</code></pre>
+<p>Depois explique como essas células se distribuem em bins ou pesos. Não é necessário transformar todo esquema em figura elaborada: diagramas em texto, SVG ou figuras pequenas bastam. A prioridade é pedagógica.</p>
+<h3 id="hierarquia-ciclone--estado--célula--bin">Hierarquia ciclone → estado → célula → bin</h3>
+<p>O projeto opera em quatro níveis encadeados:</p>
+<blockquote>
+<p>ciclone (<code>track_id</code>) → estado ciclone–tempo → célula espacial → bin agregado</p>
+</blockquote>
+<p>Sempre que um método atravessar mais de um nível, declare explicitamente:</p>
+<ul>
+<li>em qual nível a operação acontece;</li>
+<li>qual nível recebe peso;</li>
+<li>qual nível é agregado;</li>
+<li>qual nível é a unidade inferencial.</li>
+</ul>
+<p>Escreva a cadeia na ordem — “primeiro distribuímos o peso dentro de cada estado entre suas células; depois combinamos estados dentro de cada ciclone; por fim combinamos ciclones para formar a distribuição global” — em vez de saltar para a fórmula final da distribuição agregada.</p>
+<p>Quando houver weighting hierárquico, o exemplo concreto deve percorrer a hierarquia inteira: pesos das células, peso total de cada estado, peso total de cada ciclone e contribuição final ao mapa; depois, o mesmo exemplo sob o weighting alternativo.</p>
+<h3 id="métricas">Métricas</h3>
+<p>Toda métrica é documentada com sete elementos, nesta ordem:</p>
+<ol type="1">
+<li><strong>pergunta</strong> que ela responde;</li>
+<li><strong>intuição</strong> do que está sendo medido;</li>
+<li><strong>cálculo</strong>, verbal antes de formal;</li>
+<li><strong>definição dos símbolos</strong>, com unidade e domínio;</li>
+<li><strong>exemplo simples</strong>, quando ajudar;</li>
+<li><strong>interpretação</strong> de valores altos e baixos, e do sinal da diferença quando houver comparação;</li>
+<li><strong>o que a métrica não mede</strong>.</li>
+</ol>
+<p>O sétimo item é obrigatório. Uma métrica sem limite declarado convida a sobreinterpretação.</p>
+<h3 id="incerteza-e-bootstrap">Incerteza e bootstrap</h3>
+<p>Não basta escrever “bootstrap por ciclone com 500 réplicas”. Explique a unidade de reamostragem, mostre uma réplica concreta e justifique a escolha:</p>
+<pre><code>população:  C1  C2  C3  C4
+réplica 1:  C2  C2  C4  C1     (com reposição; C3 não entrou, C2 entrou duas vezes)</code></pre>
+<p>Deixe explícito que todos os estados e células de um ciclone sorteado permanecem juntos, que a métrica é recalculada em cada réplica, que a distribuição das réplicas produz o intervalo, e <strong>por que não se reamostram células</strong>: células do mesmo ciclone não são observações independentes. Declare também o que o intervalo não cobre — viés de seleção, incerteza do threshold, validação fora da amostra.</p>
+<h3 id="critério-de-decisão">Critério de decisão</h3>
+<p>Não basta listar condições. Explique a regra de forma operacional: o que será interpretado como evidência a favor, o que como evidência contrária e o que classifica o experimento como inconclusivo. Deixe claro o comportamento quando as condições apontarem em direções conflitantes. Quando ajudar, represente a regra como um mini fluxograma.</p>
+<p>O critério é registrado antes do resultado e não é reescrito depois dele.</p>
+<h3 id="fluxogramas-metodológicos">Fluxogramas metodológicos</h3>
+<p><strong>Todo experimento formal <code>E-XXX</code> deve possuir ao menos um fluxograma científico-metodológico</strong>, salvo justificativa explícita registrada na própria página.</p>
+<p>O fluxograma:</p>
+<ul>
+<li>aparece <strong>antes</strong> da descrição matemática detalhada, para que o leitor veja o mapa inteiro antes de percorrer cada etapa;</li>
+<li>representa o protocolo real do experimento, não o encadeamento de scripts;</li>
+<li>usa linguagem científica, nunca nomes de arquivos ou funções;</li>
+<li>vem acompanhado de uma seção <strong>“Como ler o fluxo do experimento”</strong>, que explica brevemente cada etapa;</li>
+<li>é atualizado se o protocolo mudar antes da execução;</li>
+<li>permanece congelado depois da conclusão, exceto por correções editoriais.</li>
+</ul>
+<p>O fluxograma é um mapa mental e <strong>não substitui</strong> a descrição textual do método.</p>
+<h3 id="figuras-didáticas-versus-figuras-de-resultado">Figuras didáticas versus figuras de resultado</h3>
+<p>Distinga os dois tipos e identifique-os como tais:</p>
+<ul>
+<li><strong>figura de resultado</strong> — produto científico do experimento, sujeito às regras de observação, interpretação e limitação;</li>
+<li><strong>esquema metodológico</strong> — figura cujo único objetivo é explicar uma transformação, um sistema de coordenadas, uma sequência de agregação, a distribuição de pesos, o funcionamento do bootstrap ou o agrupamento de células em bins.</li>
+</ul>
+<p>Esquemas metodológicos são bem-vindos e frequentemente necessários. A legenda deve dizer explicitamente que a figura é um exemplo conceitual e não um resultado, e deve avisar quando a escala for esquemática e não a real.</p>
+<h3 id="componentes-visuais-do-dashboard">Componentes visuais do dashboard</h3>
+<p>Para manter leitura consistente entre páginas, o dashboard oferece componentes padronizados. Use-os apenas quando ajudarem o fluxo de leitura; caixas em excesso prejudicam mais do que ajudam.</p>
+<table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Classe</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ideia</td>
+<td><code>method-box idea</code></td>
+<td>a intuição que abre uma etapa</td>
+</tr>
+<tr>
+<td>Entrada → operação → saída</td>
+<td><code>method-io</code></td>
+<td>contrato de uma transformação</td>
+</tr>
+<tr>
+<td>Exemplo</td>
+<td><code>method-box example</code></td>
+<td>caso numérico ou espacial concreto</td>
+</tr>
+<tr>
+<td>Interpretação</td>
+<td><code>method-box reading</code></td>
+<td>leitura em linguagem comum de uma equação ou métrica</td>
+</tr>
+<tr>
+<td>Atenção / limitação</td>
+<td><code>method-box caution</code></td>
+<td>o que a etapa não garante ou não mede</td>
+</tr>
+<tr>
+<td>Síntese</td>
+<td><code>method-box summary</code></td>
+<td>resumo sem equações ao fim do método</td>
+</tr>
+</tbody>
+</table>
+<p>No Markdown canônico, abra o <code>&lt;div&gt;</code>, deixe <strong>uma linha em branco</strong>, escreva conteúdo Markdown normal e feche com <code>&lt;/div&gt;</code> após outra linha em branco. O conteúdo permanece legível na fonte e é convertido normalmente.</p>
+<h3 id="síntese-final-da-seção-metodológica">Síntese final da seção metodológica</h3>
+<p>Toda descrição metodológica termina com uma síntese curta, tipicamente sob o título <strong>“Em resumo: o que este método faz?”</strong>, em três a seis frases e <strong>sem equações</strong>.</p>
+<p>A síntese consolida o raciocínio: qual objeto entra, quais transformações acontecem, o que o resultado representa e qual escolha ele permite. Ela não introduz método novo nem antecipa interpretação de resultado.</p>
+<h3 id="rigor-preservado">Rigor preservado</h3>
+<p>Ser didático não autoriza omitir detalhes, evitar matemática, arredondar conceitos, esconder exceções ou converter metodologia em divulgação. Casos especiais, tolerâncias numéricas, tratamentos de borda e exclusões continuam documentados. O objetivo é apresentar o mesmo conteúdo numa sequência compreensível.</p>
+<h3 id="auditoria-metodológica">Auditoria metodológica</h3>
+<p>Antes de considerar pronta uma página com conteúdo metodológico, confirme as quinze respostas:</p>
+<ol type="1">
+<li>Sei qual objeto entra no método?</li>
+<li>Sei por que cada operação é necessária?</li>
+<li>Consigo acompanhar cada transformação na ordem em que ocorre?</li>
+<li>Todos os símbolos foram definidos antes ou imediatamente ao aparecer?</li>
+<li>Entendo o significado intuitivo de cada equação?</li>
+<li>Existe exemplo concreto para cada parte abstrata?</li>
+<li>Consigo distinguir ciclone, estado, célula e bin em cada etapa?</li>
+<li>Sei qual é a saída de cada passo?</li>
+<li>Entendo como cada métrica é calculada?</li>
+<li>Sei o que valores altos e baixos significam?</li>
+<li>Entendo como a incerteza foi calculada e qual é a unidade de reamostragem?</li>
+<li>Existe fluxograma?</li>
+<li>O texto explica o fluxograma etapa por etapa?</li>
+<li>Consigo explicar o método com minhas próprias palavras depois de ler?</li>
+<li>Precisei abrir o código para compreender alguma etapa científica?</li>
+</ol>
+<p><strong>Se a resposta à pergunta 15 for “sim”, a documentação metodológica está incompleta.</strong></p>
 <h2 id="regras-para-equações">Regras para equações</h2>
 <p>Uma equação só deve aparecer quando tornar o método mais claro ou preciso. Antes ou imediatamente depois dela, documente:</p>
 <ul>
@@ -73,6 +260,7 @@
 <li>interpretação intuitiva do resultado.</li>
 </ul>
 <p>Nunca apresente notação isolada nem presuma que o leitor conhece a convenção.</p>
+<p>Este checklist define <strong>o que</strong> documentar em cada símbolo. A <strong>ordem</strong> em que a equação entra no texto — depois da ideia, do objeto e do procedimento verbal, e antes do exemplo concreto — é fixada em <a href="#como-explicar-metodologia">como explicar metodologia</a>.</p>
 <h2 id="regras-para-figuras-e-tabelas">Regras para figuras e tabelas</h2>
 <p>Antes ou imediatamente depois de cada figura científica, explique a pergunta, população, eixos, cores, painéis, unidades e como ler o elemento visual. Em seguida, separe:</p>
 <ul>
@@ -81,6 +269,7 @@
 <li><strong>limitação:</strong> o que o elemento não mostra.</li>
 </ul>
 <p>Tabelas recebem a mesma contextualização. Legendas que apenas repetem o conteúdo não são suficientes. Texto alternativo deve descrever a informação relevante da imagem.</p>
+<p>Esquemas metodológicos seguem regras próprias: a legenda declara que a figura é um exemplo conceitual e não um resultado, e avisa quando a escala for esquemática. Ver <a href="#figuras-didáticas-versus-figuras-de-resultado">figuras didáticas versus figuras de resultado</a>.</p>
 <h2 id="regras-para-dados">Regras para dados</h2>
 <p>Apresente primeiro a necessidade científica, a origem e o significado das unidades. Explique track, estado ciclone–tempo, lifecycle, vento, associação temporal, suporte espacial e distinção entre zero, ausência e não observado antes de listar arquivos ou schemas. Declare período, população, resolução, filtros e unidade de análise. Campos e tipos completos pertencem à referência técnica.</p>
 <h2 id="terminologia-que-exige-cuidado">Terminologia que exige cuidado</h2>
@@ -123,6 +312,7 @@
 </ol>
 <h2 id="revisão-editorial-obrigatória">Revisão editorial obrigatória</h2>
 <p>Procure parágrafos sem contexto, termos indefinidos, código no meio da narrativa, força excessiva de conclusão, figuras ou tabelas sem leitura, equações sem definição, duplicação, inconsistência terminológica, unidade não explicada e fatos científicos escondidos apenas na camada técnica.</p>
+<p>Em conteúdo metodológico, procure também: fórmula antes da ideia, símbolo usado antes de definido, várias transformações no mesmo parágrafo, etapa sem entrada e saída declaradas, abstração sem exemplo numérico, nível hierárquico ambíguo, métrica sem “o que não mede”, bootstrap sem unidade de reamostragem, ausência de fluxograma e ausência de síntese final. A checagem completa está em <a href="#auditoria-metodológica">auditoria metodológica</a>.</p>
 <h2 id="teste-de-auditoria-humana">Teste de auditoria humana</h2>
 <p>Antes de entregar, confirme que um pesquisador externo consegue responder pelo dashboard:</p>
 <ol type="1">
@@ -135,6 +325,7 @@
 <li>Qual é o próximo teste e por que ainda não começou?</li>
 <li>Como reproduzir tecnicamente os resultados?</li>
 </ol>
+<p>Para páginas com conteúdo metodológico, aplique também as quinze perguntas da <a href="#auditoria-metodológica">auditoria metodológica</a>.</p>
 <p>Se uma resposta científica exigir abrir código-fonte, a documentação ainda não está pronta.</p>
 
       <div class="source-note">Fonte canônica: <a href="../../docs/documentation_guidelines.md">documento Markdown</a>. O HTML é derivado e não deve ser editado manualmente.</div>

@@ -44,6 +44,26 @@
 <p><strong>Pergunta secundária.</strong> A conclusão <code>INCONCLUSIVE</code> de E-001 sobre quadrantes fixos versus rotacionados permanece quando se remove a participação proporcionalmente maior dos ciclones com muitos estados positivos?</p>
 <h2 id="hipótese">Hipótese</h2>
 <p>A hipótese principal previa sensibilidade porque duração e número de estados q95-positivos variam entre ciclones. A hipótese de robustez previa que o conflito observado em E-001 — núcleo A50 mais concentrado, mas regiões intermediária e externa mais dispersas após a rotação — permaneceria sob peso igual por ciclone. A explicação concorrente era que poucos sistemas temporalmente longos produzissem esse conflito; nesse caso, <em>equal-cyclone</em> poderia alinhar as métricas em favor de uma representação.</p>
+<h2 id="visão-geral-do-desenho-experimental">Visão geral do desenho experimental</h2>
+<p>O fluxograma resume a cadeia lógica de E-002, da pergunta à classificação de robustez. A comparação é deliberadamente estreita: toda a geometria e toda a população vêm congeladas de E-001, e a única coisa que muda entre os dois braços é <strong>quem recebe peso igual</strong>.</p>
+<figure class="result-figure">
+  <img src="assets/04_e002_weighting/methodology_flow.png" alt="Fluxograma em oito etapas do experimento E-002: pergunta, protocolo herdado de E-001, auditoria de reprodução, dois weightings, quatro distribuições, avaliação por métricas, incerteza por bootstrap de ciclones e decisão sobre robustez.">
+  <figcaption>Esquema metodológico, não um resultado. Os dois braços se separam apenas na etapa de weighting e voltam a ser avaliados na mesma grade, com as mesmas métricas e o mesmo bootstrap.</figcaption>
+</figure>
+
+<h2 id="como-ler-o-fluxo-do-experimento">Como ler o fluxo do experimento</h2>
+<p>Cada caixa corresponde a uma etapa científica, não a um script.</p>
+<ol type="1">
+<li><strong>Pergunta.</strong> A estrutura espacial das excedências q95 depende de o peso igual ser atribuído a estados ou a ciclones?</li>
+<li><strong>Protocolo herdado.</strong> População, threshold q95 local, suporte espacial, corte de heading em 5 km/h, transformação de coordenadas, domínio, bins de 50 km, agrupamento de fases e ausência de suavização são reutilizados literalmente de E-001.</li>
+<li><strong>Auditoria de reprodução.</strong> Ciclones, estados, células excedentes e exclusões são recontados. Qualquer divergência interromperia o experimento antes dos resultados.</li>
+<li><strong>Dois weightings.</strong> <em>Equal-state</em> dá peso total um a cada estado q95-positivo; <em>equal-cyclone</em> dá peso total um a cada ciclone q95-positivo. Esta é a <strong>única</strong> diferença.</li>
+<li><strong>Quatro distribuições.</strong> Duas orientações — quadrantes fixos e rotacionados — vezes dois weightings, todas na mesma grade.</li>
+<li><strong>Avaliação.</strong> Entropia, A50, A75, A90 e RMS descrevem cada distribuição; a concentração entre ciclones e a distância de variação total descrevem o efeito do próprio weighting.</li>
+<li><strong>Incerteza.</strong> Quinhentas réplicas reamostram <code>track_id</code> com reposição e recalculam ambos os weightings dentro de cada réplica.</li>
+<li><strong>Decisão.</strong> O critério preregistrado classifica o resultado como robusto, parcialmente sensível ou sensível ao weighting.</li>
+</ol>
+<p>As seções seguintes percorrem essas etapas em detalhe, começando por <strong>por que</strong> os dois weightings não são intercambiáveis.</p>
 <h2 id="por-que-os-dois-weightings-respondem-a-perguntas-diferentes">Por que os dois weightings respondem a perguntas diferentes</h2>
 <p><strong>Equal-state</strong> descreve a população de estados: “se um estado q95-positivo for selecionado ao acaso, onde aparecem suas excedências?”. Um ciclone com 20 estados positivos aparece 20 vezes mais que outro com um estado positivo.</p>
 <p><strong>Equal-cyclone</strong> descreve a população de ciclones q95-positivos: “se um ciclone for selecionado ao acaso e sua distribuição interna for observada, qual estrutura é típica entre ciclones?”. Cada ciclone recebe massa total um, independentemente de sua duração representada.</p>
@@ -88,14 +108,82 @@
 </tbody>
 </table>
 <p>Vinte e sete ciclones elegíveis não tiveram estado q95-positivo: permaneceram na auditoria e no bootstrap da população elegível, mas não receberam massa em uma distribuição condicionada à ocorrência.</p>
-<h2 id="equal-state">Equal-state</h2>
-<p>Sejam <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math> o ciclone, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math> um estado q95-positivo desse ciclone e <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>m</mi><mrow><mi>j</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">m_{jt}</annotation></semantics></math> o número adimensional de células excedentes no estado. Em <em>equal-state</em>, cada célula recebe peso</p>
-<p>[ w_{jt\mathrm{cell}} = \frac{1}{m_{jt}}. ]</p>
-<p>Aqui, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mrow><mi>j</mi><mi>t</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msub><annotation encoding="application/x-tex">w_{jt\mathrm{cell}}</annotation></semantics></math> é o peso adimensional de uma célula excedente. As células de cada estado somam uma unidade de massa; a soma dos bins é depois normalizada para um. Posições têm unidade de quilômetro e áreas têm km², mas o peso e a probabilidade espacial são adimensionais.</p>
-<h2 id="equal-cyclone">Equal-cyclone</h2>
-<p>Se <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_j</annotation></semantics></math> é o número adimensional de estados q95-positivos do ciclone <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, cada célula recebe</p>
-<p>[ w_{jt\mathrm{cell}} = \frac{1}{n_j m_{jt}}. ]</p>
+<h2 id="como-o-peso-desce-de-ciclone-para-célula">Como o peso desce de ciclone para célula</h2>
+<div class="method-box idea">
+
+<p>O mapa final é construído somando contribuições de milhares de estados. Antes de somar, é preciso decidir <strong>quanto</strong> cada um pode contribuir. Essa decisão não é técnica: ela define qual população o mapa descreve. Dar o mesmo peso a cada estado descreve a população de estados; dar o mesmo peso a cada ciclone descreve a população de ciclones. E-002 constrói as duas e compara.</p>
+</div>
+
+<ul class="method-io">
+<li>células q95 de cada estado, já posicionadas em bins de 50 km pela geometria de E-001</li>
+<li>atribuição de peso total a estados ou a ciclones, e repartição desse peso entre as células</li>
+<li>duas distribuições espaciais normalizadas sobre a mesma grade, uma por weighting</li>
+</ul>
+
+<p>O peso percorre quatro níveis encadeados, sempre de cima para baixo:</p>
+<blockquote>
+<p>ciclone (<code>track_id</code>) → estado ciclone–tempo → célula q95 → bin de 50 km</p>
+</blockquote>
+<p>Neste relatório, <em>massa</em> é usada como sinônimo abreviado de <strong>peso normalizado de ocorrências</strong>: não é massa física nem magnitude do vento. A diferença entre os dois esquemas está inteiramente em <strong>qual nível recebe uma unidade de peso</strong>: o estado ou o ciclone.</p>
+<p>Sejam, em todo o restante da seção:</p>
+<ul>
+<li><code>j</code> — índice do ciclone;</li>
+<li><code>t</code> — índice de um estado q95-positivo do ciclone <code>j</code>;</li>
+<li><code>m_jt</code> — número de células excedentes no estado <code>t</code> do ciclone <code>j</code>, adimensional, com <code>m_jt ≥ 1</code>;</li>
+<li><code>n_j</code> — número de estados q95-positivos do ciclone <code>j</code>, adimensional, com <code>n_j ≥ 1</code>.</li>
+</ul>
+<p>Posições têm unidade de quilômetro e áreas têm km², mas pesos e proporções espaciais são adimensionais.</p>
+<h3 id="equal-state">Equal-state</h3>
+<p><strong>O que entra.</strong> Os estados q95-positivos, cada um com suas <code>m_jt</code> células.</p>
+<p><strong>O que queremos obter.</strong> Um peso por célula tal que cada estado contribua com exatamente uma unidade.</p>
+<p><strong>Como é calculado.</strong> O estado recebe uma unidade de peso e a divide igualmente entre suas células excedentes. Em <em>equal-state</em>, cada célula recebe peso</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mrow><mi>j</mi><mi>t</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msub><mo>=</mo><mfrac><mn>1</mn><msub><mi>m</mi><mrow><mi>j</mi><mi>t</mi></mrow></msub></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+w_{jt\mathrm{cell}} = \frac{1}{m_{jt}}.
+</annotation></semantics></math></p>
+<p>Aqui, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>w</mi><mrow><mi>j</mi><mi>t</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msub><annotation encoding="application/x-tex">w_{jt\mathrm{cell}}</annotation></semantics></math> é o peso adimensional de uma célula excedente. As células de cada estado somam uma unidade de peso; a soma dos bins é depois normalizada para um.</p>
+<div class="method-box reading">
+
+<p>Em outras palavras, o número de células excedentes controla apenas o <strong>detalhe</strong> com que o peso do estado se espalha, nunca o <strong>total</strong> que ele contribui. Um estado que cobriu uma área enorme e outro que cobriu poucos pixels entram no mapa com a mesma importância. O que ainda não é neutralizado é a duração: um ciclone com muitos estados positivos entra muitas vezes.</p>
+</div>
+
+<p><strong>O que sai.</strong> Um peso por célula; o peso total de cada ciclone <code>j</code> fica igual a <code>n_j</code>.</p>
+<h3 id="equal-cyclone">Equal-cyclone</h3>
+<p><strong>O que entra.</strong> Os mesmos estados e as mesmas células, mais a contagem <code>n_j</code> de estados positivos por ciclone.</p>
+<p><strong>O que queremos obter.</strong> Um peso por célula tal que cada <strong>ciclone</strong> contribua com exatamente uma unidade, independentemente de quantos estados positivos tenha.</p>
+<p><strong>Como é calculado.</strong> O ciclone recebe uma unidade, reparte-a igualmente entre seus <code>n_j</code> estados positivos, e cada estado reparte a sua parte entre suas células. Se <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_j</annotation></semantics></math> é o número adimensional de estados q95-positivos do ciclone <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>, cada célula recebe</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mrow><mi>j</mi><mi>t</mi><mrow><mi mathvariant="normal">c</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">l</mi></mrow></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>n</mi><mi>j</mi></msub><msub><mi>m</mi><mrow><mi>j</mi><mi>t</mi></mrow></msub></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+w_{jt\mathrm{cell}} = \frac{1}{n_j m_{jt}}.
+</annotation></semantics></math></p>
 <p>As células de cada estado somam <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msub><mi>n</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">1/n_j</annotation></semantics></math>, e todos os estados do ciclone somam uma unidade. A distribuição agregada é normalizada entre os 1.757 ciclones q95-positivos. Dentro de cada fase, <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mi>j</mi></msub><annotation encoding="application/x-tex">n_j</annotation></semantics></math> conta apenas estados positivos daquela fase; assim, a análise estratificada também compara ciclones com peso total igual no estrato.</p>
+<div class="method-box reading">
+
+<p>A fórmula é a de <em>equal-state</em> dividida por <code>n_j</code>. Esse único fator é toda a diferença entre os dois experimentos: ele remove a vantagem de participação que um ciclone longo tinha por aparecer muitas vezes.</p>
+</div>
+
+<p><strong>O que sai.</strong> Um peso por célula; o peso total de cada ciclone é um, por construção.</p>
+<h3 id="exemplo-concreto-a-mesma-população-sob-os-dois-weightings">Exemplo concreto: a mesma população sob os dois weightings</h3>
+<div class="method-box example">
+
+<p>Considere uma população reduzida a dois ciclones:</p>
+<ul>
+<li><strong>Ciclone A</strong> — estado <code>A1</code> com 4 células q95 e estado <code>A2</code> com 2 células q95, portanto <code>n_A = 2</code>;</li>
+<li><strong>Ciclone B</strong> — estado <code>B1</code> com 3 células q95, portanto <code>n_B = 1</code>.</li>
+</ul>
+<p><strong>Sob <em>equal-state</em>,</strong> cada estado vale um. As células de <code>A1</code> recebem <code>1/4 = 0,25</code>; as de <code>A2</code> recebem <code>1/2 = 0,50</code>; as de <code>B1</code> recebem <code>1/3 ≈ 0,3333</code>. Os pesos totais ficam <code>A = 1 + 1 = 2</code> e <code>B = 1</code>. Sobre o total de 3, o ciclone A contribui com <strong>66,7%</strong> do mapa e o ciclone B com <strong>33,3%</strong>.</p>
+<p><strong>Sob <em>equal-cyclone</em>,</strong> cada ciclone vale um. Os dois estados de A dividem essa unidade, então <code>A1</code> vale <code>1/2</code> e <code>A2</code> vale <code>1/2</code>; suas células recebem <code>0,5/4 = 0,125</code> e <code>0,5/2 = 0,25</code>. O ciclone B tem um único estado positivo, que continua valendo um, com células de <code>1/3 ≈ 0,3333</code>. Os pesos totais ficam <code>A = 1</code> e <code>B = 1</code>, e cada ciclone contribui com <strong>50%</strong> do mapa.</p>
+<p>Verificação: em ambos os esquemas, as células de um mesmo estado somam o peso daquele estado, e os pesos dos estados somam o peso do ciclone. Só a repartição <strong>entre</strong> ciclones muda.</p>
+</div>
+
+<figure class="result-figure">
+  <img src="assets/04_e002_weighting/weighting_hierarchy_example.png" alt="Esquema didático com dois painéis: à esquerda, equal-state, em que o ciclone A com dois estados positivos contribui com 66,7% do mapa; à direita, equal-cyclone, em que ambos os ciclones contribuem com 50%. Cada célula mostra seu peso numérico.">
+  <figcaption>Esquema metodológico, não um resultado de E-002. Os números são do exemplo reduzido acima, não da amostra real. Os pesos das células mudam entre os painéis, mas dentro de cada estado eles continuam iguais entre si: o weighting altera o total de cada ciclone, não o equilíbrio interno de um estado.</figcaption>
+</figure>
+
+<div class="method-box caution">
+
+<p>O exemplo mostra o mecanismo, não a magnitude. Na amostra real, nenhum ciclone isolado chega perto de 66,7%: o maior recebe 0,21% da massa <em>equal-state</em>. O efeito observado é agregado — os 10% de ciclones com mais estados positivos reúnem 22,52% da massa —, e é essa concentração agregada, não um evento dominante, que E-002 mede.</p>
+</div>
+
 <h2 id="diagnóstico-de-contribuição-dos-ciclones">Diagnóstico de contribuição dos ciclones</h2>
 <p>Para cada <code>track_id</code>, o produto reprodutível registra estados elegíveis, estados q95-positivos, duração representada em blocos de 6 h, intervalo entre primeiro e último estado e fração de massa nos dois weightings. A duração de observação é o número de estados multiplicado por 6 h; o intervalo temporal também é fornecido porque uma sequência pode conter lacunas de elegibilidade.</p>
 <p>Entre os ciclones positivos, a mediana foi 8 estados; P25 = 5, P75 = 13, P90 = 18, P95 = 20, P99 = 26 e o máximo = 35. O ciclone de maior peso recebeu 0,2068% da massa <em>equal-state</em>, contra 0,0569% sob peso igual.</p>
@@ -145,13 +233,22 @@
 
 <p><strong>Observação:</strong> os 10% superiores concentram 22,52% da massa <em>equal-state</em>. <strong>Interpretação:</strong> <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">N_{eff}</annotation></semantics></math> cai 26,6% em relação aos 1.757 ciclones positivos, uma desigualdade material, porém distribuída. <strong>Limitação:</strong> a curva mede contribuição, não influência causal de cada ciclone sobre uma métrica específica.</p>
 <h2 id="métricas">Métricas</h2>
-<p>As definições são idênticas às de E-001. A entropia de Shannon <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mi>−</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><mo>ln</mo><msub><mi>p</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">H=-\sum_i p_i\ln p_i</annotation></semantics></math>, em nat, resume quão espalhada está a massa entre bins; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> identifica um bin e <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math> é sua massa adimensional normalizada, com <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sum_i p_i=1</annotation></semantics></math>. A50, A75 e A90 são o número mínimo de bins necessários para atingir 50%, 75% e 90% da massa multiplicado por 2.500 km². RMS é a raiz da distância quadrática média ao centroide, em km. A distância do centroide ao centro, em km, e a razão entre eixos principais da covariância, adimensional, são diagnósticos de deslocamento e anisotropia; não entram na decisão principal.</p>
-<p>A distância de variação total entre os mapas dos dois weightings é</p>
-<p>[ TV=\frac{1}{2}\sum_i\left|p_i^{(ciclone)}-p_i^{(estado)}\right|, ]</p>
-<p>onde <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> identifica um bin de 50 km e cada <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math> é sua massa adimensional normalizada. TV varia de 0 a 1: zero representa mapas idênticos; o valor também é a fração mínima de massa que precisaria ser redistribuída para igualá-los. Ele não ordena qualidade científica.</p>
+<p>As definições são idênticas às de E-001, incluindo o que cada métrica <strong>não</strong> mede; o tratamento completo de cada uma está em <a href="e001_orientation.html#métodos-de-avaliação-e-métricas">métodos de avaliação e métricas de E-001</a>. A entropia de Shannon <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mi>−</mi><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><mo>ln</mo><msub><mi>p</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">H=-\sum_i p_i\ln p_i</annotation></semantics></math>, em nat, resume quão espalhada está a massa entre bins; <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> identifica um bin e <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math> é sua massa adimensional normalizada, com <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\sum_i p_i=1</annotation></semantics></math>. A50, A75 e A90 são o número mínimo de bins necessários para atingir 50%, 75% e 90% da massa multiplicado por 2.500 km². RMS é a raiz da distância quadrática média ao centroide, em km. A distância do centroide ao centro, em km, e a razão entre eixos principais da covariância, adimensional, são diagnósticos de deslocamento e anisotropia; não entram na decisão principal.</p>
+<p>Essas métricas descrevem <strong>cada</strong> distribuição isoladamente. E-002 precisa também de uma medida do quanto o próprio weighting mudou o mapa.</p>
+<h3 id="distância-de-variação-total">Distância de variação total</h3>
+<p><strong>Pergunta que responde.</strong> Quanto de peso teria de ser movido de um bin para outro para transformar o mapa <em>equal-state</em> no mapa <em>equal-cyclone</em>?</p>
+<p><strong>Intuição.</strong> Se os dois mapas fossem idênticos, nada precisaria ser movido. Quanto mais eles discordarem sobre onde o peso está, maior a fração que precisaria mudar de lugar.</p>
+<p><strong>Cálculo.</strong> Somam-se as diferenças bin a bin, em valor absoluto, e divide-se por dois — cada unidade movida aparece duas vezes na soma, uma vez como perda e outra como ganho. A distância de variação total entre os mapas dos dois weightings é</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mi>V</mi><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><munder><mo>∑</mo><mi>i</mi></munder><mrow><mo stretchy="true" form="prefix">|</mo><msubsup><mi>p</mi><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>c</mi><mi>i</mi><mi>c</mi><mi>l</mi><mi>o</mi><mi>n</mi><mi>e</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>−</mo><msubsup><mi>p</mi><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mi>s</mi><mi>t</mi><mi>a</mi><mi>d</mi><mi>o</mi><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo stretchy="true" form="postfix">|</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+TV=\frac{1}{2}\sum_i\left|p_i^{(ciclone)}-p_i^{(estado)}\right|,
+</annotation></semantics></math></p>
+<p>onde <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math> identifica um bin de 50 km e cada <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>p</mi><mi>i</mi></msub><annotation encoding="application/x-tex">p_i</annotation></semantics></math> é sua massa adimensional normalizada.</p>
+<p><strong>Interpretação.</strong> TV varia de 0 a 1: zero representa mapas idênticos; o valor também é a fração mínima de massa que precisaria ser redistribuída para igualá-los. Um TV de 0,08 significa que cerca de 8% do peso está em bins diferentes nos dois mapas, enquanto 92% coincide.</p>
+<p><strong>O que não mede.</strong> TV não diz <strong>para onde</strong> a massa se moveu, não distingue um deslocamento curto de um deslocamento longo — mover peso para o bin vizinho e para o outro extremo do domínio contam igual — e não ordena qualidade científica: um TV alto não torna um weighting melhor nem pior que o outro.</p>
 <h2 id="critério-de-decisão">Critério de decisão</h2>
 <p>O critério foi registrado no protocolo antes da execução. E-001 seria <strong>robusto ao weighting</strong> se, sob <em>equal-cyclone</em>, A50 continuasse em sentido oposto a A75, A90 e RMS e as cinco métricas de concentração não favorecessem consistentemente uma representação. Seria <strong>sensível</strong> se todas as cinco passassem a apontar para a mesma representação, com IC95% de H e A75 excluindo zero no mesmo sentido, ou se o critério simétrico de E-001 sustentasse claramente uma representação. Situações intermediárias seriam <strong>parcialmente sensíveis</strong>.</p>
-<p>Esse critério avalia a conclusão sobre orientação; ele não exige que todos os efeitos do weighting sejam numericamente pequenos.</p>
+<p><strong>Como o critério opera.</strong> Ele não pergunta se o weighting mudou alguma coisa — quase certamente mudou —, mas se a mudança foi suficiente para <strong>reverter a leitura de E-001</strong>. Se, sob <em>equal-cyclone</em>, o conflito entre núcleo e cauda persistir e nenhuma representação reunir todas as métricas a seu favor, o experimento é classificado como <code>ROBUST_TO_WEIGHTING</code>. Se as cinco métricas passarem a apontar no mesmo sentido, com os intervalos de H e A75 excluindo zero coerentemente, o experimento é classificado como sensível e a conclusão de E-001 teria de ser reaberta. Qualquer padrão intermediário — por exemplo, quatro métricas concordando e uma discordando — seria <code>PARTIALLY_SENSITIVE</code>.</p>
+<p>Esse critério avalia a conclusão sobre orientação; ele não exige que todos os efeitos do weighting sejam numericamente pequenos. Um weighting pode deslocar muito peso e ainda assim preservar a comparação entre orientações, e é exatamente essa distinção que o critério isola.</p>
 <h2 id="resultados">Resultados</h2>
 <p>As quatro distribuições principais produziram:</p>
 <table>
@@ -394,6 +491,20 @@
 </table>
 <p>O <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">N_{eff}</annotation></semantics></math> <em>equal-state</em> foi 767,3 de 1.051 ciclones positivos na fase incipiente, 1.132,9 de 1.611 na intensificação, 735,8 de 923 na madura e 873,3 de 1.296 no decaimento. A perda relativa foi maior no decaimento, seguido de intensificação. O efeito espacial não foi homogêneo: peso igual aumentou áreas na intensificação, reduziu-as no decaimento e produziu sinais mistos na fase madura. Como esta estratificação é secundária e não recebeu bootstrap próprio, ela localiza heterogeneidade, mas não domina a conclusão global.</p>
 <h2 id="incerteza">Incerteza</h2>
+<div class="method-box idea">
+
+<p>As diferenças acima são um número só. Falta saber se elas sobreviveriam a outra seleção de ciclones ou se dependem de quais eventos entraram na amostra. O bootstrap responde reconstruindo a amostra muitas vezes e observando quanto cada diferença varia.</p>
+</div>
+
+<ul class="method-io">
+<li>os 1.784 ciclones elegíveis, cada um com todos os seus estados e células</li>
+<li>500 reamostragens com reposição no nível do ciclone, recalculando os dois weightings dentro de cada réplica</li>
+<li>uma distribuição de 500 diferenças por contraste, resumida pelos percentis 2,5 e 97,5</li>
+</ul>
+
+<p><strong>Qual é a unidade de reamostragem.</strong> O sorteio é feito sobre <code>track_id</code>. Com uma população reduzida a <code>C1 C2 C3 C4</code>, uma réplica poderia ser <code>C2 C2 C4 C1</code>: <code>C3</code> fica de fora e <code>C2</code> conta em dobro, sempre com todos os seus estados e células juntos. O esquema completo está ilustrado em <a href="e001_orientation.html#comparação-pareada-e-incerteza">E-001</a>.</p>
+<p><strong>Por que não reamostrar estados nem células.</strong> Estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos, e células vizinhas pertencem ao mesmo campo de vento. Tratá-los como observações independentes produziria intervalos artificialmente estreitos. Em E-002 há um motivo adicional: <code>n_j</code>, o número de estados positivos do ciclone, é justamente a quantidade que distingue os dois weightings. Reamostrar estados alteraria <code>n_j</code> e destruiria o contraste sob teste.</p>
+<p><strong>Por que os dois weightings são recalculados na mesma réplica.</strong> Dentro de cada réplica, a mesma população sorteada alimenta <em>equal-state</em> e <em>equal-cyclone</em>, de modo que a variação observada reflete a troca de ciclones e não uma diferença de amostra entre os dois braços.</p>
 <p>Foram geradas 500 réplicas com semente 20260921. Em cada uma, os 1.784 ciclones elegíveis foram reamostrados com reposição; todos os estados e células de cada seleção foram preservados, e ambos os weightings foram recalculados. A tabela apresenta estimativa observada e IC95% percentil.</p>
 <table>
 <thead>
@@ -503,6 +614,8 @@
 </figure>
 
 <p><strong>Observação:</strong> os IC das áreas e de H para o efeito do weighting incluem zero, mas o aumento de RMS é consistente nas duas representações. Sob <em>equal-cyclone</em>, A50 favorece <em>motion-relative</em>, enquanto A90 e RMS favorecem <em>centered</em>; H inclui zero e A75 toca zero. <strong>Interpretação:</strong> há evidência de maior dispersão radial entre ciclones igualmente ponderados, mas não de uma mudança coerente em todas as medidas de concentração. <strong>Limitação:</strong> o bootstrap quantifica incerteza interna deste experimento; não substitui análise de influência, remoção de ciclones ou validação fora da amostra.</p>
+<h2 id="em-resumo-o-que-este-método-faz">Em resumo: o que este método faz?</h2>
+<p>E-002 congela tudo o que E-001 fixou — população, threshold, suporte, geometria e bins — e mexe em um único parâmetro: quem recebe uma unidade de peso. Sob <em>equal-state</em>, cada estado com excedência vale um, de modo que ciclones com muitos estados participam muitas vezes. Sob <em>equal-cyclone</em>, cada ciclone vale um e reparte esse valor entre seus próprios estados. As duas escolhas produzem mapas espaciais diferentes sobre exatamente a mesma grade. Comparando as métricas de concentração entre os dois mapas, o experimento mede quanto da estrutura observada em E-001 vinha da participação desigual dos ciclones mais longos; comparando as orientações dentro de cada weighting, verifica se a conclusão de E-001 depende dessa escolha.</p>
 <h2 id="interpretação">Interpretação</h2>
 <p>O esquema <em>equal-state</em> não foi dominado por um ciclone ou por um grupo minúsculo, mas deu influência agregada material aos sistemas com mais estados positivos: os 10% superiores receberam 22,52% da massa, e <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>N</mi><mrow><mi>e</mi><mi>f</mi><mi>f</mi></mrow></msub><annotation encoding="application/x-tex">N_{eff}</annotation></semantics></math> caiu de 1.757 para 1.288,8. Remover essa desigualdade deslocou cerca de 8% da massa espacial e aumentou RMS em aproximadamente 41 km.</p>
 <p>Essas mudanças quantitativas não alteraram a narrativa de orientação. Sob ambos os estimandos, <em>motion-relative</em> concentra A50 e dispersa A75, A90 e RMS em relação a <em>centered</em>. E-002 é, portanto, <strong>ROBUSTO AO WEIGHTING</strong> segundo o critério registrado.</p>

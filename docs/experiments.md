@@ -80,6 +80,11 @@ Magnitude condicional e hazard geográfico permanecem etapas separadas e posteri
 
 Copie a estrutura abaixo e substitua todas as instruções. Se uma seção não se aplicar, explique por quê; não a remova silenciosamente.
 
+Duas exigências permanentes valem para todo experimento formal, conforme [como explicar metodologia](documentation_guidelines.md#como-explicar-metodologia):
+
+1. **O método é descrito na ordem cognitiva** — intuição, depois procedimento, depois formalização, depois exemplo concreto. A seção de método é dividida nas subseções abaixo; não é um bloco único de equações.
+2. **Todo `E-XXX` possui um fluxograma científico-metodológico**, salvo justificativa explícita registrada na página. O fluxograma representa o protocolo real, usa linguagem científica em vez de nomes de scripts, aparece antes da descrição matemática detalhada, é acompanhado da leitura textual etapa por etapa, é atualizado se o protocolo mudar antes da execução e permanece congelado depois da conclusão, exceto por correções editoriais.
+
 ### E-XXX — Título científico
 
 - **Status:** `PLANNED | RUNNING | ADOPTED | REJECTED | INCONCLUSIVE | SUPERSEDED`
@@ -114,13 +119,35 @@ Identifique população, amostra, período, versão, unidade de análise e crit�
 
 Defina todas as variáveis, unidades, domínios, transformações e tratamento de ausências.
 
-#### Método
+#### Método — visão geral e fluxograma
 
-Explique o procedimento conceitualmente e com precisão suficiente para reprodução. Toda equação deve ter propósito, símbolos, unidades, domínio e interpretação intuitiva.
+Apresente o fluxograma metodológico e, logo abaixo, uma seção **“Como ler o fluxo do experimento”** que explique cada etapa em uma ou duas frases. O leitor deve ver o mapa inteiro antes de percorrer qualquer detalhe matemático. Declare aqui qual é o objeto de entrada do experimento e qual é o produto final do método.
+
+#### Método — passo a passo
+
+Descreva uma transformação por vez, na ordem real de execução. Cada passo declara o que entra, o que se quer obter, por que a operação é necessária, como é calculada em linguagem verbal, o que sai e qual passo consome essa saída. Não agrupe várias transformações conceituais no mesmo parágrafo.
+
+Quando o método atravessar níveis — ciclone, estado ciclone–tempo, célula e bin —, diga explicitamente em qual nível cada operação acontece, qual nível recebe peso, qual é agregado e qual é a unidade inferencial.
+
+#### Método — formalização
+
+Introduza as equações progressivamente, já depois da explicação verbal do passo correspondente. Defina todo símbolo antes ou imediatamente ao aparecer, com unidade, natureza e domínio. Siga cada equação relevante de uma leitura em linguagem comum. Reserve a fórmula compacta para o papel de síntese, nunca de primeiro contato.
+
+#### Método — exemplo concreto
+
+Obrigatório sempre que houver weighting, normalização, agregação, probabilidades, bins, transformação de coordenadas, bootstrap, seleção, thresholds ou combinação hierárquica. Use números simples, mostre a aritmética, verifique a normalização e, quando existirem variantes do método, repita o mesmo exemplo sob cada variante. Esquemas espaciais pequenos contam como exemplo concreto quando o método envolver posição.
 
 #### Métricas
 
-Indique o que cada métrica mede e por que responde à pergunta.
+Para cada métrica, documente nesta ordem: a pergunta que ela responde; a intuição; o cálculo, verbal antes de formal; os símbolos com unidade e domínio; um exemplo simples quando ajudar; a interpretação de valores altos e baixos e do sinal da diferença; e **o que a métrica não mede**. O último item é obrigatório.
+
+#### Incerteza
+
+Explique a unidade de reamostragem de forma didática, mostre uma réplica concreta, justifique por que essa unidade foi escolhida em vez de uma unidade mais fina e declare o que o intervalo não cobre.
+
+#### Síntese metodológica
+
+Feche o método com três a seis frases **sem equações**, sob o título “Em resumo: o que este método faz?”. A síntese consolida o raciocínio; não introduz método novo nem antecipa resultado.
 
 #### Critério de decisão
 

@@ -31,8 +31,23 @@ O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A
 
 <figure class="result-figure">
   <img src="../outputs/03_e001_orientation/methodology_flow.png" alt="Fluxograma em oito etapas do experimento E-001: pergunta e hipótese, protocolo congelado, população elegível, duas orientações, grade comum, métricas, bootstrap pareado e decisão.">
-  <figcaption>Fluxo metodológico de E-001. Quadrantes fixos e rotacionados se separam apenas na etapa de orientação e voltam a ser avaliados na mesma grade e pelas mesmas métricas; o bootstrap reamostra ciclones inteiros, sempre de forma pareada.</figcaption>
+  <figcaption>Esquema metodológico, não um resultado. Quadrantes fixos e rotacionados se separam apenas na etapa de orientação e voltam a ser avaliados na mesma grade e pelas mesmas métricas; o bootstrap reamostra ciclones inteiros, sempre de forma pareada.</figcaption>
 </figure>
+
+## Como ler o fluxo do experimento
+
+Cada caixa do fluxograma corresponde a uma etapa científica, não a um script.
+
+1. **Pergunta e H2.** A hipótese prevê que girar cada ciclone até alinhar seu movimento reduz a dispersão espacial das excedências.
+2. **Protocolo congelado.** Threshold q95 local, bins de 50 km, peso total um por estado q95-positivo e corte de heading em 5 km/h são fixados antes de qualquer resultado.
+3. **População elegível.** Os mesmos ciclones, estados, células, flags de excedência e suporte espacial alimentam as duas representações; nada é selecionado depois.
+4. **Duas orientações.** A população é expressa em quadrantes fixos e em quadrantes rotacionados pelo movimento. Esta é a **única** diferença entre os dois braços da comparação.
+5. **Grade comum.** As duas nuvens de pontos são discretizadas na mesma grade de 44 × 44 bins, sem suavização.
+6. **Avaliação.** Entropia, A50, A75, A90, RMS, centroide e anisotropia são calculados sobre as duas distribuições resultantes.
+7. **Incerteza.** Quinhentas réplicas reamostram ciclones inteiros e recalculam as diferenças de forma pareada.
+8. **Decisão.** O critério preregistrado confronta métricas, fases, intervalos bootstrap e suporte, e classifica o resultado.
+
+O fluxograma é um mapa de leitura. As seções seguintes percorrem as mesmas etapas em detalhe, começando pelos dados e pela geometria.
 
 ## Dados utilizados
 
@@ -56,29 +71,87 @@ O q95 local foi fixado antes das métricas principais. A verificação prévia e
 
 ### Quadrantes fixos (*centered*)
 
-Cada célula é expressa num plano tangente local centrado no ciclone. Sejam `φ₀` e `λ₀` a latitude e longitude do centro e `φ` e `λ` as da célula, todas em radianos; `Δλ` é `λ − λ₀` envolvida em `[-π, π)`. A distância de grande círculo usa:
+<div class="method-box idea">
+
+Ciclones diferentes ocorrem em latitudes e longitudes diferentes. Duas excedências igualmente distantes de seus centros têm, portanto, coordenadas geográficas completamente distintas, e somá-las diretamente não faria sentido. Antes de agregar qualquer coisa entre eventos, é preciso reexpressar cada célula pela sua posição **relativa ao centro do ciclone**, medida em quilômetros. Os quadrantes fixos fazem isso e nada mais: levam o centro do ciclone à origem e mantêm o norte geográfico apontando para cima.
+
+</div>
+
+<ul class="method-io">
+<li>latitude e longitude da célula ERA5 e do centro do ciclone, em graus</li>
+<li>projeção azimutal equidistante esférica no plano tangente ao centro</li>
+<li>posição <code>(x, y)</code> em km relativa ao centro, com norte para cima</li>
+</ul>
+
+A transformação tem três passos: medir a **distância** entre centro e célula, medir a **direção** em que a célula é vista do centro e converter distância e direção em coordenadas cartesianas.
+
+Em todos eles, sejam `φ₀` e `λ₀` a latitude e a longitude do centro e `φ` e `λ` as da célula, todas em radianos; `Δλ` é `λ − λ₀` envolvida em `[-π, π)`.
+
+**Passo 1 — distância ao centro.** Queremos saber a quantos quilômetros a célula está do centro, sobre a superfície da esfera. A distância de grande círculo usa:
 
 $$a=\sin^2\left(\frac{\phi-\phi_0}{2}\right)+\cos\phi_0\cos\phi\sin^2\left(\frac{\Delta\lambda}{2}\right).$$
 
 $$d=2R\operatorname{atan2}\left(\sqrt{a},\sqrt{1-a}\right), \qquad R=6\,371\ \text{km}.$$
 
-O azimute `α`, em radianos e no sentido horário a partir do norte, é:
+Aqui `a` é uma quantidade auxiliar adimensional da fórmula do semiverso, `R` é o raio médio da Terra e `d` é a distância célula–centro em km, sempre não negativa.
+
+**Passo 2 — direção da célula vista do centro.** Saber a distância não basta: duas células a 300 km do centro podem estar em lados opostos. O azimute `α`, em radianos e no sentido horário a partir do norte, indica essa direção:
 
 $$\alpha=\operatorname{atan2}\left(\sin\Delta\lambda\cos\phi,\ \cos\phi_0\sin\phi-\sin\phi_0\cos\phi\cos\Delta\lambda\right).$$
 
-As coordenadas no plano tangente são:
+**Passo 3 — coordenadas cartesianas.** Distância e azimute são então convertidos no par `(x, y)` que todas as etapas seguintes usam:
 
 $$x = d\sin(\alpha), \qquad y = d\cos(\alpha).$$
 
-Assim, `x > 0` significa leste, `x < 0` oeste, `y > 0` norte e `y < 0` sul. Essa transformação azimutal equidistante esférica preserva a distância radial `d` e evita tratar graus de longitude como distância cartesiana.
+`x` e `y` estão em km e podem ser positivos ou negativos: `x > 0` significa leste, `x < 0` oeste, `y > 0` norte e `y < 0` sul.
+
+<div class="method-box reading">
+
+Em linguagem comum, o procedimento pergunta “a que distância e em que direção esta célula está do olho do ciclone?” e responde com um par de quilômetros em vez de um par de graus. Uma célula 300 km a leste e 300 km ao norte do centro recebe `(x, y) ≈ (300, 300)` qualquer que seja a latitude do ciclone, o que torna células de eventos diferentes comparáveis entre si.
+
+</div>
+
+<div class="method-box caution">
+
+A projeção preserva a distância radial `d` ao centro e evita tratar graus de longitude como distância cartesiana, mas é uma aproximação esférica local: distâncias **entre** duas células afastadas do centro não são preservadas com a mesma fidelidade. Como as duas representações comparadas usam exatamente a mesma projeção, esse efeito não favorece nenhuma delas.
+
+</div>
+
+**Saída desta etapa.** Cada célula q95 de cada estado passa a ter uma posição `(x, y)` em km relativa ao centro do seu próprio ciclone. Essa é a entrada da etapa seguinte.
 
 ### Quadrantes rotacionados pelo movimento (*motion-relative*)
 
-Seja `θ` o heading do ciclone, em radianos, também medido no sentido horário a partir do norte. A rotação usada foi:
+<div class="method-box idea">
+
+Um ciclone que se desloca para leste e outro que se desloca para sul podem ter a mesma organização física — por exemplo, extremos concentrados à esquerda do movimento — e ainda assim parecer completamente diferentes num mapa com o norte sempre para cima. A hipótese H2 diz que parte da dispersão observada é apenas essa diferença de orientação. Para testá-la, giramos cada estado até que todos os ciclones estejam “andando na mesma direção”.
+
+</div>
+
+<ul class="method-io">
+<li>posição <code>(x, y)</code> em km da etapa anterior e o heading do ciclone naquele estado</li>
+<li>rotação rígida do plano até alinhar o vetor de deslocamento com o eixo vertical</li>
+<li>posição <code>(x_m, y_m)</code> em km, com a frente do movimento para cima</li>
+</ul>
+
+Seja `θ` o heading do ciclone, em radianos, medido no sentido horário a partir do norte — a mesma convenção do azimute da etapa anterior. Sua estimativa é descrita na seção seguinte. A rotação usada foi:
 
 $$\begin{bmatrix}x_m\\y_m\end{bmatrix}=\begin{bmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}.$$
 
-Aqui, `x_m` e `y_m` estão em km; `y_m > 0` é a frente do movimento, `y_m < 0` é a retaguarda, `x_m > 0` é a direita e `x_m < 0` é a esquerda. Intuitivamente, a rotação leva o vetor de deslocamento para cima sem alterar a distância ao centro. Por exemplo, para movimento para leste, leste vira frente e sul vira direita.
+Aqui, `x_m` e `y_m` estão em km; `y_m > 0` é a frente do movimento, `y_m < 0` é a retaguarda, `x_m > 0` é a direita e `x_m < 0` é a esquerda.
+
+<div class="method-box reading">
+
+A rotação não move nenhum ponto para longe ou para perto do centro: ela apenas redefine o que se chama de “para cima”. A distância de cada célula ao centro do ciclone é exatamente a mesma antes e depois. O que muda é o significado dos eixos: em vez de leste e norte, eles passam a significar direita e frente do movimento.
+
+</div>
+
+<div class="method-box example">
+
+Para um ciclone que se move exatamente para leste (`θ = 90°`), leste passa a ser a frente e sul passa a ser a direita. Uma célula que estava 200 km ao sul do centro, com `(x, y) = (0, −200)`, passa a ter `(x_m, y_m) = (200, 0)`: 200 km à direita do movimento e nem à frente nem atrás. Para um ciclone que se move para o sul, a mesma célula 200 km ao sul do centro estaria 200 km à frente.
+
+</div>
+
+**Saída desta etapa.** Cada célula q95 passa a ter duas posições: `(x, y)` nos quadrantes fixos e `(x_m, y_m)` nos rotacionados. Todo o restante do método é aplicado de forma idêntica às duas.
 
 O Parquet de origem contém as colunas categóricas `fixed_quadrant` e `rotated_quadrant`, que seguem essa mesma ideia. E-001, porém, não usa esses códigos de quatro categorias para calcular as métricas: transforma as posições contínuas `(x, y)` em `(x_m, y_m)` e só depois as discretiza na grade de 44 × 44 bins.
 
@@ -91,13 +164,33 @@ A figura esquemática mostra um ciclone movendo-se para sudeste. À esquerda, os
 
 ## Estimativa da direção de movimento
 
-O heading foi calculado exclusivamente do catálogo completo de estados, nunca das linhas de excedência. Para estados internos de uma track, sejam `r₋ = (x₋, y₋)` e `r₊ = (x₊, y₊)` os centros anterior e posterior projetados, em km, no plano tangente do estado atual, e `t₋`, `t₊` seus horários, em horas. O vetor e o heading são:
+<div class="method-box idea">
+
+A rotação da etapa anterior precisa de um número que ainda não temos: para onde cada ciclone estava indo naquele instante. O catálogo fornece apenas a posição do centro em cada horário de 6 h, então a direção precisa ser **inferida** das posições vizinhas. Isso levanta um problema prático: quando o ciclone quase não se move, a direção calculada é essencialmente ruído, e girar o campo por um ângulo arbitrário introduziria dispersão em vez de removê-la.
+
+</div>
+
+<ul class="method-io">
+<li>posições dos centros do ciclone nos estados anterior, atual e posterior, com seus horários</li>
+<li>diferença centrada no plano tangente local, seguida de filtro de velocidade mínima</li>
+<li>heading <code>θ</code> em radianos e velocidade de translação <code>s</code> em km/h, ou exclusão do estado</li>
+</ul>
+
+**Passo 1 — de onde vem a informação.** O heading foi calculado exclusivamente do catálogo completo de estados, nunca das linhas de excedência. Usar apenas os estados com excedência produziria uma direção estimada a partir do próprio subconjunto sob análise.
+
+**Passo 2 — o cálculo.** Para estados internos de uma track, sejam `r₋ = (x₋, y₋)` e `r₊ = (x₊, y₊)` os centros anterior e posterior projetados, em km, no plano tangente do estado atual, e `t₋`, `t₊` seus horários, em horas. O vetor e o heading são:
 
 $$\mathbf{v}=\frac{\mathbf{r}_{+}-\mathbf{r}_{-}}{t_{+}-t_{-}}, \qquad s=\sqrt{v_x^2+v_y^2}, \qquad \theta=\operatorname{atan2}(v_x,v_y).$$
 
-`vₓ` é a componente leste e `vᵧ`, a componente norte, ambas em km/h; `s` é a velocidade de translação em km/h; `θ` está em `[-π, π]`, medido no sentido horário a partir do norte. Nas extremidades, `r₋` ou `r₊` é substituído pelo próprio estado para formar uma diferença simples de 6 h; nos estados internos, a diferença é centrada em 12 h.
+`vₓ` é a componente leste e `vᵧ`, a componente norte, ambas em km/h; `s` é a velocidade de translação em km/h, sempre não negativa; `θ` está em `[-π, π]`, medido no sentido horário a partir do norte. Nas extremidades, `r₋` ou `r₊` é substituído pelo próprio estado para formar uma diferença simples de 6 h; nos estados internos, a diferença é centrada em 12 h.
 
-A distribuição foi examinada antes das métricas de concentração. A mediana foi 42,68 km/h, o percentil 1 foi 4,55 km/h e a faixa observada foi 0,31–150,89 km/h. O critério de confiabilidade foi fixado em 5 km/h, equivalente a 30 km em 6 h e aproximadamente uma célula da grade original de 0,25°. Diferentemente do procedimento exploratório herdado, movimentos menores não receberam heading leste artificial.
+<div class="method-box reading">
+
+Em linguagem comum, a direção do ciclone num dado instante é estimada traçando uma seta do ponto onde ele estava 6 h antes até onde estará 6 h depois. Quanto mais longa essa seta, mais confiável é sua direção; quanto mais curta, mais o ângulo é dominado por ruído de posicionamento do centro.
+
+</div>
+
+**Passo 3 — descartar direções não confiáveis.** A distribuição foi examinada antes das métricas de concentração. A mediana foi 42,68 km/h, o percentil 1 foi 4,55 km/h e a faixa observada foi 0,31–150,89 km/h. O critério de confiabilidade foi fixado em 5 km/h, equivalente a 30 km em 6 h e aproximadamente uma célula da grade original de 0,25°. Diferentemente do procedimento exploratório herdado, movimentos menores não receberam heading leste artificial.
 
 <figure class="result-figure">
   <img src="../outputs/03_e001_orientation/translation_speed_diagnostic.png" alt="Histograma da velocidade de translação e ampliação da distribuição acumulada abaixo de 25 km por hora, com corte de 5 km por hora.">
@@ -110,7 +203,25 @@ As duas representações usaram exatamente os mesmos 23.050 estados, as mesmas c
 
 O mapa agregado é, portanto, a distribuição normalizada das ocorrências q95 depois de atribuir o mesmo peso a cada estado q95-positivo. Ciclones mais duradouros ainda podem contribuir com mais estados; resolver *equal-time* versus *equal-cyclone* está fora de E-001.
 
+O restante desta seção percorre duas transformações, nesta ordem: primeiro as posições contínuas viram **bins**; depois cada estado distribui seu peso entre os bins que ocupa. Os quatro níveis do projeto aparecem aqui encadeados:
+
+> ciclone (`track_id`) → estado ciclone–tempo → célula ERA5 → bin de 50 km
+
+Em E-001, **o nível que recebe peso é o estado**: cada estado q95-positivo vale um. O nível agregado é o bin. O nível que serve de unidade inferencial no bootstrap é o ciclone. Manter os três separados é essencial para ler corretamente as métricas.
+
 ### Discretização espacial e definição dos bins
+
+<div class="method-box idea">
+
+Depois da transformação de coordenadas, cada célula q95 é um ponto solto em quilômetros. Pontos soltos não podem ser comparados entre representações: seria preciso decidir quando duas posições “são o mesmo lugar”. A discretização resolve isso cobrindo o plano com quadrados de tamanho fixo e perguntando apenas em qual quadrado cada ponto caiu.
+
+</div>
+
+<ul class="method-io">
+<li>posições contínuas <code>(x, y)</code> ou <code>(x_m, y_m)</code> em km, de todas as células q95</li>
+<li>atribuição de cada posição a um quadrado de 50 km, sem interpolação</li>
+<li>índice de bin <code>B_jk</code> para cada célula, numa grade comum de 44 × 44</li>
+</ul>
 
 Um *bin* é uma célula quadrada usada para reunir as células ERA5 localizadas numa mesma região do sistema de coordenadas relativo. A grade foi fixada antes do cálculo das métricas: 50 km de lado, 44 bins por eixo e 1.936 bins possíveis no quadrado de `2.200 × 2.200 km`. Em notação explícita, as linhas que separam os bins são
 
@@ -139,25 +250,53 @@ A figura abaixo mostra primeiro a grade completa. As 44 colunas multiplicadas pe
 
 ### Peso por estado e distribuição espacial
 
-Para um estado `s` e um bin `i`, definem-se explicitamente:
+<div class="method-box idea">
+
+Neste ponto sabemos em que bin caiu cada célula excedente, mas ainda não sabemos quanto cada estado deve contar no mapa final. Se simplesmente contássemos células, um estado com 2.000 células excedentes dominaria 100 estados com 20 células cada — e a diferença entre eles é sobretudo o tamanho da área afetada, não a importância do evento. A decisão de E-001 é dar a **cada estado q95-positivo o mesmo peso total**, e deixar que apenas a *distribuição interna* desse peso varie.
+
+</div>
+
+<ul class="method-io">
+<li>índices de bin de todas as células q95, agrupados por estado</li>
+<li>peso total um por estado, repartido entre suas células, e soma sobre todos os estados</li>
+<li>distribuição espacial normalizada <code>p_i</code>, uma proporção por bin, somando um</li>
+</ul>
+
+A construção tem três passos: repartir o peso **dentro** de um estado, somar os estados e normalizar o total.
+
+**Passo 1 — repartir o peso dentro de um estado.** Para um estado `s` e um bin `i`, definem-se explicitamente:
 
 $$n_{si}=\text{número de células q95 do estado }s\text{ localizadas no bin }i,$$
 
 $$N_s=\sum_i n_{si}=\text{número total de células q95 do estado }s.$$
 
-O peso que o estado `s` atribui ao bin `i` é
+Aqui `n_si` e `N_s` são contagens adimensionais de células, com `N_s ≥ 1` em todo estado q95-positivo. O peso que o estado `s` atribui ao bin `i` é
 
 $$w_{si}=\frac{n_{si}}{N_s}, \qquad \sum_i w_{si}=1.$$
 
-Somando as contribuições de todos os estados q95-positivos, obtém-se o peso agregado do bin,
+`w_si` é adimensional e está entre 0 e 1.
+
+<div class="method-box reading">
+
+Esta é a única equação que define “peso igual por estado”. Ela diz que o estado inteiro vale uma unidade e que essa unidade é repartida entre os bins na proporção das células excedentes que cada bin recebeu. Um estado com 20 células e outro com 2.000 têm o mesmo peso total; o que muda é o detalhe com que esse peso se espalha.
+
+</div>
+
+**Passo 2 — somar os estados.** Somando as contribuições de todos os estados q95-positivos, obtém-se o peso agregado do bin,
 
 $$W_i=\sum_s w_{si},$$
 
-e sua proporção na distribuição espacial final é
+onde `W_i` é adimensional e vale, no máximo, o número de estados q95-positivos.
+
+**Passo 3 — normalizar.** `W_i` depende do tamanho da amostra, então a comparação entre representações usa sua proporção na distribuição espacial final:
 
 $$p_i=\frac{W_i}{\sum_\ell W_\ell}, \qquad \sum_i p_i=1.$$
 
+`p_i` é adimensional e está entre 0 e 1; `ℓ` percorre os mesmos bins que `i`.
+
 Portanto, `p_i = 0,02` significa que o bin contém 2% do peso estatístico normalizado de todas as ocorrências q95. Não significa 2% da massa de ar, 2% da velocidade do vento nem necessariamente 2% das células brutas.
+
+**Saída desta etapa.** Um vetor de 1.936 proporções por representação. Todas as métricas da próxima seção são calculadas exclusivamente a partir desse vetor.
 
 #### Exemplo com um estado real
 
@@ -211,7 +350,9 @@ Foi usado o logaritmo natural; portanto, a unidade é o *nat*. Bins vazios contr
 
 $$\Delta H=H_{\text{rotacionados}}-H_{\text{fixos}}.$$
 
-Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os quadrantes fixos. A entropia não informa onde o peso está nem se os bins ocupados formam uma região conectada. Ela também depende do tamanho dos bins; por isso a resolução foi congelada e mantida igual nas duas representações.
+Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os quadrantes fixos.
+
+**O que não mede.** A entropia não informa **onde** o peso está, não distingue núcleo de cauda e não diz se os bins ocupados formam uma região conectada: permutar os mesmos valores entre bins distantes não altera `H`. Ela também depende do tamanho dos bins; por isso a resolução foi congelada e mantida igual nas duas representações.
 
 **Exemplo didático.** Na figura anterior, a distribuição compacta atribui pesos `[0,70; 0,10; 0,10; 0,10]` e tem `H = 0,940 nat`; a distribuição uniforme atribui `0,25` a cada um de quatro bins e tem `H = 1,386 nat`. O peso total é idêntico, mas a segunda distribuição é mais uniforme. Se os mesmos quatro valores fossem apenas deslocados para outras posições, `H` não mudaria. Esses valores apenas ilustram o cálculo e não entram nos resultados de E-001.
 
@@ -233,7 +374,9 @@ Assim, `A50`, `A75` e `A90` são as menores somas de bins inteiros capazes de co
 
 $$\Delta A_q=A_{q,\text{rotacionados}}-A_{q,\text{fixos}},$$
 
-valores negativos favorecem os quadrantes rotacionados. Os bins selecionados não precisam ser vizinhos: `Aq` é uma soma das áreas dos bins de maior peso, e não a área de um polígono contínuo ou de um contorno geométrico.
+valores negativos favorecem os quadrantes rotacionados.
+
+**O que não mede.** `Aq` não é a área de um polígono contínuo nem de um contorno geométrico: os bins selecionados não precisam ser vizinhos, e a métrica é apenas a soma das áreas dos bins de maior peso. Ela também não informa a posição dessa área nem sua forma, e varia em passos discretos de `2.500 km²`.
 
 No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha mostra sua proporção acumulada. As linhas horizontais marcam os três alvos; os eixos representam posição no ranking e peso, não distância espacial.
 
@@ -250,7 +393,9 @@ No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha 
 
 $$\operatorname{RMS}=\sqrt{\sum_i p_i\left[(x_i-\mu_x)^2+(y_i-\mu_y)^2\right]}.$$
 
-**Como interpretar.** Menor RMS significa peso espacial mais próximo do próprio centroide. A métrica não mede distância ao centro do ciclone: uma distribuição pode deslocar seu centroide para perto da origem e, ao mesmo tempo, ficar mais espalhada ao redor dele. Como se usam centros de bins, há discretização posicional de no máximo meia diagonal do bin, aproximadamente `35,4 km`; a comparação pareada na mesma grade limita o efeito dessa aproximação sobre a diferença entre orientações.
+**Como interpretar.** Menor RMS significa peso espacial mais próximo do próprio centroide.
+
+**O que não mede.** A RMS não mede distância ao centro do ciclone: uma distribuição pode deslocar seu centroide para perto da origem e, ao mesmo tempo, ficar mais espalhada ao redor dele. Ela também não distingue direções — uma nuvem alongada e uma circular podem ter a mesma RMS. Como se usam centros de bins, há discretização posicional de no máximo meia diagonal do bin, aproximadamente `35,4 km`; a comparação pareada na mesma grade limita o efeito dessa aproximação sobre a diferença entre orientações.
 
 ### Centroide e deslocamento do padrão
 
@@ -260,7 +405,9 @@ $$\operatorname{RMS}=\sqrt{\sum_i p_i\left[(x_i-\mu_x)^2+(y_i-\mu_y)^2\right]}.$
 
 $$\mu_x=\sum_i p_i x_i, \qquad \mu_y=\sum_i p_i y_i, \qquad d_\mu=\sqrt{\mu_x^2+\mu_y^2}.$$
 
-**Como interpretar.** `d_μ` é a distância do centroide ao centro do ciclone. Nos quadrantes fixos, os sinais indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda. Um centroide próximo de zero significa apenas equilíbrio médio em torno da origem, não alta concentração.
+**Como interpretar.** `d_μ` é a distância do centroide ao centro do ciclone, em km. Nos quadrantes fixos, os sinais de `μ_x` e `μ_y` indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda.
+
+**O que não mede.** O centroide não mede concentração: um valor próximo de zero significa apenas equilíbrio médio em torno da origem e é compatível tanto com uma nuvem compacta quanto com duas concentrações opostas que se cancelam.
 
 ### Covariância espacial e anisotropia
 
@@ -276,7 +423,9 @@ Se `λ₁ ≥ λ₂` são os autovalores de `C`, a razão de anisotropia é
 
 $$\rho=\sqrt{\frac{\lambda_1}{\lambda_2}}.$$
 
-**Como interpretar.** `ρ = 1` corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante. A métrica resume somente segundos momentos: não demonstra que a distribuição seja elíptica, unimodal ou conectada.
+**Como interpretar.** `ρ = 1`, adimensional, corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante.
+
+**O que não mede.** A métrica resume somente segundos momentos. Ela não demonstra que a distribuição seja elíptica, unimodal ou conectada, e não distingue um alongamento genuíno de duas concentrações separadas alinhadas na mesma direção.
 
 A figura seguinte reúne RMS, centroide e anisotropia numa nuvem hipotética. Os eixos são coordenadas relativas em quilômetros; o ponto laranja é o centroide, o círculo tracejado representa a escala RMS e a elipse resume a covariância.
 
@@ -291,15 +440,56 @@ A figura seguinte reúne RMS, centroide e anisotropia numa nuvem hipotética. Os
 
 **Cálculo e interpretação.** As mesmas operações de binning e entropia foram aplicadas às 136.177.047 células avaliadas, independentemente de excederem q95. Também foram registrados, por bin e representação, estados elegíveis, estados com suporte, células avaliadas e excedências. Mudança q95 acompanhada por mudança semelhante no suporte seria um alerta contra interpretação física; mudança q95 sem equivalente no suporte é menos compatível com artefato de cobertura.
 
+**O que não mede.** O diagnóstico de suporte indica se a cobertura observacional mudou junto com o sinal q95, mas não prova ausência de artefato: ele não corrige viés de seleção da amostra nem avalia a qualidade da estimativa local de q95.
+
 ### Comparação pareada e incerteza
 
-Todas as diferenças seguem a convenção `quadrantes rotacionados − quadrantes fixos`, armazenada nos produtos como `motion_relative − centered`. Para preservar dependência temporal e espacial dentro de um ciclone, foram produzidas 500 réplicas bootstrap com semente fixa, reamostrando os 1.784 `track_id` com reposição. Cada ocorrência sorteada de um ciclone leva consigo todos os seus estados e células; se o mesmo `track_id` é sorteado duas vezes, sua contribuição aparece duas vezes. Em cada réplica, exatamente as mesmas multiplicidades são usadas nas duas orientações, `p_i` e todas as métricas são recalculados, e só então a diferença é obtida. O intervalo de 95% usa os percentis 2,5 e 97,5 das 500 diferenças.
+<div class="method-box idea">
 
-Essa unidade de reamostragem evita tratar milhões de células correlacionadas como observações independentes. O intervalo expressa variação entre ciclones da amostra; não corrige viés de seleção, não mede incerteza da estimativa de q95 e não substitui validação fora da amostra.
+As métricas acima produzem um número por representação, e a diferença entre elas é o resultado do experimento. Falta saber se essa diferença é estável: ela apareceria de novo com outro conjunto de ciclones, ou depende de quais eventos entraram na amostra? O bootstrap responde a isso reconstruindo a amostra muitas vezes e observando quanto a diferença varia.
+
+</div>
+
+<ul class="method-io">
+<li>os 1.784 ciclones elegíveis, cada um com todos os seus estados e células</li>
+<li>500 reamostragens com reposição no nível do ciclone, com recálculo pareado das métricas</li>
+<li>uma distribuição de 500 diferenças por métrica, resumida pelos percentis 2,5 e 97,5</li>
+</ul>
+
+**Qual é a unidade de reamostragem.** O sorteio é feito sobre `track_id`, não sobre estados nem sobre células. Cada ciclone sorteado entra inteiro: todos os seus estados e todas as suas células acompanham o sorteio. Se o mesmo `track_id` sai duas vezes, sua contribuição conta em dobro; ciclones não sorteados ficam de fora daquela réplica.
+
+<div class="method-box example">
+
+Com uma população reduzida a quatro ciclones `C1 C2 C3 C4`, uma réplica poderia ser `C2 C2 C4 C1`. Nessa réplica, `C3` não participa e `C2` entra duas vezes, com todos os seus estados nas duas vezes. As métricas são recalculadas sobre essa população reconstruída e a diferença rotacionados − fixos é armazenada. Repetindo 500 vezes, obtém-se uma distribuição de diferenças; seus percentis 2,5 e 97,5 formam o intervalo de 95%.
+
+</div>
+
+<figure class="result-figure">
+  <img src="../outputs/03_e001_orientation/bootstrap_scheme.png" alt="Esquema didático do bootstrap por ciclone: uma população de quatro ciclones com números diferentes de estados e três réplicas sorteadas com reposição, ao lado de um histograma ilustrativo de 500 diferenças com os percentis 2,5 e 97,5 marcados.">
+  <figcaption>Esquema metodológico, não um resultado de E-001. À esquerda, a reamostragem mantém juntos todos os estados de cada ciclone sorteado; à direita, o histograma é ilustrativo e apenas mostra como os percentis 2,5 e 97,5 delimitam o intervalo. Os valores de E-001 estão nas tabelas de resultados.</figcaption>
+</figure>
+
+**Por que não reamostrar células.** As 9.090.570 células excedentes não são observações independentes: células vizinhas do mesmo estado pertencem ao mesmo campo de vento, e estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos. Reamostrar células trataria essa dependência como informação nova e produziria intervalos artificialmente estreitos. O ciclone é o nível em que as observações podem ser consideradas aproximadamente trocáveis.
+
+**Por que a comparação é pareada.** Todas as diferenças seguem a convenção `quadrantes rotacionados − quadrantes fixos`, armazenada nos produtos como `motion_relative − centered`. Em cada réplica, exatamente as mesmas multiplicidades de ciclones são usadas nas duas orientações; `p_i` e todas as métricas são recalculados dentro da réplica, e só então a diferença é obtida. Assim, a variação entre réplicas reflete a troca de ciclones, e não uma diferença de amostra entre os dois braços.
+
+<div class="method-box caution">
+
+O intervalo expressa variação entre ciclones da amostra. Ele **não** corrige viés de seleção, **não** mede a incerteza da estimativa local de q95, **não** cobre a escolha da resolução dos bins e **não** substitui validação em ciclones fora da amostra.
+
+</div>
+
+## Em resumo: o que este método faz?
+
+Cada estado de ciclone com pelo menos uma excedência q95 é reexpresso em quilômetros relativos ao seu próprio centro, de duas maneiras: mantendo o norte para cima e girando até que o movimento aponte para a frente. As posições resultantes são jogadas numa grade comum de quadrados de 50 km. Cada estado contribui com a mesma quantidade total de peso, repartida entre os quadrados que suas células excedentes ocuparam, e a soma sobre todos os estados é normalizada para formar uma distribuição espacial. As mesmas seis métricas descrevem essa distribuição nas duas representações, e a diferença entre elas é o resultado do experimento. Reamostrar ciclones inteiros 500 vezes indica quanto dessa diferença sobreviveria a outra seleção de eventos.
 
 ## Critério de decisão
 
 Antes dos resultados, evidência a favor dos quadrantes rotacionados exigia conjuntamente: entropia e A75 menores com intervalos bootstrap pareados de 95% inteiramente abaixo de zero; A50 e A90 no mesmo sentido; pelo menos três das quatro fases no mesmo sentido; menos de 10% de perda por heading; e ausência de mudança comparável na distribuição do suporte. O padrão simétrico favoreceria os quadrantes fixos. Qualquer combinação restante seria inconclusiva. Não foi exigido um tamanho de efeito mínimo arbitrário.
+
+**Como o critério opera.** A regra é deliberadamente conjuntiva. Se **todas** as condições acima ocorrerem no mesmo sentido, o experimento é lido como evidência de que a orientação pelo movimento organiza melhor as excedências, e a representação correspondente poderia ser promovida. Se as condições ocorrerem em direções conflitantes — por exemplo, o núcleo concentrando enquanto a cauda dispersa, ou as fases discordando entre si —, o experimento é classificado como **inconclusivo** e nenhuma representação é promovida. Exigir concordância entre famílias de métricas e entre fases protege contra escolher a representação com base na única métrica que a favoreceu.
+
+O critério foi registrado no protocolo congelado antes da execução e não foi reescrito depois dos resultados.
 
 ## Resultados globais
 

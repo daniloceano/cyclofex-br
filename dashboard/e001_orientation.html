@@ -48,9 +48,22 @@
 <p>O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A comparação é pareada: depois de definida a população elegível, somente o sistema de coordenadas muda entre quadrantes fixos e rotacionados. Bins, pesos, flags q95 e unidades amostrais permanecem idênticos.</p>
 <figure class="result-figure">
   <img src="assets/03_e001_orientation/methodology_flow.png" alt="Fluxograma em oito etapas do experimento E-001: pergunta e hipótese, protocolo congelado, população elegível, duas orientações, grade comum, métricas, bootstrap pareado e decisão.">
-  <figcaption>Fluxo metodológico de E-001. Quadrantes fixos e rotacionados se separam apenas na etapa de orientação e voltam a ser avaliados na mesma grade e pelas mesmas métricas; o bootstrap reamostra ciclones inteiros, sempre de forma pareada.</figcaption>
+  <figcaption>Esquema metodológico, não um resultado. Quadrantes fixos e rotacionados se separam apenas na etapa de orientação e voltam a ser avaliados na mesma grade e pelas mesmas métricas; o bootstrap reamostra ciclones inteiros, sempre de forma pareada.</figcaption>
 </figure>
 
+<h2 id="como-ler-o-fluxo-do-experimento">Como ler o fluxo do experimento</h2>
+<p>Cada caixa do fluxograma corresponde a uma etapa científica, não a um script.</p>
+<ol type="1">
+<li><strong>Pergunta e H2.</strong> A hipótese prevê que girar cada ciclone até alinhar seu movimento reduz a dispersão espacial das excedências.</li>
+<li><strong>Protocolo congelado.</strong> Threshold q95 local, bins de 50 km, peso total um por estado q95-positivo e corte de heading em 5 km/h são fixados antes de qualquer resultado.</li>
+<li><strong>População elegível.</strong> Os mesmos ciclones, estados, células, flags de excedência e suporte espacial alimentam as duas representações; nada é selecionado depois.</li>
+<li><strong>Duas orientações.</strong> A população é expressa em quadrantes fixos e em quadrantes rotacionados pelo movimento. Esta é a <strong>única</strong> diferença entre os dois braços da comparação.</li>
+<li><strong>Grade comum.</strong> As duas nuvens de pontos são discretizadas na mesma grade de 44 × 44 bins, sem suavização.</li>
+<li><strong>Avaliação.</strong> Entropia, A50, A75, A90, RMS, centroide e anisotropia são calculados sobre as duas distribuições resultantes.</li>
+<li><strong>Incerteza.</strong> Quinhentas réplicas reamostram ciclones inteiros e recalculam as diferenças de forma pareada.</li>
+<li><strong>Decisão.</strong> O critério preregistrado confronta métricas, fases, intervalos bootstrap e suporte, e classifica o resultado.</li>
+</ol>
+<p>O fluxograma é um mapa de leitura. As seções seguintes percorrem as mesmas etapas em detalhe, começando pelos dados e pela geometria.</p>
 <h2 id="dados-utilizados">Dados utilizados</h2>
 <p>A população partiu do catálogo canônico de estados ERA5 de 6 h derivado do Zenodo 18133432 e do Parquet de vento de 2010–2020. Foram elegíveis os estados no período comparável com suporte espacial — completo ou parcial — e direção de movimento confiável. Estados sem suporte não foram convertidos em zeros.</p>
 <p>O q95 local foi fixado antes das métricas principais. A verificação prévia encontrou amostra suficiente nas quatro fases principais: 2.078 estados q95-positivos em fase incipiente, 7.301 em intensificação, 1.821 em fase madura e 4.891 em decaimento, depois do filtro de heading. Os sufixos <code>2</code>, que indicam repetição não contígua da mesma fase física, foram agrupados somente nesses quatro estratos; os resultados por rótulo literal permanecem disponíveis. A análise global inclui também estados <code>residual</code> e com fase nula; eles não foram forçados a nenhuma das quatro fases.</p>
@@ -102,18 +115,65 @@
 </table>
 <h2 id="representações-comparadas">Representações comparadas</h2>
 <h3 id="quadrantes-fixos-centered">Quadrantes fixos (<em>centered</em>)</h3>
-<p>Cada célula é expressa num plano tangente local centrado no ciclone. Sejam <code>φ₀</code> e <code>λ₀</code> a latitude e longitude do centro e <code>φ</code> e <code>λ</code> as da célula, todas em radianos; <code>Δλ</code> é <code>λ − λ₀</code> envolvida em <code>[-π, π)</code>. A distância de grande círculo usa:</p>
+<div class="method-box idea">
+
+<p>Ciclones diferentes ocorrem em latitudes e longitudes diferentes. Duas excedências igualmente distantes de seus centros têm, portanto, coordenadas geográficas completamente distintas, e somá-las diretamente não faria sentido. Antes de agregar qualquer coisa entre eventos, é preciso reexpressar cada célula pela sua posição <strong>relativa ao centro do ciclone</strong>, medida em quilômetros. Os quadrantes fixos fazem isso e nada mais: levam o centro do ciclone à origem e mantêm o norte geográfico apontando para cima.</p>
+</div>
+
+<ul class="method-io">
+<li>latitude e longitude da célula ERA5 e do centro do ciclone, em graus</li>
+<li>projeção azimutal equidistante esférica no plano tangente ao centro</li>
+<li>posição <code>(x, y)</code> em km relativa ao centro, com norte para cima</li>
+</ul>
+
+<p>A transformação tem três passos: medir a <strong>distância</strong> entre centro e célula, medir a <strong>direção</strong> em que a célula é vista do centro e converter distância e direção em coordenadas cartesianas.</p>
+<p>Em todos eles, sejam <code>φ₀</code> e <code>λ₀</code> a latitude e a longitude do centro e <code>φ</code> e <code>λ</code> as da célula, todas em radianos; <code>Δλ</code> é <code>λ − λ₀</code> envolvida em <code>[-π, π)</code>.</p>
+<p><strong>Passo 1 — distância ao centro.</strong> Queremos saber a quantos quilômetros a célula está do centro, sobre a superfície da esfera. A distância de grande círculo usa:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><msup><mo>sin</mo><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>ϕ</mi><mo>−</mo><msub><mi>ϕ</mi><mn>0</mn></msub></mrow><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>cos</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>cos</mo><mi>ϕ</mi><msup><mo>sin</mo><mn>2</mn></msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>Δ</mi><mi>λ</mi></mrow><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">a=\sin^2\left(\frac{\phi-\phi_0}{2}\right)+\cos\phi_0\cos\phi\sin^2\left(\frac{\Delta\lambda}{2}\right).</annotation></semantics></math></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>2</mn><mi>R</mi><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><msqrt><mi>a</mi></msqrt><mo>,</mo><msqrt><mrow><mn>1</mn><mo>−</mo><mi>a</mi></mrow></msqrt><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>R</mi><mo>=</mo><mn>6</mn><mspace width="0.167em"></mspace><mn>371</mn><mspace width="0.222em"></mspace><mtext mathvariant="normal">km</mtext><mi>.</mi></mrow><annotation encoding="application/x-tex">d=2R\operatorname{atan2}\left(\sqrt{a},\sqrt{1-a}\right), \qquad R=6\,371\ \text{km}.</annotation></semantics></math></p>
-<p>O azimute <code>α</code>, em radianos e no sentido horário a partir do norte, é:</p>
+<p>Aqui <code>a</code> é uma quantidade auxiliar adimensional da fórmula do semiverso, <code>R</code> é o raio médio da Terra e <code>d</code> é a distância célula–centro em km, sempre não negativa.</p>
+<p><strong>Passo 2 — direção da célula vista do centro.</strong> Saber a distância não basta: duas células a 300 km do centro podem estar em lados opostos. O azimute <code>α</code>, em radianos e no sentido horário a partir do norte, indica essa direção:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mo>=</mo><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>sin</mo><mi>Δ</mi><mi>λ</mi><mo>cos</mo><mi>ϕ</mi><mo>,</mo><mspace width="0.222em"></mspace><mo>cos</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>sin</mo><mi>ϕ</mi><mo>−</mo><mo>sin</mo><msub><mi>ϕ</mi><mn>0</mn></msub><mo>cos</mo><mi>ϕ</mi><mo>cos</mo><mi>Δ</mi><mi>λ</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\alpha=\operatorname{atan2}\left(\sin\Delta\lambda\cos\phi,\ \cos\phi_0\sin\phi-\sin\phi_0\cos\phi\cos\Delta\lambda\right).</annotation></semantics></math></p>
-<p>As coordenadas no plano tangente são:</p>
+<p><strong>Passo 3 — coordenadas cartesianas.</strong> Distância e azimute são então convertidos no par <code>(x, y)</code> que todas as etapas seguintes usam:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>=</mo><mi>d</mi><mo>sin</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><mi>y</mi><mo>=</mo><mi>d</mi><mo>cos</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>α</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">x = d\sin(\alpha), \qquad y = d\cos(\alpha).</annotation></semantics></math></p>
-<p>Assim, <code>x &gt; 0</code> significa leste, <code>x &lt; 0</code> oeste, <code>y &gt; 0</code> norte e <code>y &lt; 0</code> sul. Essa transformação azimutal equidistante esférica preserva a distância radial <code>d</code> e evita tratar graus de longitude como distância cartesiana.</p>
+<p><code>x</code> e <code>y</code> estão em km e podem ser positivos ou negativos: <code>x &gt; 0</code> significa leste, <code>x &lt; 0</code> oeste, <code>y &gt; 0</code> norte e <code>y &lt; 0</code> sul.</p>
+<div class="method-box reading">
+
+<p>Em linguagem comum, o procedimento pergunta “a que distância e em que direção esta célula está do olho do ciclone?” e responde com um par de quilômetros em vez de um par de graus. Uma célula 300 km a leste e 300 km ao norte do centro recebe <code>(x, y) ≈ (300, 300)</code> qualquer que seja a latitude do ciclone, o que torna células de eventos diferentes comparáveis entre si.</p>
+</div>
+
+<div class="method-box caution">
+
+<p>A projeção preserva a distância radial <code>d</code> ao centro e evita tratar graus de longitude como distância cartesiana, mas é uma aproximação esférica local: distâncias <strong>entre</strong> duas células afastadas do centro não são preservadas com a mesma fidelidade. Como as duas representações comparadas usam exatamente a mesma projeção, esse efeito não favorece nenhuma delas.</p>
+</div>
+
+<p><strong>Saída desta etapa.</strong> Cada célula q95 de cada estado passa a ter uma posição <code>(x, y)</code> em km relativa ao centro do seu próprio ciclone. Essa é a entrada da etapa seguinte.</p>
 <h3 id="quadrantes-rotacionados-pelo-movimento-motion-relative">Quadrantes rotacionados pelo movimento (<em>motion-relative</em>)</h3>
-<p>Seja <code>θ</code> o heading do ciclone, em radianos, também medido no sentido horário a partir do norte. A rotação usada foi:</p>
+<div class="method-box idea">
+
+<p>Um ciclone que se desloca para leste e outro que se desloca para sul podem ter a mesma organização física — por exemplo, extremos concentrados à esquerda do movimento — e ainda assim parecer completamente diferentes num mapa com o norte sempre para cima. A hipótese H2 diz que parte da dispersão observada é apenas essa diferença de orientação. Para testá-la, giramos cada estado até que todos os ciclones estejam “andando na mesma direção”.</p>
+</div>
+
+<ul class="method-io">
+<li>posição <code>(x, y)</code> em km da etapa anterior e o heading do ciclone naquele estado</li>
+<li>rotação rígida do plano até alinhar o vetor de deslocamento com o eixo vertical</li>
+<li>posição <code>(x_m, y_m)</code> em km, com a frente do movimento para cima</li>
+</ul>
+
+<p>Seja <code>θ</code> o heading do ciclone, em radianos, medido no sentido horário a partir do norte — a mesma convenção do azimute da etapa anterior. Sua estimativa é descrita na seção seguinte. A rotação usada foi:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>x</mi><mi>m</mi></msub></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mi>m</mi></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mo>cos</mo><mi>θ</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>−</mi><mo>sin</mo><mi>θ</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mo>sin</mo><mi>θ</mi></mtd><mtd columnalign="center" style="text-align: center"><mo>cos</mo><mi>θ</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>x</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>y</mi></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\begin{bmatrix}x_m\\y_m\end{bmatrix}=\begin{bmatrix}\cos\theta&amp;-\sin\theta\\\sin\theta&amp;\cos\theta\end{bmatrix}\begin{bmatrix}x\\y\end{bmatrix}.</annotation></semantics></math></p>
-<p>Aqui, <code>x_m</code> e <code>y_m</code> estão em km; <code>y_m &gt; 0</code> é a frente do movimento, <code>y_m &lt; 0</code> é a retaguarda, <code>x_m &gt; 0</code> é a direita e <code>x_m &lt; 0</code> é a esquerda. Intuitivamente, a rotação leva o vetor de deslocamento para cima sem alterar a distância ao centro. Por exemplo, para movimento para leste, leste vira frente e sul vira direita.</p>
+<p>Aqui, <code>x_m</code> e <code>y_m</code> estão em km; <code>y_m &gt; 0</code> é a frente do movimento, <code>y_m &lt; 0</code> é a retaguarda, <code>x_m &gt; 0</code> é a direita e <code>x_m &lt; 0</code> é a esquerda.</p>
+<div class="method-box reading">
+
+<p>A rotação não move nenhum ponto para longe ou para perto do centro: ela apenas redefine o que se chama de “para cima”. A distância de cada célula ao centro do ciclone é exatamente a mesma antes e depois. O que muda é o significado dos eixos: em vez de leste e norte, eles passam a significar direita e frente do movimento.</p>
+</div>
+
+<div class="method-box example">
+
+<p>Para um ciclone que se move exatamente para leste (<code>θ = 90°</code>), leste passa a ser a frente e sul passa a ser a direita. Uma célula que estava 200 km ao sul do centro, com <code>(x, y) = (0, −200)</code>, passa a ter <code>(x_m, y_m) = (200, 0)</code>: 200 km à direita do movimento e nem à frente nem atrás. Para um ciclone que se move para o sul, a mesma célula 200 km ao sul do centro estaria 200 km à frente.</p>
+</div>
+
+<p><strong>Saída desta etapa.</strong> Cada célula q95 passa a ter duas posições: <code>(x, y)</code> nos quadrantes fixos e <code>(x_m, y_m)</code> nos rotacionados. Todo o restante do método é aplicado de forma idêntica às duas.</p>
 <p>O Parquet de origem contém as colunas categóricas <code>fixed_quadrant</code> e <code>rotated_quadrant</code>, que seguem essa mesma ideia. E-001, porém, não usa esses códigos de quatro categorias para calcular as métricas: transforma as posições contínuas <code>(x, y)</code> em <code>(x_m, y_m)</code> e só depois as discretiza na grade de 44 × 44 bins.</p>
 <p>A figura esquemática mostra um ciclone movendo-se para sudeste. À esquerda, os eixos leste–oeste e norte–sul permanecem fixos; à direita, as mesmas células são giradas até o deslocamento apontar para a frente. Os pontos e suas distâncias ao centro são os mesmos nos dois painéis.</p>
 <figure class="result-figure">
@@ -122,10 +182,27 @@
 </figure>
 
 <h2 id="estimativa-da-direção-de-movimento">Estimativa da direção de movimento</h2>
-<p>O heading foi calculado exclusivamente do catálogo completo de estados, nunca das linhas de excedência. Para estados internos de uma track, sejam <code>r₋ = (x₋, y₋)</code> e <code>r₊ = (x₊, y₊)</code> os centros anterior e posterior projetados, em km, no plano tangente do estado atual, e <code>t₋</code>, <code>t₊</code> seus horários, em horas. O vetor e o heading são:</p>
+<div class="method-box idea">
+
+<p>A rotação da etapa anterior precisa de um número que ainda não temos: para onde cada ciclone estava indo naquele instante. O catálogo fornece apenas a posição do centro em cada horário de 6 h, então a direção precisa ser <strong>inferida</strong> das posições vizinhas. Isso levanta um problema prático: quando o ciclone quase não se move, a direção calculada é essencialmente ruído, e girar o campo por um ângulo arbitrário introduziria dispersão em vez de removê-la.</p>
+</div>
+
+<ul class="method-io">
+<li>posições dos centros do ciclone nos estados anterior, atual e posterior, com seus horários</li>
+<li>diferença centrada no plano tangente local, seguida de filtro de velocidade mínima</li>
+<li>heading <code>θ</code> em radianos e velocidade de translação <code>s</code> em km/h, ou exclusão do estado</li>
+</ul>
+
+<p><strong>Passo 1 — de onde vem a informação.</strong> O heading foi calculado exclusivamente do catálogo completo de estados, nunca das linhas de excedência. Usar apenas os estados com excedência produziria uma direção estimada a partir do próprio subconjunto sob análise.</p>
+<p><strong>Passo 2 — o cálculo.</strong> Para estados internos de uma track, sejam <code>r₋ = (x₋, y₋)</code> e <code>r₊ = (x₊, y₊)</code> os centros anterior e posterior projetados, em km, no plano tangente do estado atual, e <code>t₋</code>, <code>t₊</code> seus horários, em horas. O vetor e o heading são:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐯</mi><mo>=</mo><mfrac><mrow><msub><mi>𝐫</mi><mo>+</mo></msub><mo>−</mo><msub><mi>𝐫</mi><mo>−</mo></msub></mrow><mrow><msub><mi>t</mi><mo>+</mo></msub><mo>−</mo><msub><mi>t</mi><mo>−</mo></msub></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><mi>s</mi><mo>=</mo><msqrt><mrow><msubsup><mi>v</mi><mi>x</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>v</mi><mi>y</mi><mn>2</mn></msubsup></mrow></msqrt><mo>,</mo><mspace width="2.0em"></mspace><mi>θ</mi><mo>=</mo><mo>atan2</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>v</mi><mi>x</mi></msub><mo>,</mo><msub><mi>v</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathbf{v}=\frac{\mathbf{r}_{+}-\mathbf{r}_{-}}{t_{+}-t_{-}}, \qquad s=\sqrt{v_x^2+v_y^2}, \qquad \theta=\operatorname{atan2}(v_x,v_y).</annotation></semantics></math></p>
-<p><code>vₓ</code> é a componente leste e <code>vᵧ</code>, a componente norte, ambas em km/h; <code>s</code> é a velocidade de translação em km/h; <code>θ</code> está em <code>[-π, π]</code>, medido no sentido horário a partir do norte. Nas extremidades, <code>r₋</code> ou <code>r₊</code> é substituído pelo próprio estado para formar uma diferença simples de 6 h; nos estados internos, a diferença é centrada em 12 h.</p>
-<p>A distribuição foi examinada antes das métricas de concentração. A mediana foi 42,68 km/h, o percentil 1 foi 4,55 km/h e a faixa observada foi 0,31–150,89 km/h. O critério de confiabilidade foi fixado em 5 km/h, equivalente a 30 km em 6 h e aproximadamente uma célula da grade original de 0,25°. Diferentemente do procedimento exploratório herdado, movimentos menores não receberam heading leste artificial.</p>
+<p><code>vₓ</code> é a componente leste e <code>vᵧ</code>, a componente norte, ambas em km/h; <code>s</code> é a velocidade de translação em km/h, sempre não negativa; <code>θ</code> está em <code>[-π, π]</code>, medido no sentido horário a partir do norte. Nas extremidades, <code>r₋</code> ou <code>r₊</code> é substituído pelo próprio estado para formar uma diferença simples de 6 h; nos estados internos, a diferença é centrada em 12 h.</p>
+<div class="method-box reading">
+
+<p>Em linguagem comum, a direção do ciclone num dado instante é estimada traçando uma seta do ponto onde ele estava 6 h antes até onde estará 6 h depois. Quanto mais longa essa seta, mais confiável é sua direção; quanto mais curta, mais o ângulo é dominado por ruído de posicionamento do centro.</p>
+</div>
+
+<p><strong>Passo 3 — descartar direções não confiáveis.</strong> A distribuição foi examinada antes das métricas de concentração. A mediana foi 42,68 km/h, o percentil 1 foi 4,55 km/h e a faixa observada foi 0,31–150,89 km/h. O critério de confiabilidade foi fixado em 5 km/h, equivalente a 30 km em 6 h e aproximadamente uma célula da grade original de 0,25°. Diferentemente do procedimento exploratório herdado, movimentos menores não receberam heading leste artificial.</p>
 <figure class="result-figure">
   <img src="assets/03_e001_orientation/translation_speed_diagnostic.png" alt="Histograma da velocidade de translação e ampliação da distribuição acumulada abaixo de 25 km por hora, com corte de 5 km por hora.">
   <figcaption>Distribuição usada para auditar o corte de heading. A linha vermelha marca 5 km/h; 284 de 23.334 estados com suporte ficaram abaixo do corte.</figcaption>
@@ -134,7 +211,23 @@
 <h2 id="método">Método</h2>
 <p>As duas representações usaram exatamente os mesmos 23.050 estados, as mesmas células, as mesmas flags q95 e uma grade de 44 × 44 bins de 50 km no domínio <code>[-1.100, 1.100] km</code> em cada eixo. Não houve suavização nem máscara mínima de cobertura na análise principal. Cada estado q95-positivo recebeu peso estatístico total igual a um, dividido igualmente entre suas células excedentes. Esse “peso” não é massa física nem magnitude do vento: é apenas a contribuição normalizada do estado para a distribuição espacial. Estados sem q95 permaneceram nas contagens e na auditoria de suporte, mas não definem posição numa distribuição condicionada à ocorrência.</p>
 <p>O mapa agregado é, portanto, a distribuição normalizada das ocorrências q95 depois de atribuir o mesmo peso a cada estado q95-positivo. Ciclones mais duradouros ainda podem contribuir com mais estados; resolver <em>equal-time</em> versus <em>equal-cyclone</em> está fora de E-001.</p>
+<p>O restante desta seção percorre duas transformações, nesta ordem: primeiro as posições contínuas viram <strong>bins</strong>; depois cada estado distribui seu peso entre os bins que ocupa. Os quatro níveis do projeto aparecem aqui encadeados:</p>
+<blockquote>
+<p>ciclone (<code>track_id</code>) → estado ciclone–tempo → célula ERA5 → bin de 50 km</p>
+</blockquote>
+<p>Em E-001, <strong>o nível que recebe peso é o estado</strong>: cada estado q95-positivo vale um. O nível agregado é o bin. O nível que serve de unidade inferencial no bootstrap é o ciclone. Manter os três separados é essencial para ler corretamente as métricas.</p>
 <h3 id="discretização-espacial-e-definição-dos-bins">Discretização espacial e definição dos bins</h3>
+<div class="method-box idea">
+
+<p>Depois da transformação de coordenadas, cada célula q95 é um ponto solto em quilômetros. Pontos soltos não podem ser comparados entre representações: seria preciso decidir quando duas posições “são o mesmo lugar”. A discretização resolve isso cobrindo o plano com quadrados de tamanho fixo e perguntando apenas em qual quadrado cada ponto caiu.</p>
+</div>
+
+<ul class="method-io">
+<li>posições contínuas <code>(x, y)</code> ou <code>(x_m, y_m)</code> em km, de todas as células q95</li>
+<li>atribuição de cada posição a um quadrado de 50 km, sem interpolação</li>
+<li>índice de bin <code>B_jk</code> para cada célula, numa grade comum de 44 × 44</li>
+</ul>
+
 <p>Um <em>bin</em> é uma célula quadrada usada para reunir as células ERA5 localizadas numa mesma região do sistema de coordenadas relativo. A grade foi fixada antes do cálculo das métricas: 50 km de lado, 44 bins por eixo e 1.936 bins possíveis no quadrado de <code>2.200 × 2.200 km</code>. Em notação explícita, as linhas que separam os bins são</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>j</mi></msub><mo>=</mo><mi>−</mi><mn>1</mn><mspace width="0.167em"></mspace><mn>100</mn><mo>+</mo><mn>50</mn><mi>j</mi><mo>,</mo><mspace width="2.0em"></mspace><mi>j</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>…</mi><mo>,</mo><mn>44</mn><mo>,</mo></mrow><annotation encoding="application/x-tex">e_j=-1\,100+50j, \qquad j=0,\ldots,44,</annotation></semantics></math></p>
 <p>e cada bin é</p>
@@ -154,16 +247,37 @@
 </figure>
 
 <h3 id="peso-por-estado-e-distribuição-espacial">Peso por estado e distribuição espacial</h3>
-<p>Para um estado <code>s</code> e um bin <code>i</code>, definem-se explicitamente:</p>
+<div class="method-box idea">
+
+<p>Neste ponto sabemos em que bin caiu cada célula excedente, mas ainda não sabemos quanto cada estado deve contar no mapa final. Se simplesmente contássemos células, um estado com 2.000 células excedentes dominaria 100 estados com 20 células cada — e a diferença entre eles é sobretudo o tamanho da área afetada, não a importância do evento. A decisão de E-001 é dar a <strong>cada estado q95-positivo o mesmo peso total</strong>, e deixar que apenas a <em>distribuição interna</em> desse peso varie.</p>
+</div>
+
+<ul class="method-io">
+<li>índices de bin de todas as células q95, agrupados por estado</li>
+<li>peso total um por estado, repartido entre suas células, e soma sobre todos os estados</li>
+<li>distribuição espacial normalizada <code>p_i</code>, uma proporção por bin, somando um</li>
+</ul>
+
+<p>A construção tem três passos: repartir o peso <strong>dentro</strong> de um estado, somar os estados e normalizar o total.</p>
+<p><strong>Passo 1 — repartir o peso dentro de um estado.</strong> Para um estado <code>s</code> e um bin <code>i</code>, definem-se explicitamente:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mrow><mtext mathvariant="normal">número de células q95 do estado </mtext><mspace width="0.333em"></mspace></mrow><mi>s</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> localizadas no bin </mtext><mspace width="0.333em"></mspace></mrow><mi>i</mi><mo>,</mo></mrow><annotation encoding="application/x-tex">n_{si}=\text{número de células q95 do estado }s\text{ localizadas no bin }i,</annotation></semantics></math></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>s</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>n</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mrow><mtext mathvariant="normal">número total de células q95 do estado </mtext><mspace width="0.333em"></mspace></mrow><mi>s</mi><mi>.</mi></mrow><annotation encoding="application/x-tex">N_s=\sum_i n_{si}=\text{número total de células q95 do estado }s.</annotation></semantics></math></p>
-<p>O peso que o estado <code>s</code> atribui ao bin <code>i</code> é</p>
+<p>Aqui <code>n_si</code> e <code>N_s</code> são contagens adimensionais de células, com <code>N_s ≥ 1</code> em todo estado q95-positivo. O peso que o estado <code>s</code> atribui ao bin <code>i</code> é</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mfrac><msub><mi>n</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><msub><mi>N</mi><mi>s</mi></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>w</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">w_{si}=\frac{n_{si}}{N_s}, \qquad \sum_i w_{si}=1.</annotation></semantics></math></p>
-<p>Somando as contribuições de todos os estados q95-positivos, obtém-se o peso agregado do bin,</p>
+<p><code>w_si</code> é adimensional e está entre 0 e 1.</p>
+<div class="method-box reading">
+
+<p>Esta é a única equação que define “peso igual por estado”. Ela diz que o estado inteiro vale uma unidade e que essa unidade é repartida entre os bins na proporção das células excedentes que cada bin recebeu. Um estado com 20 células e outro com 2.000 têm o mesmo peso total; o que muda é o detalhe com que esse peso se espalha.</p>
+</div>
+
+<p><strong>Passo 2 — somar os estados.</strong> Somando as contribuições de todos os estados q95-positivos, obtém-se o peso agregado do bin,</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>W</mi><mi>i</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>s</mi></munder><msub><mi>w</mi><mrow><mi>s</mi><mi>i</mi></mrow></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">W_i=\sum_s w_{si},</annotation></semantics></math></p>
-<p>e sua proporção na distribuição espacial final é</p>
+<p>onde <code>W_i</code> é adimensional e vale, no máximo, o número de estados q95-positivos.</p>
+<p><strong>Passo 3 — normalizar.</strong> <code>W_i</code> depende do tamanho da amostra, então a comparação entre representações usa sua proporção na distribuição espacial final:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mfrac><msub><mi>W</mi><mi>i</mi></msub><mrow><munder><mo>∑</mo><mo accent="false">ℓ</mo></munder><msub><mi>W</mi><mo>ℓ</mo></msub></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">p_i=\frac{W_i}{\sum_\ell W_\ell}, \qquad \sum_i p_i=1.</annotation></semantics></math></p>
+<p><code>p_i</code> é adimensional e está entre 0 e 1; <code>ℓ</code> percorre os mesmos bins que <code>i</code>.</p>
 <p>Portanto, <code>p_i = 0,02</code> significa que o bin contém 2% do peso estatístico normalizado de todas as ocorrências q95. Não significa 2% da massa de ar, 2% da velocidade do vento nem necessariamente 2% das células brutas.</p>
+<p><strong>Saída desta etapa.</strong> Um vetor de 1.936 proporções por representação. Todas as métricas da próxima seção são calculadas exclusivamente a partir desse vetor.</p>
 <h4 id="exemplo-com-um-estado-real">Exemplo com um estado real</h4>
 <p>O estado mostrado na figura anterior, <code>track_id = 20100059</code> em <code>2010-01-22 12:00 UTC</code>, estava em intensificação, tinha suporte completo e 15 células q95:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>N</mi><mi>s</mi></msub><mo>=</mo><mn>15</mn><mo>,</mo><mspace width="2.0em"></mspace><mfrac><mn>1</mn><msub><mi>N</mi><mi>s</mi></msub></mfrac><mo>=</mo><mfrac><mn>1</mn><mn>15</mn></mfrac><mo>=</mo><mn>0</mn><mo>,</mo><mn>0667</mn><mi>.</mi></mrow><annotation encoding="application/x-tex">N_s=15, \qquad \frac{1}{N_s}=\frac{1}{15}=0{,}0667.</annotation></semantics></math></p>
@@ -236,7 +350,8 @@
 <p>Foi usado o logaritmo natural; portanto, a unidade é o <em>nat</em>. Bins vazios contribuem zero pelo limite de <code>p log(p)</code>. Se <code>K</code> bins têm <code>p_i &gt; 0</code>, <code>H</code> varia entre zero — todo o peso em um único bin — e <code>ln(K)</code> — peso perfeitamente uniforme entre os <code>K</code> bins.</p>
 <p><strong>Como interpretar.</strong> Na mesma grade, menor <code>H</code> significa maior concentração global. A diferença reportada é</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>H</mi><mo>=</mo><msub><mi>H</mi><mtext mathvariant="normal">rotacionados</mtext></msub><mo>−</mo><msub><mi>H</mi><mtext mathvariant="normal">fixos</mtext></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\Delta H=H_{\text{rotacionados}}-H_{\text{fixos}}.</annotation></semantics></math></p>
-<p>Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os quadrantes fixos. A entropia não informa onde o peso está nem se os bins ocupados formam uma região conectada. Ela também depende do tamanho dos bins; por isso a resolução foi congelada e mantida igual nas duas representações.</p>
+<p>Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os quadrantes fixos.</p>
+<p><strong>O que não mede.</strong> A entropia não informa <strong>onde</strong> o peso está, não distingue núcleo de cauda e não diz se os bins ocupados formam uma região conectada: permutar os mesmos valores entre bins distantes não altera <code>H</code>. Ela também depende do tamanho dos bins; por isso a resolução foi congelada e mantida igual nas duas representações.</p>
 <p><strong>Exemplo didático.</strong> Na figura anterior, a distribuição compacta atribui pesos <code>[0,70; 0,10; 0,10; 0,10]</code> e tem <code>H = 0,940 nat</code>; a distribuição uniforme atribui <code>0,25</code> a cada um de quatro bins e tem <code>H = 1,386 nat</code>. O peso total é idêntico, mas a segunda distribuição é mais uniforme. Se os mesmos quatro valores fossem apenas deslocados para outras posições, <code>H</code> não mudaria. Esses valores apenas ilustram o cálculo e não entram nos resultados de E-001.</p>
 <h3 id="áreas-de-concentração-a50-a75-e-a90">Áreas de concentração A50, A75 e A90</h3>
 <p><strong>Problema que resolvem.</strong> Duas distribuições podem ter entropias parecidas e ainda diferir muito entre núcleo e cauda. A família <code>Aq</code> mede diretamente quanta área é necessária para reunir uma fração <code>q</code> do peso normalizado, sem exigir que essa área seja circular ou centrada na origem.</p>
@@ -247,7 +362,8 @@
 <p>Assim, <code>A50</code>, <code>A75</code> e <code>A90</code> são as menores somas de bins inteiros capazes de conter pelo menos 50%, 75% e 90% do peso. Como cada bin mede <code>2.500 km²</code>, essas métricas variam em passos de <code>2.500 km²</code>. O último bin é contado por inteiro, mesmo que apenas parte de seu peso seja necessária para ultrapassar o alvo; não há interpolação fracionária.</p>
 <p><strong>Como interpretar.</strong> Menor área indica maior concentração naquela faixa da distribuição. <code>A50</code> resume o núcleo mais intenso, <code>A75</code> inclui o corpo intermediário e <code>A90</code> é mais sensível à cauda espacial. Para</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><msub><mi>A</mi><mi>q</mi></msub><mo>=</mo><msub><mi>A</mi><mrow><mi>q</mi><mo>,</mo><mtext mathvariant="normal">rotacionados</mtext></mrow></msub><mo>−</mo><msub><mi>A</mi><mrow><mi>q</mi><mo>,</mo><mtext mathvariant="normal">fixos</mtext></mrow></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">\Delta A_q=A_{q,\text{rotacionados}}-A_{q,\text{fixos}},</annotation></semantics></math></p>
-<p>valores negativos favorecem os quadrantes rotacionados. Os bins selecionados não precisam ser vizinhos: <code>Aq</code> é uma soma das áreas dos bins de maior peso, e não a área de um polígono contínuo ou de um contorno geométrico.</p>
+<p>valores negativos favorecem os quadrantes rotacionados.</p>
+<p><strong>O que não mede.</strong> <code>Aq</code> não é a área de um polígono contínuo nem de um contorno geométrico: os bins selecionados não precisam ser vizinhos, e a métrica é apenas a soma das áreas dos bins de maior peso. Ela também não informa a posição dessa área nem sua forma, e varia em passos discretos de <code>2.500 km²</code>.</p>
 <p>No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha mostra sua proporção acumulada. As linhas horizontais marcam os três alvos; os eixos representam posição no ranking e peso, não distância espacial.</p>
 <figure class="result-figure">
   <img src="assets/03_e001_orientation/concentration_area_example.png" alt="Exemplo didático da ordenação dos pesos dos bins e sua soma acumulada: A50 requer 2 bins, A75 requer 4 bins e A90 requer 6 bins, com 2.500 quilômetros quadrados por bin.">
@@ -258,12 +374,14 @@
 <p><strong>Problema que resolve.</strong> Entropia e <code>Aq</code> dependem de contagens em bins e de rankings. A RMS fornece uma escala física em quilômetros para a distância típica do peso espacial ao seu próprio centro.</p>
 <p><strong>Cálculo.</strong> Usando o centro <code>(x_i, y_i)</code> de cada bin e o centroide <code>(μ_x, μ_y)</code> definido na próxima subseção,</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>RMS</mo><mo>=</mo><msqrt><mrow><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">[</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>x</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mi>i</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>y</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo stretchy="true" form="postfix">]</mo></mrow></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">\operatorname{RMS}=\sqrt{\sum_i p_i\left[(x_i-\mu_x)^2+(y_i-\mu_y)^2\right]}.</annotation></semantics></math></p>
-<p><strong>Como interpretar.</strong> Menor RMS significa peso espacial mais próximo do próprio centroide. A métrica não mede distância ao centro do ciclone: uma distribuição pode deslocar seu centroide para perto da origem e, ao mesmo tempo, ficar mais espalhada ao redor dele. Como se usam centros de bins, há discretização posicional de no máximo meia diagonal do bin, aproximadamente <code>35,4 km</code>; a comparação pareada na mesma grade limita o efeito dessa aproximação sobre a diferença entre orientações.</p>
+<p><strong>Como interpretar.</strong> Menor RMS significa peso espacial mais próximo do próprio centroide.</p>
+<p><strong>O que não mede.</strong> A RMS não mede distância ao centro do ciclone: uma distribuição pode deslocar seu centroide para perto da origem e, ao mesmo tempo, ficar mais espalhada ao redor dele. Ela também não distingue direções — uma nuvem alongada e uma circular podem ter a mesma RMS. Como se usam centros de bins, há discretização posicional de no máximo meia diagonal do bin, aproximadamente <code>35,4 km</code>; a comparação pareada na mesma grade limita o efeito dessa aproximação sobre a diferença entre orientações.</p>
 <h3 id="centroide-e-deslocamento-do-padrão">Centroide e deslocamento do padrão</h3>
 <p><strong>Problema que resolve.</strong> Uma rotação pode deslocar a posição média do padrão sem torná-lo mais ou menos concentrado. O centroide separa localização de dispersão.</p>
 <p><strong>Cálculo.</strong></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>x</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>μ</mi><mi>y</mi></msub><mo>=</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>p</mi><mi>i</mi></msub><msub><mi>y</mi><mi>i</mi></msub><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>d</mi><mi>μ</mi></msub><mo>=</mo><msqrt><mrow><msubsup><mi>μ</mi><mi>x</mi><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>μ</mi><mi>y</mi><mn>2</mn></msubsup></mrow></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">\mu_x=\sum_i p_i x_i, \qquad \mu_y=\sum_i p_i y_i, \qquad d_\mu=\sqrt{\mu_x^2+\mu_y^2}.</annotation></semantics></math></p>
-<p><strong>Como interpretar.</strong> <code>d_μ</code> é a distância do centroide ao centro do ciclone. Nos quadrantes fixos, os sinais indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda. Um centroide próximo de zero significa apenas equilíbrio médio em torno da origem, não alta concentração.</p>
+<p><strong>Como interpretar.</strong> <code>d_μ</code> é a distância do centroide ao centro do ciclone, em km. Nos quadrantes fixos, os sinais de <code>μ_x</code> e <code>μ_y</code> indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda.</p>
+<p><strong>O que não mede.</strong> O centroide não mede concentração: um valor próximo de zero significa apenas equilíbrio médio em torno da origem e é compatível tanto com uma nuvem compacta quanto com duas concentrações opostas que se cancelam.</p>
 <h3 id="covariância-espacial-e-anisotropia">Covariância espacial e anisotropia</h3>
 <p><strong>Problema que resolvem.</strong> RMS resume a escala total, mas não distingue uma nuvem aproximadamente circular de uma nuvem alongada. A matriz de covariância descreve a dispersão por direção.</p>
 <p><strong>Cálculo.</strong></p>
@@ -272,7 +390,8 @@
 \begin{bmatrix}x_i-\mu_x&amp;y_i-\mu_y\end{bmatrix}.</annotation></semantics></math></p>
 <p>Se <code>λ₁ ≥ λ₂</code> são os autovalores de <code>C</code>, a razão de anisotropia é</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ρ</mi><mo>=</mo><msqrt><mfrac><msub><mi>λ</mi><mn>1</mn></msub><msub><mi>λ</mi><mn>2</mn></msub></mfrac></msqrt><mi>.</mi></mrow><annotation encoding="application/x-tex">\rho=\sqrt{\frac{\lambda_1}{\lambda_2}}.</annotation></semantics></math></p>
-<p><strong>Como interpretar.</strong> <code>ρ = 1</code> corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante. A métrica resume somente segundos momentos: não demonstra que a distribuição seja elíptica, unimodal ou conectada.</p>
+<p><strong>Como interpretar.</strong> <code>ρ = 1</code>, adimensional, corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante.</p>
+<p><strong>O que não mede.</strong> A métrica resume somente segundos momentos. Ela não demonstra que a distribuição seja elíptica, unimodal ou conectada, e não distingue um alongamento genuíno de duas concentrações separadas alinhadas na mesma direção.</p>
 <p>A figura seguinte reúne RMS, centroide e anisotropia numa nuvem hipotética. Os eixos são coordenadas relativas em quilômetros; o ponto laranja é o centroide, o círculo tracejado representa a escala RMS e a elipse resume a covariância.</p>
 <figure class="result-figure">
   <img src="assets/03_e001_orientation/geometric_metrics_example.png" alt="Exemplo didático de uma nuvem espacial com centro do ciclone, centroide deslocado, círculo RMS, elipse de covariância e eixos principais de anisotropia.">
@@ -282,11 +401,43 @@
 <h3 id="métricas-de-suporte">Métricas de suporte</h3>
 <p><strong>Problema que resolvem.</strong> A rotação pode alterar quais regiões do domínio têm células efetivamente observadas, principalmente perto do limite radial ou dos limites geográficos da base ERA5 disponível. Uma aparente concentração q95 poderia, portanto, ser apenas mudança de suporte.</p>
 <p><strong>Cálculo e interpretação.</strong> As mesmas operações de binning e entropia foram aplicadas às 136.177.047 células avaliadas, independentemente de excederem q95. Também foram registrados, por bin e representação, estados elegíveis, estados com suporte, células avaliadas e excedências. Mudança q95 acompanhada por mudança semelhante no suporte seria um alerta contra interpretação física; mudança q95 sem equivalente no suporte é menos compatível com artefato de cobertura.</p>
+<p><strong>O que não mede.</strong> O diagnóstico de suporte indica se a cobertura observacional mudou junto com o sinal q95, mas não prova ausência de artefato: ele não corrige viés de seleção da amostra nem avalia a qualidade da estimativa local de q95.</p>
 <h3 id="comparação-pareada-e-incerteza">Comparação pareada e incerteza</h3>
-<p>Todas as diferenças seguem a convenção <code>quadrantes rotacionados − quadrantes fixos</code>, armazenada nos produtos como <code>motion_relative − centered</code>. Para preservar dependência temporal e espacial dentro de um ciclone, foram produzidas 500 réplicas bootstrap com semente fixa, reamostrando os 1.784 <code>track_id</code> com reposição. Cada ocorrência sorteada de um ciclone leva consigo todos os seus estados e células; se o mesmo <code>track_id</code> é sorteado duas vezes, sua contribuição aparece duas vezes. Em cada réplica, exatamente as mesmas multiplicidades são usadas nas duas orientações, <code>p_i</code> e todas as métricas são recalculados, e só então a diferença é obtida. O intervalo de 95% usa os percentis 2,5 e 97,5 das 500 diferenças.</p>
-<p>Essa unidade de reamostragem evita tratar milhões de células correlacionadas como observações independentes. O intervalo expressa variação entre ciclones da amostra; não corrige viés de seleção, não mede incerteza da estimativa de q95 e não substitui validação fora da amostra.</p>
+<div class="method-box idea">
+
+<p>As métricas acima produzem um número por representação, e a diferença entre elas é o resultado do experimento. Falta saber se essa diferença é estável: ela apareceria de novo com outro conjunto de ciclones, ou depende de quais eventos entraram na amostra? O bootstrap responde a isso reconstruindo a amostra muitas vezes e observando quanto a diferença varia.</p>
+</div>
+
+<ul class="method-io">
+<li>os 1.784 ciclones elegíveis, cada um com todos os seus estados e células</li>
+<li>500 reamostragens com reposição no nível do ciclone, com recálculo pareado das métricas</li>
+<li>uma distribuição de 500 diferenças por métrica, resumida pelos percentis 2,5 e 97,5</li>
+</ul>
+
+<p><strong>Qual é a unidade de reamostragem.</strong> O sorteio é feito sobre <code>track_id</code>, não sobre estados nem sobre células. Cada ciclone sorteado entra inteiro: todos os seus estados e todas as suas células acompanham o sorteio. Se o mesmo <code>track_id</code> sai duas vezes, sua contribuição conta em dobro; ciclones não sorteados ficam de fora daquela réplica.</p>
+<div class="method-box example">
+
+<p>Com uma população reduzida a quatro ciclones <code>C1 C2 C3 C4</code>, uma réplica poderia ser <code>C2 C2 C4 C1</code>. Nessa réplica, <code>C3</code> não participa e <code>C2</code> entra duas vezes, com todos os seus estados nas duas vezes. As métricas são recalculadas sobre essa população reconstruída e a diferença rotacionados − fixos é armazenada. Repetindo 500 vezes, obtém-se uma distribuição de diferenças; seus percentis 2,5 e 97,5 formam o intervalo de 95%.</p>
+</div>
+
+<figure class="result-figure">
+  <img src="assets/03_e001_orientation/bootstrap_scheme.png" alt="Esquema didático do bootstrap por ciclone: uma população de quatro ciclones com números diferentes de estados e três réplicas sorteadas com reposição, ao lado de um histograma ilustrativo de 500 diferenças com os percentis 2,5 e 97,5 marcados.">
+  <figcaption>Esquema metodológico, não um resultado de E-001. À esquerda, a reamostragem mantém juntos todos os estados de cada ciclone sorteado; à direita, o histograma é ilustrativo e apenas mostra como os percentis 2,5 e 97,5 delimitam o intervalo. Os valores de E-001 estão nas tabelas de resultados.</figcaption>
+</figure>
+
+<p><strong>Por que não reamostrar células.</strong> As 9.090.570 células excedentes não são observações independentes: células vizinhas do mesmo estado pertencem ao mesmo campo de vento, e estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos. Reamostrar células trataria essa dependência como informação nova e produziria intervalos artificialmente estreitos. O ciclone é o nível em que as observações podem ser consideradas aproximadamente trocáveis.</p>
+<p><strong>Por que a comparação é pareada.</strong> Todas as diferenças seguem a convenção <code>quadrantes rotacionados − quadrantes fixos</code>, armazenada nos produtos como <code>motion_relative − centered</code>. Em cada réplica, exatamente as mesmas multiplicidades de ciclones são usadas nas duas orientações; <code>p_i</code> e todas as métricas são recalculados dentro da réplica, e só então a diferença é obtida. Assim, a variação entre réplicas reflete a troca de ciclones, e não uma diferença de amostra entre os dois braços.</p>
+<div class="method-box caution">
+
+<p>O intervalo expressa variação entre ciclones da amostra. Ele <strong>não</strong> corrige viés de seleção, <strong>não</strong> mede a incerteza da estimativa local de q95, <strong>não</strong> cobre a escolha da resolução dos bins e <strong>não</strong> substitui validação em ciclones fora da amostra.</p>
+</div>
+
+<h2 id="em-resumo-o-que-este-método-faz">Em resumo: o que este método faz?</h2>
+<p>Cada estado de ciclone com pelo menos uma excedência q95 é reexpresso em quilômetros relativos ao seu próprio centro, de duas maneiras: mantendo o norte para cima e girando até que o movimento aponte para a frente. As posições resultantes são jogadas numa grade comum de quadrados de 50 km. Cada estado contribui com a mesma quantidade total de peso, repartida entre os quadrados que suas células excedentes ocuparam, e a soma sobre todos os estados é normalizada para formar uma distribuição espacial. As mesmas seis métricas descrevem essa distribuição nas duas representações, e a diferença entre elas é o resultado do experimento. Reamostrar ciclones inteiros 500 vezes indica quanto dessa diferença sobreviveria a outra seleção de eventos.</p>
 <h2 id="critério-de-decisão">Critério de decisão</h2>
 <p>Antes dos resultados, evidência a favor dos quadrantes rotacionados exigia conjuntamente: entropia e A75 menores com intervalos bootstrap pareados de 95% inteiramente abaixo de zero; A50 e A90 no mesmo sentido; pelo menos três das quatro fases no mesmo sentido; menos de 10% de perda por heading; e ausência de mudança comparável na distribuição do suporte. O padrão simétrico favoreceria os quadrantes fixos. Qualquer combinação restante seria inconclusiva. Não foi exigido um tamanho de efeito mínimo arbitrário.</p>
+<p><strong>Como o critério opera.</strong> A regra é deliberadamente conjuntiva. Se <strong>todas</strong> as condições acima ocorrerem no mesmo sentido, o experimento é lido como evidência de que a orientação pelo movimento organiza melhor as excedências, e a representação correspondente poderia ser promovida. Se as condições ocorrerem em direções conflitantes — por exemplo, o núcleo concentrando enquanto a cauda dispersa, ou as fases discordando entre si —, o experimento é classificado como <strong>inconclusivo</strong> e nenhuma representação é promovida. Exigir concordância entre famílias de métricas e entre fases protege contra escolher a representação com base na única métrica que a favoreceu.</p>
+<p>O critério foi registrado no protocolo congelado antes da execução e não foi reescrito depois dos resultados.</p>
 <h2 id="resultados-globais">Resultados globais</h2>
 <table>
 <thead>
