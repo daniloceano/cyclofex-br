@@ -16,7 +16,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, Ellipse, FancyArrowPatch, FancyBboxPatch, Rectangle
+from matplotlib.lines import Line2D
+from matplotlib.patches import Circle, Ellipse, FancyArrowPatch, FancyBboxPatch, Patch, Rectangle
 import numpy as np
 
 from e001_orientation import WIND_PATH, bin_indices, local_xy_km, rotate_motion
@@ -47,22 +48,20 @@ def save(figure: plt.Figure, filename: str) -> None:
 
 
 def workflow_figure() -> None:
-    figure, axis = plt.subplots(figsize=(15.5, 7.2))
-    axis.set_xlim(0, 15.5)
-    axis.set_ylim(0, 7.2)
+    figure, axis = plt.subplots(figsize=(18.0, 10.4))
+    axis.set_xlim(0, 18.0)
+    axis.set_ylim(0, 10.4)
     axis.axis("off")
 
-    nodes = [
-        (0.35, 4.65, 3.0, 1.45, "1 · Pergunta e H2", "A rotação reduz a\ndispersão espacial?", BLUE),
-        (4.15, 4.65, 3.0, 1.45, "2 · Protocolo congelado", "q95 · bins de 50 km\npeso por estado · heading ≥ 5", PURPLE),
-        (7.95, 4.65, 3.0, 1.45, "3 · População elegível", "mesmos ciclones, estados,\ncélulas, suporte e flags", TEAL),
-        (11.75, 4.65, 3.0, 1.45, "4 · Duas orientações", "QUADRANTES FIXOS  ↔  ROTACIONADOS\na única mudança é a rotação", ORANGE),
-        (11.75, 1.15, 3.0, 1.45, "5 · Grade comum", "44 × 44 bins · 1.936 células\nsem smoothing", BLUE),
-        (7.95, 1.15, 3.0, 1.45, "6 · Avaliação", "entropia · A50/75/90 · RMS\ncentroide · anisotropia", PURPLE),
-        (4.15, 1.15, 3.0, 1.45, "7 · Incerteza", "500 réplicas pareadas\nreamostradas por track_id", TEAL),
-        (0.35, 1.15, 3.0, 1.45, "8 · Decisão", "consistência entre métricas,\nfases, bootstrap e suporte", RED),
-    ]
-    for x, y, width, height, title, detail, color in nodes:
+    def stage_box(
+        x: float,
+        y: float,
+        width: float,
+        height: float,
+        title: str,
+        detail: str,
+        color: str,
+    ) -> None:
         box = FancyBboxPatch(
             (x, y), width, height,
             boxstyle="round,pad=0.025,rounding_size=0.08",
@@ -70,23 +69,99 @@ def workflow_figure() -> None:
         )
         axis.add_patch(box)
         axis.add_patch(Rectangle((x, y + height - 0.18), width, 0.18, facecolor=color, edgecolor="none"))
-        axis.text(x + 0.18, y + height - 0.39, title, ha="left", va="top", color=INK, fontsize=11.5, fontweight="bold")
-        axis.text(x + width / 2, y + 0.47, detail, ha="center", va="center", color=MUTED, fontsize=10.3, linespacing=1.35)
+        axis.text(x + 0.16, y + height - 0.35, title, ha="left", va="top", color=INK, fontsize=10.6, fontweight="bold")
+        axis.text(x + width / 2, y + 0.42, detail, ha="center", va="center", color=MUTED, fontsize=9.4, linespacing=1.3)
+
+    stage_box(0.35, 7.65, 2.40, 1.45, "1 · Pergunta e H2", "A rotação reduz a\ndispersão espacial?", BLUE)
+    stage_box(3.12, 7.65, 2.40, 1.45, "2 · Protocolo", "q95 · bins de 50 km\npeso por estado · heading ≥ 5", PURPLE)
+    stage_box(5.89, 7.65, 2.40, 1.45, "3 · População", "mesmos ciclones, estados,\ncélulas, suporte e flags", TEAL)
+
+    orientation_x, orientation_y = 8.66, 6.85
+    orientation_width, orientation_height = 4.35, 3.05
+    orientation = FancyBboxPatch(
+        (orientation_x, orientation_y), orientation_width, orientation_height,
+        boxstyle="round,pad=0.035,rounding_size=0.10",
+        linewidth=1.6, edgecolor=ORANGE, facecolor=LIGHT,
+    )
+    axis.add_patch(orientation)
+    axis.text(
+        orientation_x + 0.20, orientation_y + orientation_height - 0.25,
+        "4 · Duas análises de orientação",
+        ha="left", va="top", color=INK, fontsize=10.8, fontweight="bold",
+    )
+    branch_specs = (
+        (orientation_y + 1.35, "ANÁLISE A · QUADRANTES FIXOS", "norte geográfico para cima"),
+        (orientation_y + 0.30, "ANÁLISE B · ROTACIONADOS", "movimento para a frente"),
+    )
+    for child_y, child_title, child_detail in branch_specs:
+        child = FancyBboxPatch(
+            (orientation_x + 0.72, child_y), 3.20, 0.78,
+            boxstyle="round,pad=0.02,rounding_size=0.06",
+            linewidth=1.1, edgecolor=ORANGE, facecolor=WHITE,
+        )
+        axis.add_patch(child)
+        axis.text(orientation_x + 0.88, child_y + 0.52, child_title, ha="left", va="center", color=INK, fontsize=9.1, fontweight="bold")
+        axis.text(orientation_x + 0.88, child_y + 0.20, child_detail, ha="left", va="center", color=MUTED, fontsize=8.8)
+    split_x = orientation_x + 0.38
+    axis.plot([orientation_x, split_x], [8.25, 8.25], color=INK, linewidth=1.2)
+    axis.plot([split_x, split_x], [7.54, 8.59], color=INK, linewidth=1.2)
+    for target_y in (8.59, 7.54):
+        axis.add_patch(FancyArrowPatch((split_x, target_y), (orientation_x + 0.72, target_y), arrowstyle="-|>", mutation_scale=12, linewidth=1.2, color=INK))
+
+    stage_box(13.48, 7.65, 2.72, 1.45, "5 · Grade comum", "44 × 44 bins · duas\ndistribuições comparáveis", BLUE)
+
+    evaluation_x, evaluation_y = 11.44, 1.60
+    evaluation_width, evaluation_height = 6.16, 4.95
+    evaluation = FancyBboxPatch(
+        (evaluation_x, evaluation_y), evaluation_width, evaluation_height,
+        boxstyle="round,pad=0.035,rounding_size=0.10",
+        linewidth=1.6, edgecolor=PURPLE, facecolor=LIGHT,
+    )
+    axis.add_patch(evaluation)
+    axis.text(
+        evaluation_x + 0.22, evaluation_y + evaluation_height - 0.25,
+        "6 · Avaliação · o que cada métrica mostra",
+        ha="left", va="top", color=INK, fontsize=10.8, fontweight="bold",
+    )
+    evaluations = (
+        ("Uniformidade dos pesos", "→  Entropia"),
+        ("Área mínima para cobertura", "→  A50 · A75 · A90"),
+        ("Escala ao redor do centroide", "→  RMS"),
+        ("Posição média", "→  Centroide"),
+        ("Alongamento direcional", "→  Anisotropia"),
+        ("Cobertura observacional", "→  Suporte"),
+    )
+    for index, (question, metric) in enumerate(evaluations):
+        column = index % 2
+        row = index // 2
+        child_x = evaluation_x + 0.24 + column * 2.94
+        child_y = evaluation_y + 2.92 - row * 1.16
+        child = FancyBboxPatch(
+            (child_x, child_y), 2.70, 0.92,
+            boxstyle="round,pad=0.02,rounding_size=0.055",
+            linewidth=1.0, edgecolor=PURPLE, facecolor=WHITE,
+        )
+        axis.add_patch(child)
+        axis.text(child_x + 0.15, child_y + 0.62, question, ha="left", va="center", color=MUTED, fontsize=8.9)
+        axis.text(child_x + 0.15, child_y + 0.27, metric, ha="left", va="center", color=INK, fontsize=9.5, fontweight="bold")
+
+    stage_box(7.78, 3.18, 2.92, 1.55, "7 · Incerteza", "500 réplicas pareadas\npor ciclone inteiro", TEAL)
+    stage_box(4.08, 3.18, 2.92, 1.55, "8 · Decisão", "consistência entre métricas,\nfases, bootstrap e suporte", RED)
 
     arrow_pairs = [
-        ((3.35, 5.38), (4.15, 5.38)),
-        ((7.15, 5.38), (7.95, 5.38)),
-        ((10.95, 5.38), (11.75, 5.38)),
-        ((13.25, 4.65), (13.25, 2.60)),
-        ((11.75, 1.88), (10.95, 1.88)),
-        ((7.95, 1.88), (7.15, 1.88)),
-        ((4.15, 1.88), (3.35, 1.88)),
+        ((2.75, 8.38), (3.12, 8.38)),
+        ((5.52, 8.38), (5.89, 8.38)),
+        ((8.29, 8.38), (8.66, 8.38)),
+        ((13.01, 8.38), (13.48, 8.38)),
+        ((14.84, 7.65), (14.84, 6.55)),
+        ((11.44, 4.05), (10.70, 4.05)),
+        ((7.78, 4.05), (7.00, 4.05)),
     ]
     for start, end in arrow_pairs:
         axis.add_patch(FancyArrowPatch(start, end, arrowstyle="-|>", mutation_scale=16, linewidth=1.5, color=INK))
 
-    axis.text(7.75, 6.85, "Fluxo lógico de E-001", ha="center", va="center", color=INK, fontsize=16, fontweight="bold")
-    axis.text(7.75, 0.35, "O fluxo separa escolhas feitas antes dos resultados, cálculo das métricas e regra de decisão.", ha="center", va="center", color=MUTED, fontsize=10.5)
+    axis.text(9.0, 10.10, "Fluxo lógico de E-001", ha="center", va="center", color=INK, fontsize=16, fontweight="bold")
+    axis.text(9.0, 0.55, "Os braços diferem somente pela orientação; todas as avaliações e a incerteza usam comparação pareada.", ha="center", va="center", color=MUTED, fontsize=10.5)
     save(figure, "methodology_flow.png")
 
 
@@ -393,6 +468,175 @@ def concentration_area_figure() -> None:
     save(figure, "concentration_area_example.png")
 
 
+def rms_vector_geometry_figure() -> None:
+    """Explain the RMS geometry with a shared legend and sparse panels."""
+    centroid_target = np.array([75.0, 75.0])
+    weights = np.array([0.40, 0.15, 0.15, 0.15, 0.15])
+    cases = (
+        ("A · Padrão compacto", 50.0),
+        ("B · Padrão disperso", 150.0),
+    )
+
+    figure, axes = plt.subplots(1, 2, figsize=(16.8, 8.5), sharex=True, sharey=True)
+    figure.subplots_adjust(left=0.065, right=0.985, bottom=0.235, top=0.835, wspace=0.16)
+    figure.suptitle(
+        "RMS: mesma posição média, dispersões diferentes",
+        y=0.975,
+        fontsize=16,
+        fontweight="bold",
+        color=INK,
+    )
+    figure.text(
+        0.5,
+        0.925,
+        "Os dois padrões têm o mesmo centro do ciclone, o mesmo centroide e os mesmos pesos; "
+        "em B, os bins periféricos estão mais distantes.",
+        ha="center",
+        va="center",
+        color=MUTED,
+        fontsize=10.5,
+    )
+
+    for axis, (title, spread) in zip(axes, cases, strict=True):
+        offsets = np.array(
+            [
+                [0.0, 0.0],
+                [-spread, -spread],
+                [-spread, spread],
+                [spread, -spread],
+                [spread, spread],
+            ]
+        )
+        centers = centroid_target + offsets
+        centroid = np.sum(centers * weights[:, None], axis=0)
+        distances = np.linalg.norm(centers - centroid, axis=1)
+        rms = float(np.sqrt(np.sum(weights * distances**2)))
+        highlighted = centers[3]
+        highlighted_distance = float(distances[3])
+
+        for edge in np.arange(-150.0, 301.0, 50.0):
+            axis.axvline(edge, color=GRID, linewidth=0.55, alpha=0.40, zorder=0)
+            axis.axhline(edge, color=GRID, linewidth=0.55, alpha=0.40, zorder=0)
+
+        for index, (center, weight) in enumerate(zip(centers, weights, strict=True)):
+            is_highlighted = index == 3
+            axis.add_patch(
+                Rectangle(
+                    (center[0] - 25.0, center[1] - 25.0),
+                    50.0,
+                    50.0,
+                    facecolor=BLUE,
+                    edgecolor=ORANGE if is_highlighted else BLUE,
+                    linewidth=2.5 if is_highlighted else 1.0,
+                    alpha=0.16 + 0.95 * weight,
+                    zorder=1,
+                )
+            )
+
+        # Component guides are identified once in the shared legend.
+        axis.plot([highlighted[0], highlighted[0]], [0.0, highlighted[1]], color=BLUE, linewidth=1.2, linestyle=":", alpha=0.85, zorder=3)
+        axis.plot([0.0, highlighted[0]], [highlighted[1], highlighted[1]], color=BLUE, linewidth=1.2, linestyle=":", alpha=0.85, zorder=3)
+        axis.plot([centroid[0], centroid[0]], [0.0, centroid[1]], color=RED, linewidth=1.2, linestyle="--", alpha=0.85, zorder=3)
+        axis.plot([0.0, centroid[0]], [centroid[1], centroid[1]], color=RED, linewidth=1.2, linestyle="--", alpha=0.85, zorder=3)
+
+        axis.add_patch(
+            FancyArrowPatch(
+                (0.0, 0.0), tuple(highlighted),
+                arrowstyle="-|>", mutation_scale=13,
+                linewidth=2.0, color=BLUE, zorder=4,
+            )
+        )
+        axis.add_patch(
+            FancyArrowPatch(
+                (0.0, 0.0), tuple(centroid),
+                arrowstyle="-|>", mutation_scale=13,
+                linewidth=2.2, color=RED, zorder=5,
+            )
+        )
+        axis.add_patch(
+            FancyArrowPatch(
+                tuple(centroid), tuple(highlighted),
+                arrowstyle="<->", mutation_scale=12,
+                linewidth=2.0, color=PURPLE, zorder=5,
+            )
+        )
+        axis.add_patch(
+            Circle(
+                centroid, rms,
+                facecolor="none", edgecolor=TEAL,
+                linewidth=2.1, linestyle=(0, (5, 3)), zorder=2,
+            )
+        )
+
+        # Sparse marker labels keep the geometry readable; details live below.
+        axis.scatter([0.0], [0.0], s=125, facecolor=WHITE, edgecolor=INK, linewidth=2.0, zorder=6)
+        axis.scatter([0.0], [0.0], s=18, color=INK, zorder=7)
+        axis.scatter([centroid[0]], [centroid[1]], marker="X", s=115, color=RED, edgecolor=WHITE, linewidth=0.9, zorder=7)
+        axis.scatter([highlighted[0]], [highlighted[1]], marker="s", s=42, color=ORANGE, edgecolor=WHITE, linewidth=0.7, zorder=7)
+        axis.text(-8.0, -18.0, "O", ha="right", va="top", color=INK, fontsize=10.0, fontweight="bold", zorder=8)
+        axis.text(centroid[0] + 8.0, centroid[1] + 8.0, "μ", ha="left", va="bottom", color=RED, fontsize=10.5, fontweight="bold", zorder=8)
+        axis.text(highlighted[0] + 8.0, highlighted[1] - 2.0, "i", ha="left", va="center", color=ORANGE, fontsize=10.5, fontweight="bold", zorder=8)
+
+        distance_midpoint = (centroid + highlighted) / 2.0
+        axis.text(
+            distance_midpoint[0] + 9.0, distance_midpoint[1] + 9.0,
+            f"dᵢ = {highlighted_distance:.0f} km",
+            ha="left", va="bottom", color=PURPLE, fontsize=9.2, fontweight="bold",
+            bbox={"facecolor": WHITE, "edgecolor": "none", "alpha": 0.82, "pad": 1.2},
+            zorder=8,
+        )
+
+        axis.axhline(0.0, color=INK, linewidth=1.0, zorder=1)
+        axis.axvline(0.0, color=INK, linewidth=1.0, zorder=1)
+        axis.set(
+            xlim=(-155.0, 310.0),
+            ylim=(-155.0, 310.0),
+            aspect="equal",
+            xlabel="x relativo ao centro (km)",
+            title=f"{title}  ·  RMS ≈ {rms:.0f} km",
+        )
+        axis.set_xticks(np.arange(-100.0, 301.0, 100.0))
+        axis.set_yticks(np.arange(-100.0, 301.0, 100.0))
+        axis.tick_params(labelsize=9.2)
+        for spine in ("top", "right"):
+            axis.spines[spine].set_visible(False)
+
+    axes[0].set_ylabel("y relativo ao centro (km)")
+
+    legend_handles = [
+        Line2D([], [], linestyle="none", marker="o", markerfacecolor=WHITE, markeredgecolor=INK, markeredgewidth=1.8, markersize=8, label="O  centro do ciclone"),
+        Line2D([], [], linestyle="none", marker="X", markerfacecolor=RED, markeredgecolor=WHITE, markersize=9, label="μ  centroide ponderado"),
+        Line2D([], [], linestyle="none", marker="s", markerfacecolor=ORANGE, markeredgecolor=ORANGE, markersize=7, label="i  bin destacado"),
+        Patch(facecolor=BLUE, edgecolor=BLUE, alpha=0.35, label="tom azul  peso pᵢ"),
+        Line2D([], [], color=BLUE, linewidth=2.1, marker=">", markevery=[1], markersize=6, label="rᵢ  centro → bin"),
+        Line2D([], [], color=RED, linewidth=2.1, marker=">", markevery=[1], markersize=6, label="μ  centro → centroide"),
+        Line2D([], [], color=PURPLE, linewidth=2.1, label="dᵢ  centroide ↔ bin"),
+        Line2D([], [], color=TEAL, linewidth=2.1, linestyle=(0, (5, 3)), label="RMS  raio tracejado"),
+        Line2D([], [], color=BLUE, linewidth=1.3, linestyle=":", label="xᵢ, yᵢ  guias azuis"),
+        Line2D([], [], color=RED, linewidth=1.3, linestyle="--", label="μₓ, μᵧ  guias vermelhas"),
+    ]
+    legend = figure.legend(
+        handles=legend_handles,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.025),
+        ncol=5,
+        title="Como ler os símbolos",
+        frameon=True,
+        facecolor=WHITE,
+        edgecolor=GRID,
+        fontsize=9.0,
+        title_fontsize=10.0,
+        columnspacing=1.5,
+        handlelength=2.4,
+        handletextpad=0.6,
+        borderpad=0.8,
+        labelspacing=0.8,
+    )
+    legend.get_frame().set_linewidth(0.9)
+
+    save(figure, "rms_vector_geometry.png")
+
+
 def geometry_metrics_figure() -> None:
     rng = np.random.default_rng(8)
     angle = np.radians(28)
@@ -535,6 +779,7 @@ def main() -> None:
     coordinate_frames_figure()
     binning_entropy_figure()
     concentration_area_figure()
+    rms_vector_geometry_figure()
     geometry_metrics_figure()
     bootstrap_scheme_figure()
     for filename in (
@@ -543,6 +788,7 @@ def main() -> None:
         "coordinate_frames_example.png",
         "binning_entropy_example.png",
         "concentration_area_example.png",
+        "rms_vector_geometry.png",
         "geometric_metrics_example.png",
         "bootstrap_scheme.png",
     ):

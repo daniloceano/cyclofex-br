@@ -5,6 +5,7 @@ Run from the repository root with: python3 dashboard/build_docs.py
 """
 
 from html import escape
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 import posixpath
 import re
@@ -33,6 +34,7 @@ PUBLISHED_MEDIA = (
     ("03_e001_orientation", "coordinate_frames_example.png"),
     ("03_e001_orientation", "binning_entropy_example.png"),
     ("03_e001_orientation", "concentration_area_example.png"),
+    ("03_e001_orientation", "rms_vector_geometry.png"),
     ("03_e001_orientation", "geometric_metrics_example.png"),
     ("03_e001_orientation", "bootstrap_scheme.png"),
     ("04_e002_weighting", "methodology_flow.png"),
@@ -90,6 +92,59 @@ NAVIGATION = [
 MD_LINK = re.compile(r'href="([^"]+\.md)(#[^"]*)?"')
 
 
+class SectionParser(HTMLParser):
+    """Collect second-level headings and their Pandoc-generated anchors."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.sections: list[tuple[str, str]] = []
+        self._heading_id: str | None = None
+        self._heading_text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag != "h2":
+            return
+        heading_id = dict(attrs).get("id")
+        if heading_id:
+            self._heading_id = heading_id
+            self._heading_text = []
+
+    def handle_data(self, data: str) -> None:
+        if self._heading_id is not None:
+            self._heading_text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag != "h2" or self._heading_id is None:
+            return
+        title = " ".join("".join(self._heading_text).split())
+        if title:
+            self.sections.append((self._heading_id, title))
+        self._heading_id = None
+        self._heading_text = []
+
+
+def page_sections(html: str) -> list[tuple[str, str]]:
+    """Return the main sections shown in the contextual sidebar summary."""
+    parser = SectionParser()
+    parser.feed(html)
+    return parser.sections
+
+
+def section_navigation(sections: list[tuple[str, str]]) -> str:
+    """Render links to the sections of the current page only."""
+    section_links = "".join(
+        f'<a class="page-toc-link" href="#{escape(section_id, quote=True)}">'
+        f"{escape(section_title)}</a>"
+        for section_id, section_title in sections
+    )
+    return (
+        '<nav class="page-toc" aria-label="Seções desta página">'
+        '<p class="page-toc-label">Nesta página</p>'
+        f"{section_links}"
+        "</nav>"
+    )
+
+
 def relative_output(current_output: str, target_source: str) -> str:
     """Return a link from one generated page to another generated page."""
     target_output = PAGES[target_source][0]
@@ -140,20 +195,43 @@ def rewrite_media_links(html: str, output_name: str) -> str:
     return html
 
 
-def navigation(current_source: str, current_output: str) -> str:
+def navigation(
+    current_source: str,
+    current_output: str,
+    sections: list[tuple[str, str]],
+) -> str:
     groups = []
+    current_page_in_navigation = False
     for label, items in NAVIGATION:
         links = []
+        contains_current_page = False
         for source_name, title in items:
             active = source_name == current_source
+            contains_current_page = contains_current_page or active
+            current_page_in_navigation = current_page_in_navigation or active
             attrs = ' class="active" aria-current="page"' if active else ""
             href = relative_output(current_output, source_name)
             links.append(f'<a href="{escape(href)}"{attrs}>{escape(title)}</a>')
+            if active and sections:
+                links.append(section_navigation(sections))
+        group_class = "nav-group has-page-toc" if contains_current_page and sections else "nav-group"
         groups.append(
-            '<div class="nav-group">'
+            f'<div class="{group_class}">'
             f'<p class="side-label">{escape(label)}</p>'
             + "".join(links)
             + "</div>"
+        )
+    if sections and not current_page_in_navigation:
+        current_title = PAGES[current_source][1]
+        current_href = relative_output(current_output, current_source)
+        groups.insert(
+            0,
+            '<div class="nav-group has-page-toc">'
+            '<p class="side-label">Página atual</p>'
+            f'<a href="{escape(current_href)}" class="active" aria-current="page">'
+            f"{escape(current_title)}</a>"
+            f"{section_navigation(sections)}"
+            "</div>",
         )
     return "".join(groups)
 
@@ -192,7 +270,7 @@ def build_page(source_name: str, config: tuple[str, str, str, str]) -> None:
         .replace("{{EYEBROW}}", escape(eyebrow))
         .replace("{{NOTE}}", escape(note))
         .replace("{{BODY}}", body)
-        .replace("{{NAVIGATION}}", navigation(source_name, output_name))
+        .replace("{{NAVIGATION}}", navigation(source_name, output_name, page_sections(body)))
         .replace("{{SOURCE}}", escape(source_href))
         .replace("{{HOME}}", escape(home_href))
         .replace("{{ASSET_PREFIX}}", asset_prefix)

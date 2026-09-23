@@ -27,11 +27,11 @@ A rotação poderia não ajudar se os extremos fossem organizados sobretudo por 
 
 ## Visão geral do desenho experimental
 
-O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A comparação é pareada: depois de definida a população elegível, somente o sistema de coordenadas muda entre quadrantes fixos e rotacionados. Bins, pesos, flags q95 e unidades amostrais permanecem idênticos.
+O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A comparação é pareada: depois de definida a população elegível, ela se divide em duas análises — quadrantes fixos e quadrantes rotacionados — que usam os mesmos bins, pesos, flags q95 e unidades amostrais. A avaliação volta a separar as perguntas feitas à distribuição, porque cada métrica descreve um aspecto diferente.
 
 <figure class="result-figure">
-  <img src="../outputs/03_e001_orientation/methodology_flow.png" alt="Fluxograma em oito etapas do experimento E-001: pergunta e hipótese, protocolo congelado, população elegível, duas orientações, grade comum, métricas, bootstrap pareado e decisão.">
-  <figcaption>Esquema metodológico, não um resultado. Quadrantes fixos e rotacionados se separam apenas na etapa de orientação e voltam a ser avaliados na mesma grade e pelas mesmas métricas; o bootstrap reamostra ciclones inteiros, sempre de forma pareada.</figcaption>
+  <img src="../outputs/03_e001_orientation/methodology_flow.png" alt="Fluxograma ramificado de E-001: a população elegível alimenta duas análises distintas, uma em quadrantes fixos e outra em quadrantes rotacionados; depois da grade comum, seis células ligam aspectos da distribuição às métricas entropia, A50 A75 A90, RMS, centroide, anisotropia e suporte.">
+  <figcaption>Esquema metodológico, não um resultado. Os dois braços diferem somente pela orientação e são processados com a mesma grade. Na avaliação, cada célula explicita a pergunta respondida por uma família de métricas; o bootstrap posterior reamostra ciclones inteiros de forma pareada.</figcaption>
 </figure>
 
 ## Como ler o fluxo do experimento
@@ -41,9 +41,9 @@ Cada caixa do fluxograma corresponde a uma etapa científica, não a um script.
 1. **Pergunta e H2.** A hipótese prevê que girar cada ciclone até alinhar seu movimento reduz a dispersão espacial das excedências.
 2. **Protocolo congelado.** Threshold q95 local, bins de 50 km, peso total um por estado q95-positivo e corte de heading em 5 km/h são fixados antes de qualquer resultado.
 3. **População elegível.** Os mesmos ciclones, estados, células, flags de excedência e suporte espacial alimentam as duas representações; nada é selecionado depois.
-4. **Duas orientações.** A população é expressa em quadrantes fixos e em quadrantes rotacionados pelo movimento. Esta é a **única** diferença entre os dois braços da comparação.
+4. **Duas análises de orientação.** A mesma população alimenta dois braços distintos: análise A em quadrantes fixos e análise B em quadrantes rotacionados pelo movimento. Esta é a **única** diferença entre os braços.
 5. **Grade comum.** As duas nuvens de pontos são discretizadas na mesma grade de 44 × 44 bins, sem suavização.
-6. **Avaliação.** Entropia, A50, A75, A90, RMS, centroide e anisotropia são calculados sobre as duas distribuições resultantes.
+6. **Avaliação.** Cada distribuição é examinada por seis perguntas complementares: uniformidade dos pesos entre bins, área mínima para determinada cobertura, escala ao redor do centroide, posição média, alongamento direcional e cobertura observacional. Elas são respondidas, respectivamente, por entropia; A50/A75/A90; RMS; centroide; anisotropia; e diagnósticos de suporte.
 7. **Incerteza.** Quinhentas réplicas reamostram ciclones inteiros e recalculam as diferenças de forma pareada.
 8. **Decisão.** O critério preregistrado confronta métricas, fases, intervalos bootstrap e suporte, e classifica o resultado.
 
@@ -288,11 +288,15 @@ $$W_i=\sum_s w_{si},$$
 
 onde `W_i` é adimensional e vale, no máximo, o número de estados q95-positivos.
 
-**Passo 3 — normalizar.** `W_i` depende do tamanho da amostra, então a comparação entre representações usa sua proporção na distribuição espacial final:
+**Passo 3 — normalizar.** `W_i` depende do tamanho da amostra, então primeiro somamos os pesos agregados dos 1.936 bins. Chamamos esse resultado de **peso agregado total da grade**, `W_total`:
 
-$$p_i=\frac{W_i}{\sum_\ell W_\ell}, \qquad \sum_i p_i=1.$$
+$$W_{\mathrm{total}}=\sum_{i=1}^{1\,936}W_i.$$
 
-`p_i` é adimensional e está entre 0 e 1; `ℓ` percorre os mesmos bins que `i`.
+`W_total` é adimensional e reúne todo o peso produzido pelos estados q95-positivos. Para obter a proporção espacial final de um bin `i`, dividimos o peso agregado desse bin pelo peso total da grade:
+
+$$p_i=\frac{W_i}{W_{\mathrm{total}}}, \qquad \sum_{i=1}^{1\,936}p_i=1.$$
+
+`p_i` é adimensional e está entre 0 e 1.
 
 Portanto, `p_i = 0,02` significa que o bin contém 2% do peso estatístico normalizado de todas as ocorrências q95. Não significa 2% da massa de ar, 2% da velocidade do vento nem necessariamente 2% das células brutas.
 
@@ -356,27 +360,53 @@ Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os q
 
 **Exemplo didático.** Na figura anterior, a distribuição compacta atribui pesos `[0,70; 0,10; 0,10; 0,10]` e tem `H = 0,940 nat`; a distribuição uniforme atribui `0,25` a cada um de quatro bins e tem `H = 1,386 nat`. O peso total é idêntico, mas a segunda distribuição é mais uniforme. Se os mesmos quatro valores fossem apenas deslocados para outras posições, `H` não mudaria. Esses valores apenas ilustram o cálculo e não entram nos resultados de E-001.
 
-### Áreas de concentração A50, A75 e A90
+### Área mínima de cobertura A<sub>q</sub>: A50, A75 e A90
 
-**Problema que resolvem.** Duas distribuições podem ter entropias parecidas e ainda diferir muito entre núcleo e cauda. A família `Aq` mede diretamente quanta área é necessária para reunir uma fração `q` do peso normalizado, sem exigir que essa área seja circular ou centrada na origem.
+**Pergunta que responde.** Qual é a menor área da grade capaz de reunir uma proporção previamente escolhida do peso espacial? Duas distribuições podem ter entropias parecidas e ainda exigir áreas muito diferentes para conter seu núcleo ou sua cauda.
 
-**Cálculo.** Ordenam-se as proporções dos bins em ordem decrescente,
+**Intuição e origem da métrica.** Procuramos primeiro os bins com maior `p_i` e perguntamos quantos deles são necessários para alcançar uma cobertura-alvo. Essa construção é a versão discreta, restrita a uniões de bins de área igual, de uma **região de maior densidade** (*highest-density region*, HDR) ou **conjunto de volume mínimo**: entre as regiões com determinada cobertura probabilística, busca-se a de menor volume ou área. A base conceitual é descrita por [Hyndman (1996)](https://doi.org/10.1080/00031305.1996.10474359) para regiões de maior densidade e por [Polonik (1997)](https://doi.org/10.1016/S0304-4149(97)00028-8) para conjuntos de volume mínimo. A notação `A_q` é adotada neste projeto; não é uma sigla universal desses artigos.
 
-$$p_{(1)}\ge p_{(2)}\ge\cdots.$$
+**O que significa `q`.** `q` é a **proporção-alvo de cobertura**, escolhida antes do cálculo, e não a área medida. É adimensional e satisfaz `0 < q ≤ 1`. Neste experimento:
 
-Para uma fração `q`, define-se
+- em `A50`, `q = 0,50`: queremos reunir pelo menos 50% do peso;
+- em `A75`, `q = 0,75`: queremos reunir pelo menos 75%;
+- em `A90`, `q = 0,90`: queremos reunir pelo menos 90%.
 
-$$k_q=\min\left\{k:\sum_{r=1}^{k}p_{(r)}\ge q\right\}, \qquad A_q=k_q\times 50^2\ \text{km}^2.$$
+Assim, `A50` é exatamente `A_q` avaliada em `q = 0,50`; o mesmo padrão vale para `A75` e `A90`.
 
-Assim, `A50`, `A75` e `A90` são as menores somas de bins inteiros capazes de conter pelo menos 50%, 75% e 90% do peso. Como cada bin mede `2.500 km²`, essas métricas variam em passos de `2.500 km²`. O último bin é contado por inteiro, mesmo que apenas parte de seu peso seja necessária para ultrapassar o alvo; não há interpolação fracionária.
+O símbolo `A` representa a **área resultante**, em km². Portanto, a proporção `q` fixa quanto peso deve ser coberto, enquanto `A_q` mede quanta área é necessária para atingir essa cobertura.
 
-**Como interpretar.** Menor área indica maior concentração naquela faixa da distribuição. `A50` resume o núcleo mais intenso, `A75` inclui o corpo intermediário e `A90` é mais sensível à cauda espacial. Para
+**Cálculo verbal.** Ordenamos os 1.936 bins do maior para o menor `p_i`. Em seguida, somamos esses valores nessa ordem até a soma alcançar ou ultrapassar `q`. O número de bins utilizados é multiplicado por `2.500 km²`, a área de um bin de 50 × 50 km.
+
+**Formalização.** `p_(r)` é a proporção do bin que ocupa a posição `r` no ranking decrescente:
+
+$$p_{(1)}\ge p_{(2)}\ge\cdots\ge p_{(1\,936)}.$$
+
+O número mínimo de bins necessário para alcançar a cobertura `q` é `k_q`:
+
+$$k_q=\min\left\{k:\sum_{r=1}^{k}p_{(r)}\ge q\right\}.$$
+
+Como a área de cada bin é `a_bin = 50 × 50 = 2.500 km²`, a área mínima de cobertura na grade é
+
+$$A_q=k_q\,a_{\mathrm{bin}}=k_q\times 2\,500\ \text{km}^2.$$
+
+Aqui, `r` é somente a posição do bin no ranking; `k` é um número candidato de bins entre 1 e 1.936; `k_q` é o menor desses números que alcança `q`; e `A_q` tem unidade de km². O último bin é contado por inteiro, mesmo que apenas parte de seu peso seja necessária para ultrapassar `q`; não há interpolação fracionária.
+
+<div class="method-box reading">
+
+**Por que a área é mínima na grade?** Para qualquer número fixo `k`, escolher os `k` maiores valores de `p_i` produz a maior cobertura possível com `k` bins. Se nem esses `k` bins alcançam `q`, nenhuma outra escolha de `k` bins alcançará. Portanto, o primeiro `k_q` que atinge a meta usa o menor número possível de bins — e, como todos têm a mesma área, também a menor área possível dentro dessa grade.
+
+</div>
+
+**Exemplo simples.** Se os pesos ordenados começarem com `0,30`, `0,20`, `0,15` e `0,10`, então `A50` usa os dois primeiros bins, pois `0,30 + 0,20 = 0,50`: logo, `k_q = 2` para `q = 0,50` e `A50 = 2 × 2.500 = 5.000 km²`. Para `A75`, os quatro primeiros bins acumulam `0,75`, então `A75 = 10.000 km²`.
+
+**Como interpretar.** Para o mesmo `q` e a mesma grade, menor `A_q` indica maior concentração naquela faixa da distribuição. `A50` resume o núcleo de maior peso, `A75` inclui uma parcela intermediária e `A90` alcança regiões de menor peso, sendo mais sensível à cauda espacial. Para
 
 $$\Delta A_q=A_{q,\text{rotacionados}}-A_{q,\text{fixos}},$$
 
 valores negativos favorecem os quadrantes rotacionados.
 
-**O que não mede.** `Aq` não é a área de um polígono contínuo nem de um contorno geométrico: os bins selecionados não precisam ser vizinhos, e a métrica é apenas a soma das áreas dos bins de maior peso. Ela também não informa a posição dessa área nem sua forma, e varia em passos discretos de `2.500 km²`.
+**O que não mede.** `A_q` não é, nesta implementação, a área de um polígono contínuo nem uma HDR contínua estimada por suavização. É o mínimo exato apenas dentro da classe de conjuntos formados por bins inteiros da grade. Os bins selecionados não precisam ser vizinhos; a métrica não informa a posição, a conectividade ou a forma da região e varia em passos discretos de `2.500 km²`. Sua validade para a comparação depende de manter a mesma grade e o mesmo `q` nas duas orientações.
 
 No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha mostra sua proporção acumulada. As linhas horizontais marcam os três alvos; os eixos representam posição no ranking e peso, não distância espacial.
 
@@ -387,25 +417,94 @@ No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha 
 
 ### Dispersão RMS em torno do centroide
 
-**Problema que resolve.** Entropia e `Aq` dependem de contagens em bins e de rankings. A RMS fornece uma escala física em quilômetros para a distância típica do peso espacial ao seu próprio centro.
+**Pergunta que responde.** A que distância típica do seu próprio centro espacial está distribuído o peso normalizado das ocorrências q95? Entropia e `A_q` descrevem uniformidade entre bins e área necessária para determinada cobertura, mas nenhuma delas fornece diretamente uma escala de dispersão em quilômetros.
 
-**Cálculo.** Usando o centro `(x_i, y_i)` de cada bin e o centroide `(μ_x, μ_y)` definido na próxima subseção,
+**Intuição e origem da métrica.** Para cada bin, medimos a distância entre o centro do bin e o centroide ponderado de toda a distribuição. Elevamos essas distâncias ao quadrado, calculamos sua média ponderada por `p_i` e extraímos a raiz quadrada. Por isso a sigla **RMS** significa *root mean square*, ou **raiz da média dos quadrados**. Em análise espacial, a mesma construção é conhecida como **distância padrão ponderada** (*weighted standard distance*), uma medida centrográfica de dispersão ao redor do centro médio; sua formulação clássica é discutida por [Bachi (1962)](https://doi.org/10.1111/j.1435-5597.1962.tb00872.x). O nome “RMS ao redor do centroide” foi usado em E-001 para deixar explícita a operação realizada; não designa uma nova métrica criada pelo projeto.
 
-$$\operatorname{RMS}=\sqrt{\sum_i p_i\left[(x_i-\mu_x)^2+(y_i-\mu_y)^2\right]}.$$
+**Objetos e símbolos.** O índice `i` percorre os 1.936 bins da grade. Para cada distribuição e cada bin:
 
-**Como interpretar.** Menor RMS significa peso espacial mais próximo do próprio centroide.
+- `O = (0, 0)` é a origem do sistema relativo: o centro do ciclone. Como todos os estados foram centralizados antes da agregação, seus centros coincidem nessa origem comum;
+- `r_i = (x_i, y_i)` é o **vetor posição** que vai da origem `O` até o centro geométrico do bin `i`, em quilômetros. `x_i` e `y_i` são as **componentes escalares assinadas** desse vetor: não são dois vetores nem duas distâncias sempre positivas. Nos quadrantes fixos, `x_i` representa leste–oeste e `y_i`, norte–sul; nos quadrantes rotacionados, representam direita–esquerda e frente–retaguarda. O vetor `r_i` aponta para o centro do bin, não para uma célula ERA5 individual nem para a média das células que caíram nele;
+- `p_i` é a proporção adimensional do peso normalizado de ocorrências atribuída ao bin `i`, com `0 ≤ p_i ≤ 1` e `Σ_i p_i = 1`. Bins vazios têm `p_i = 0` e não alteram o cálculo;
+- `μ = (μ_x, μ_y)` é o **vetor deslocamento do centroide**, da origem `O` até o centroide ponderado da distribuição. `μ_x` e `μ_y` são suas componentes escalares assinadas, em quilômetros; somente o par forma o vetor. O centroide é a posição média dos centros dos bins quando cada bin é ponderado por `p_i`; ele pode cair entre bins e não precisa coincidir com o centro de nenhum deles;
+- `d_μ = ||μ|| = √(μ_x² + μ_y²)` é a distância escalar, sempre não negativa, entre o centro do ciclone e o centroide;
+- `d_i` é a distância euclidiana, em quilômetros, entre o centro do bin `i` e o centroide.
 
-**O que não mede.** A RMS não mede distância ao centro do ciclone: uma distribuição pode deslocar seu centroide para perto da origem e, ao mesmo tempo, ficar mais espalhada ao redor dele. Ela também não distingue direções — uma nuvem alongada e uma circular podem ter a mesma RMS. Como se usam centros de bins, há discretização posicional de no máximo meia diagonal do bin, aproximadamente `35,4 km`; a comparação pareada na mesma grade limita o efeito dessa aproximação sobre a diferença entre orientações.
+Portanto, a sua interpretação está correta quando aplicada ao **par**: o vetor `μ` descreve o deslocamento do centro do ciclone até o centroide. O que precisava ser corrigido é que `μ_x` e `μ_y`, isoladamente, são componentes desse vetor, não vetores de distância independentes.
+
+Embora o esquema abaixo mostre um ciclone na origem para tornar a geometria concreta, a RMS de E-001 **não é calculada separadamente para um estado `s`**. Cada estado contribui para `p_i`, mas o centroide e a RMS são calculados depois da agregação de todos os estados elegíveis. Desenhar o padrão como se pertencesse a um único estado real sugeriria uma unidade de cálculo incorreta. Nos dois painéis, os eixos estão em quilômetros, as cores representam pesos `p_i` hipotéticos e a origem é o centro comum dos ciclones após a centralização. O contorno laranja destaca um bin `i`; a seta azul é `r_i`, a vermelha é `μ`, o segmento roxo é `d_i` e o círculo tracejado tem raio igual à RMS.
+
+<figure class="result-figure">
+  <img src="../outputs/03_e001_orientation/rms_vector_geometry.png" alt="Dois sistemas de coordenadas relativos ao centro do ciclone. Em cada painel, um bin i destacado mostra o vetor posição r_i e suas componentes x_i e y_i; o centroide mostra o vetor mu e suas componentes mu_x e mu_y; d_i liga o centroide ao bin. O padrão compacto tem círculo RMS menor que o padrão disperso, embora ambos tenham o mesmo centroide.">
+  <figcaption>Esquema metodológico, não um resultado de E-001 nem a representação de um estado real. Os dois padrões usam o mesmo centro do ciclone, o mesmo centroide e os mesmos pesos hipotéticos; apenas a distância dos bins periféricos ao centroide muda. No painel compacto, RMS ≈ 55 km; no disperso, RMS ≈ 164 km. A figura separa o vetor <code>r_i = (x_i, y_i)</code>, o vetor <code>μ = (μ_x, μ_y)</code>, a distância centro–centroide <code>d_μ</code> e a distância bin–centroide <code>d_i</code>.</figcaption>
+</figure>
+
+**Cálculo verbal.** Primeiro calculamos a posição média ponderada da distribuição. Depois calculamos a distância de cada centro de bin até essa posição. Por fim, fazemos a média ponderada dos quadrados dessas distâncias e extraímos a raiz quadrada.
+
+**Passo 1 — calcular o centroide.** O vetor do centro do ciclone até o centroide é a média ponderada dos vetores posição dos bins:
+
+$$\boldsymbol{\mu}=\sum_i p_i\mathbf{r}_i
+=\begin{bmatrix}\mu_x\\\mu_y\end{bmatrix}.$$
+
+Suas duas componentes escalares são
+
+$$\mu_x=\sum_i p_i x_i, \qquad \mu_y=\sum_i p_i y_i.$$
+
+Em linguagem comum, cada centro de bin “puxa” o centroide na proporção do peso `p_i` que recebeu.
+
+**Passo 2 — calcular a distância de cada bin ao centroide.** Para o bin `i`,
+
+$$d_i=\lVert\mathbf{r}_i-\boldsymbol{\mu}\rVert
+=\sqrt{(x_i-\mu_x)^2+(y_i-\mu_y)^2}.$$
+
+`d_i` é não negativa e está em quilômetros. Ela vale zero somente se o centro do bin coincidir com o centroide.
+
+**Passo 3 — calcular a distância RMS.** Como os pesos `p_i` somam um, `Σ_i p_i d_i^2` é a média ponderada das distâncias quadradas. A métrica final é
+
+$$\operatorname{RMS}=\sqrt{\sum_i p_i d_i^2}
+=\sqrt{\sum_i p_i\left[(x_i-\mu_x)^2+(y_i-\mu_y)^2\right]}.$$
+
+A quantidade dentro da raiz tem unidade de km²; depois da raiz, a RMS é expressa em quilômetros. A RMS é sempre não negativa e vale zero apenas quando todo o peso está concentrado em um único bin. Seu limite superior depende do domínio e do suporte usados, portanto não existe um limiar universal que separe uma distribuição “compacta” de uma “dispersa”.
+
+**Exemplo simples.** Considere três bins reais possíveis da grade de 50 km, mas com pesos hipotéticos:
+
+| Bin `i` | Centro `(x_i, y_i)`, km | `p_i` | `d_i²`, km² | `p_i d_i²`, km² |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | `(−25, −25)` | 0,25 | 2.031,25 | 507,8125 |
+| 2 | `(+25, −25)` | 0,25 | 781,25 | 195,3125 |
+| 3 | `(+25, +25)` | 0,50 | 781,25 | 390,6250 |
+
+Primeiro, o centroide é
+
+$$\mu_x=0{,}25(-25)+0{,}25(25)+0{,}50(25)=12{,}5\ \text{km},$$
+
+$$\mu_y=0{,}25(-25)+0{,}25(-25)+0{,}50(25)=0\ \text{km}.$$
+
+Por exemplo, para o primeiro bin, `d_1² = (−25 − 12,5)² + (−25 − 0)² = 2.031,25 km²`. Repetindo para os três bins, a média ponderada das distâncias quadradas é `1.093,75 km²`; portanto,
+
+$$\operatorname{RMS}=\sqrt{1\,093{,}75}=33{,}07\ \text{km}.$$
+
+Esse valor diz que a escala quadrática típica da distribuição ao redor de seu centroide é `33,07 km`. Os números são apenas didáticos e não são um resultado de E-001.
+
+**Como interpretar.** Mantidos a grade, o suporte e a ponderação, menor RMS significa que o peso está mais próximo de seu próprio centroide; maior RMS significa maior dispersão radial. Como as distâncias são elevadas ao quadrado, uma pequena proporção de peso muito distante pode aumentar a RMS de forma relevante. A comparação de E-001 usa
+
+$$\Delta\operatorname{RMS}=\operatorname{RMS}_{\text{rotacionados}}-\operatorname{RMS}_{\text{fixos}}.$$
+
+Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os quadrantes fixos.
+
+**O que não mede.** A RMS não mede a distância ao centro do ciclone: ela usa como referência o **centroide da própria distribuição**, que pode estar deslocado da origem. Também não informa qual proporção do peso está dentro de um círculo de raio RMS; esse círculo não é equivalente a `A50`, `A75` ou `A90` e não possui cobertura probabilística fixa. A RMS não distingue direções, forma, conectividade ou multimodalidade — uma nuvem alongada e uma circular podem ter a mesma RMS — e não localiza o padrão. Como se usam centros de bins, cada posição é aproximada pelo centro do quadrado que a contém, com deslocamento posicional máximo de meia diagonal do bin, aproximadamente `35,4 km`; a comparação pareada na mesma grade limita, mas não elimina, essa discretização.
 
 ### Centroide e deslocamento do padrão
 
 **Problema que resolve.** Uma rotação pode deslocar a posição média do padrão sem torná-lo mais ou menos concentrado. O centroide separa localização de dispersão.
 
-**Cálculo.**
+**Cálculo.** Como na definição da RMS, `i` percorre os bins, `r_i = (x_i, y_i)` é o vetor posição do centro geométrico do bin `i` e `p_i` é sua proporção do peso normalizado. O vetor deslocamento do centroide é `μ = (μ_x, μ_y)`; `μ_x` e `μ_y` são suas componentes escalares, e sua magnitude `d_μ` é a distância entre a origem — o centro do ciclone — e o centroide:
 
-$$\mu_x=\sum_i p_i x_i, \qquad \mu_y=\sum_i p_i y_i, \qquad d_\mu=\sqrt{\mu_x^2+\mu_y^2}.$$
+$$\boldsymbol{\mu}=\sum_i p_i\mathbf{r}_i
+=\begin{bmatrix}\mu_x\\\mu_y\end{bmatrix},
+\qquad d_\mu=\lVert\boldsymbol{\mu}\rVert=\sqrt{\mu_x^2+\mu_y^2}.$$
 
-**Como interpretar.** `d_μ` é a distância do centroide ao centro do ciclone, em km. Nos quadrantes fixos, os sinais de `μ_x` e `μ_y` indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda.
+**Como interpretar.** `μ` informa simultaneamente direção e deslocamento do centroide em relação ao centro do ciclone; `d_μ`, em km, informa apenas o tamanho desse deslocamento. Nos quadrantes fixos, os sinais de `μ_x` e `μ_y` indicam leste–oeste e norte–sul; nos quadrantes rotacionados, indicam direita–esquerda e frente–retaguarda.
 
 **O que não mede.** O centroide não mede concentração: um valor próximo de zero significa apenas equilíbrio médio em torno da origem e é compatível tanto com uma nuvem compacta quanto com duas concentrações opostas que se cancelam.
 
