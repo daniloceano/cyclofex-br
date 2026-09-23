@@ -268,17 +268,21 @@ Neste ponto sabemos em que bin caiu cada célula excedente, mas ainda não sabem
 
 A construção tem três passos: repartir o peso **dentro** de um estado, somar os estados e normalizar o total.
 
-**Passo 1 — repartir o peso dentro de um estado.** Para um estado `s` e um bin `i`, definem-se explicitamente:
+**Passo 1 — repartir o peso dentro de um estado.** Nesta seção, `c` identifica um ciclone, `s` um estado ciclone–tempo, `k` uma célula q95 desse estado e `i` um bin espacial. Neste passo, o ciclone `c` fica implícito porque cada estado pertence a um único ciclone. Para um estado `s` e um bin `i`, definem-se explicitamente:
 
 $$n_{si}=\text{número de células q95 do estado }s\text{ localizadas no bin }i,$$
 
 $$N_s=\sum_i n_{si}=\text{número total de células q95 do estado }s.$$
 
-Aqui `n_si` e `N_s` são contagens adimensionais de células, com `N_s ≥ 1` em todo estado q95-positivo. O peso que o estado `s` atribui ao bin `i` é
+Aqui `n_si` e `N_s` são contagens adimensionais de células, com `N_s ≥ 1` em todo estado q95-positivo. Cada célula `k` do estado recebe primeiro o peso adimensional
 
-$$w_{si}=\frac{n_{si}}{N_s}, \qquad \sum_i w_{si}=1.$$
+$$u_{sk}=\frac{1}{N_s}.$$
 
-`w_si` é adimensional e está entre 0 e 1.
+O símbolo `u_sk` é reservado ao **peso de uma célula individual**. O peso que o estado `s` atribui ao bin `i` é a soma dos pesos `u_sk` das células desse estado que caíram no bin:
+
+$$w_{si}=\sum_{k\,\in\,(s,i)}u_{sk}=\frac{n_{si}}{N_s}, \qquad \sum_i w_{si}=1.$$
+
+`w_si` é, portanto, uma **contribuição do estado ao bin**, não um peso por célula. Ele é adimensional e está entre 0 e 1.
 
 <div class="method-box reading">
 
@@ -310,7 +314,7 @@ Portanto, `p_i = 0,02` significa que o bin contém 2% do peso estatístico norma
 
 O estado mostrado na figura anterior, `track_id = 20100059` em `2010-01-22 12:00 UTC`, estava em intensificação, tinha suporte completo e 15 células q95:
 
-$$N_s=15, \qquad \frac{1}{N_s}=\frac{1}{15}=0{,}0667.$$
+$$N_s=15, \qquad u_{sk}=\frac{1}{N_s}=\frac{1}{15}=0{,}0667.$$
 
 Cada célula vale, portanto, 6,67% do peso desse estado. Os seis bins receberam:
 

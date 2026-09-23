@@ -23,6 +23,7 @@ A documentação técnica atende à reprodução computacional, manutenção, sc
 9. **Força proporcional à evidência:** associação descritiva não vira causalidade, inferência ou hazard.
 10. **Fonte canônica única:** Markdown é canônico; HTML é gerado.
 11. **Estado explícito:** diferencie `PROPOSTO`, `EM TESTE`, `ADOTADO`, `REJEITADO`, `INCONCLUSIVO` e `AINDA NÃO TESTADO`.
+12. **Voz editorial autônoma:** o relatório apresenta a formulação científica vigente como uma narrativa completa; não conversa com o leitor sobre pedidos de edição, versões anteriores, renomeações ou correções realizadas.
 
 ## Estrutura recomendada para uma análise
 
@@ -47,6 +48,19 @@ Cada experimento `E-XXX` deve conter: contexto; pergunta; hipótese; explicaçõ
 A seção de método não é um bloco único: ela se organiza em **visão geral com fluxograma**, **passo a passo**, **formalização**, **exemplo concreto**, **métricas**, **incerteza** e **síntese metodológica**, conforme [como explicar metodologia](#como-explicar-metodologia). Todo experimento formal precisa de um fluxograma científico-metodológico, salvo justificativa explícita na própria página.
 
 Se uma seção não se aplicar, explique por quê. Resultados negativos, rejeitados e inconclusivos permanecem no histórico. O template canônico está em [experimentos](experiments.md#template-obrigatório-para-novos-experimentos).
+
+### Hierarquia de tópicos, subtópicos e menu lateral
+
+Toda página de experimento `E-XXX` usa exatamente quatro **tópicos principais**, marcados como títulos de nível 2 (`##`) e nesta ordem:
+
+1. **Introdução** — contexto, problema, pergunta, hipótese, explicações concorrentes e motivação;
+2. **Metodologia** — começa em **Visão geral do desenho experimental** e termina em **Critério de decisão**, incluindo dados, representações, transformações, métricas, incerteza e síntese metodológica;
+3. **Resultados** — reúne todos os resultados globais, estratificados, diagnósticos, verificações de robustez e resultados de incerteza;
+4. **Conclusões e considerações** — interpretação, limitações, conclusão, consequência para o projeto, reprodutibilidade e respostas finais.
+
+As divisões imediatamente abaixo desses quatro tópicos são **subtópicos**, marcados como títulos de nível 3 (`###`). Divisões internas de um subtópico usam nível 4 (`####`) ou inferior. Não crie outros títulos de nível 2 numa página de experimento e não promova detalhes internos a nível 3 apenas para lhes dar destaque visual.
+
+O menu contextual da página é gerado automaticamente dessa hierarquia: os títulos de nível 2 aparecem como tópicos e os de nível 3 como subtópicos indentados. Títulos de nível 4 ou inferior permanecem fora do menu para evitar poluição. Portanto, a hierarquia do Markdown é parte da navegação, não apenas uma escolha tipográfica. A regra vale para E-001, E-002 e todos os experimentos futuros; o esqueleto copiável está no [template obrigatório](experiments.md#template-obrigatório-para-novos-experimentos).
 
 ## Como explicar metodologia
 
@@ -89,7 +103,31 @@ Antes de qualquer equação, descreva em linguagem natural o que será calculado
 
 Para cada símbolo, registre nome, significado, unidade quando existir, natureza (física, estatística ou adimensional), domínio de valores relevante e interpretação. O checklist completo está em [regras para equações](#regras-para-equações).
 
-No texto corrido, use nomes semânticos junto do símbolo — “o peso total do estado `M_i`”, “a proporção espacial `p_i`”, “o peso do ciclone `w_j`” — em vez de repetir apenas a letra. Isso reduz a carga de memória do leitor.
+No texto corrido, use nomes semânticos junto do símbolo — “o peso da célula `u_sk`”, “a contribuição estado–bin `w_si`”, “a proporção espacial `p_i`” — em vez de repetir apenas a letra. Isso reduz a carga de memória do leitor.
+
+### Convenção global de índices e pesos
+
+Experimentos que reutilizam os mesmos objetos científicos também reutilizam os mesmos índices e símbolos. A convenção canônica é:
+
+| Objeto | Símbolo canônico | Interpretação |
+| --- | --- | --- |
+| Ciclone | `c` | índice de `track_id` |
+| Estado ciclone–tempo | `s` | índice de um estado; cada `s` pertence a um único ciclone `c(s)` |
+| Célula | `k` | índice de uma célula dentro do estado `s` |
+| Bin espacial | `i` | índice do bin; outra letra numa soma deve ser definida explicitamente como índice auxiliar dos mesmos bins |
+| Células q95 no estado | `N_s` | número total de células q95 do estado `s` |
+| Células do estado no bin | `n_si` | número de células q95 do estado `s` que caem no bin `i` |
+| Estados positivos do ciclone | `M_c` | número de estados q95-positivos do ciclone `c` |
+| Peso de uma célula | `u_sk^(g)` | peso da célula `k` do estado `s` sob o esquema `g` |
+| Contribuição estado–bin | `w_si^(g)` | soma dos pesos das células do estado `s` localizadas no bin `i` |
+| Peso agregado do bin | `W_i^(g)` | soma de `w_si^(g)` sobre os estados |
+| Proporção espacial | `p_i^(g)` | `W_i^(g)` depois da normalização global, com soma igual a um |
+
+O sobrescrito `g` só é usado quando o experimento compara esquemas, como `ES` (*equal-state*) e `EC` (*equal-cyclone*); quando existe um único esquema, ele é omitido. Para frações atribuídas diretamente a ciclones, como no HHI, use `a_c`.
+
+Não reutilize a mesma letra para objetos de granularidade diferente. Em particular, peso de célula e contribuição de um estado para um bin não podem ambos se chamar `w`. Um novo símbolo só deve ser criado quando o objeto ainda não estiver coberto por esta convenção.
+
+A página científica usa somente a notação canônica vigente e deve ser compreensível sem conhecer seu histórico editorial. Frases como “na versão anterior”, “antes chamávamos”, “foi alterado para” ou “como solicitado” são proibidas na narrativa científica. Se um artefato reprodutível congelado conservar aliases históricos, a correspondência fica na proveniência técnica ou no registro de decisões, sem interromper o relatório nem exigir que o leitor acompanhe uma renomeação.
 
 ### Passo a passo: uma operação de cada vez
 

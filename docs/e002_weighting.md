@@ -5,27 +5,31 @@
 - **Questões e decisões relacionadas:** [Q-007](open_questions.md#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências), [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001) e [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado).
 - **Experimento anterior:** [E-001](e001_orientation.md) permanece historicamente `INCONCLUSIVE` sob seu protocolo original.
 
-## Contexto
+## Introdução
+
+### Contexto
 
 Um ciclone é identificado por `track_id`. Um **estado ciclone–tempo** representa esse ciclone em um campo ERA5 de 6 h. Uma célula q95-positiva é uma posição observável onde a velocidade do vento a 10 m excedeu estritamente o percentil 95 local. O conjunto dessas células num estado é um *excursion set*: uma realização observada de excedências, não um *footprint* probabilístico.
 
 E-001 comparou quadrantes fixos (`centered`), nos quais o centro do ciclone é deslocado para a origem e o norte permanece para cima, com quadrantes rotacionados pelo movimento (`motion-relative`), que também giram o campo para colocar o deslocamento do ciclone para a frente. “Quadrantes” nomeia o sistema de referência; as coordenadas usadas nas métricas são contínuas. Cada estado q95-positivo recebeu peso normalizado total um — não massa física nem magnitude do vento. Assim, ciclones com mais estados positivos participaram mais vezes do mapa agregado.
 
-## Problema
+### Problema
 
 A unidade científica fundamental do projeto é o ciclone, mas a distribuição de E-001 descreveu a população de estados. A diferença não torna E-001 incorreto: indica que dois estimandos legítimos podem responder a perguntas distintas. E-002 mede quanto a estrutura espacial e a conclusão de E-001 dependem dessa escolha, sem reinterpretar retrospectivamente seu protocolo.
 
-## Pergunta
+### Pergunta
 
 **Pergunta principal.** A estrutura espacial das excedências q95 muda de forma relevante quando cada ciclone recebe o mesmo peso total, em vez de cada estado q95-positivo receber o mesmo peso?
 
 **Pergunta secundária.** A conclusão `INCONCLUSIVE` de E-001 sobre quadrantes fixos versus rotacionados permanece quando se remove a participação proporcionalmente maior dos ciclones com muitos estados positivos?
 
-## Hipótese
+### Hipótese
 
 A hipótese principal previa sensibilidade porque duração e número de estados q95-positivos variam entre ciclones. A hipótese de robustez previa que o conflito observado em E-001 — núcleo A50 mais concentrado, mas regiões intermediária e externa mais dispersas após a rotação — permaneceria sob peso igual por ciclone. A explicação concorrente era que poucos sistemas temporalmente longos produzissem esse conflito; nesse caso, *equal-cyclone* poderia alinhar as métricas em favor de uma representação.
 
-## Visão geral do desenho experimental
+## Metodologia
+
+### Visão geral do desenho experimental
 
 O fluxograma resume a cadeia lógica de E-002, da pergunta à classificação de robustez. A comparação é deliberadamente estreita: toda a geometria e toda a população vêm congeladas de E-001, e a única coisa que muda entre os dois braços é **quem recebe peso igual**.
 
@@ -34,7 +38,7 @@ O fluxograma resume a cadeia lógica de E-002, da pergunta à classificação de
   <figcaption>Esquema metodológico, não um resultado. Os dois braços se separam apenas na etapa de weighting e voltam a ser avaliados na mesma grade, com as mesmas métricas e o mesmo bootstrap.</figcaption>
 </figure>
 
-## Como ler o fluxo do experimento
+### Como ler o fluxo do experimento
 
 Cada caixa corresponde a uma etapa científica, não a um script.
 
@@ -49,7 +53,7 @@ Cada caixa corresponde a uma etapa científica, não a um script.
 
 As seções seguintes percorrem essas etapas em detalhe, começando por **por que** os dois weightings não são intercambiáveis.
 
-## Por que os dois weightings respondem a perguntas diferentes
+### Por que os dois weightings respondem a perguntas diferentes
 
 **Equal-state** descreve a população de estados: “se um estado q95-positivo for selecionado ao acaso, onde aparecem suas excedências?”. Um ciclone com 20 estados positivos aparece 20 vezes mais que outro com um estado positivo.
 
@@ -57,13 +61,13 @@ As seções seguintes percorrem essas etapas em detalhe, começando por **por qu
 
 Portanto, *equal-cyclone* não é automaticamente mais correto por o ciclone ser a unidade inferencial. Unidade do bootstrap e estimando descritivo cumprem funções diferentes: o bootstrap por ciclone preserva a dependência; o weighting define qual população o mapa resume.
 
-## Dados
+### Dados
 
 O experimento reutilizou as três entradas de E-001, com hashes validados: catálogo operacional de tracks e **lifecycle** — ciclo de vida categorizado em fases — do Zenodo 18133432, catálogo de estados de 6 h e Parquet condicionado de vento ERA5 a 10 m. O período comparável vai de 1º de janeiro de 2010 a 31 de dezembro de 2020 UTC.
 
 **Suporte espacial** é o conjunto de células da grade de 0,25° situadas simultaneamente no domínio 65°S–10°S, 85°W–15°W e até 1.100 km do centro. Ausência de suporte não foi convertida em não-excedência. E-002 preservou q95 local, seleção, suporte completo ou parcial, transformação azimutal equidistante, corte de heading de 5 km/h, domínio relativo de −1.100 a +1.100 km, bins de 50 km, fases agrupadas e ausência de suavização.
 
-## População reproduzida de E-001
+### População reproduzida de E-001
 
 O pipeline interromperia antes dos resultados se qualquer contagem divergisse. A validação reproduziu exatamente:
 
@@ -78,7 +82,7 @@ O pipeline interromperia antes dos resultados se qualquer contagem divergisse. A
 
 Vinte e sete ciclones elegíveis não tiveram estado q95-positivo: permaneceram na auditoria e no bootstrap da população elegível, mas não receberam massa em uma distribuição condicionada à ocorrência.
 
-## Como o peso desce de ciclone para célula
+### Como o peso desce de ciclone para célula
 
 <div class="method-box idea">
 
@@ -98,28 +102,37 @@ O peso percorre quatro níveis encadeados, sempre de cima para baixo:
 
 Neste relatório, *massa* é usada como sinônimo abreviado de **peso normalizado de ocorrências**: não é massa física nem magnitude do vento. A diferença entre os dois esquemas está inteiramente em **qual nível recebe uma unidade de peso**: o estado ou o ciclone.
 
-Sejam, em todo o restante da seção:
+A convenção de índices e pesos adotada nesta seção é:
 
-- `j` — índice do ciclone;
-- `t` — índice de um estado q95-positivo do ciclone `j`;
-- `m_jt` — número de células excedentes no estado `t` do ciclone `j`, adimensional, com `m_jt ≥ 1`;
-- `n_j` — número de estados q95-positivos do ciclone `j`, adimensional, com `n_j ≥ 1`.
+- `c` — índice do ciclone;
+- `s` — índice de um estado q95-positivo;
+- `k` — índice de uma célula q95 dentro do estado `s`;
+- `i` — índice de um bin espacial;
+- `c(s)` — ciclone ao qual o estado `s` pertence;
+- `N_s` — número total de células q95 do estado `s`, adimensional, com `N_s ≥ 1`;
+- `n_si` — número de células q95 do estado `s` localizadas no bin `i`, adimensional;
+- `M_c` — número de estados q95-positivos do ciclone `c`, adimensional, com `M_c ≥ 1`.
 
-Posições têm unidade de quilômetro e áreas têm km², mas pesos e proporções espaciais são adimensionais.
+O símbolo `u_sk` representa o **peso de uma célula individual**; `w_si` representa a **contribuição de um estado para um bin**; `W_i` representa o peso agregado do bin; e `p_i`, sua proporção depois da normalização global. Cada símbolo corresponde, portanto, a um único nível da hierarquia ciclone → estado → célula → bin. Posições têm unidade de quilômetro e áreas têm km², mas todas essas contagens, pesos e proporções são adimensionais.
 
-### Equal-state
+#### Equal-state
 
-**O que entra.** Os estados q95-positivos, cada um com suas `m_jt` células.
+**O que entra.** Os estados q95-positivos, cada um com suas `N_s` células, e a contagem `n_si` de quantas dessas células caíram em cada bin.
 
 **O que queremos obter.** Um peso por célula tal que cada estado contribua com exatamente uma unidade.
 
-**Como é calculado.** O estado recebe uma unidade de peso e a divide igualmente entre suas células excedentes. Em *equal-state*, cada célula recebe peso
+**Como é calculado.** O estado recebe uma unidade de peso e a divide igualmente entre suas células excedentes. Em *equal-state* — abreviado por `ES` nas equações —, cada célula `k` do estado `s` recebe
 
 $$
-w_{jt\mathrm{cell}} = \frac{1}{m_{jt}}.
+u_{sk}^{(ES)}=\frac{1}{N_s}.
 $$
 
-Aqui, $w_{jt\mathrm{cell}}$ é o peso adimensional de uma célula excedente. As células de cada estado somam uma unidade de peso; a soma dos bins é depois normalizada para um.
+Somando os pesos das células do estado `s` que caíram no bin `i`, obtém-se
+
+$$w_{si}^{(ES)}=\sum_{k\,\in\,(s,i)}u_{sk}^{(ES)}=\frac{n_{si}}{N_s},
+\qquad \sum_i w_{si}^{(ES)}=1.$$
+
+O sobrescrito `ES` identifica o esquema *equal-state*. Assim, `u_sk^(ES)` é o peso de uma célula, enquanto `w_si^(ES)` é a contribuição do estado já reunida no bin.
 
 <div class="method-box reading">
 
@@ -127,38 +140,52 @@ Em outras palavras, o número de células excedentes controla apenas o **detalhe
 
 </div>
 
-**O que sai.** Um peso por célula; o peso total de cada ciclone `j` fica igual a `n_j`.
+**O que sai.** Um peso por célula e uma contribuição por estado e bin; o peso total do ciclone `c` fica igual a `M_c`, pois cada um de seus estados vale uma unidade.
 
-### Equal-cyclone
+#### Equal-cyclone
 
-**O que entra.** Os mesmos estados e as mesmas células, mais a contagem `n_j` de estados positivos por ciclone.
+**O que entra.** Os mesmos estados, células e bins, mais a contagem `M_c` de estados positivos por ciclone.
 
 **O que queremos obter.** Um peso por célula tal que cada **ciclone** contribua com exatamente uma unidade, independentemente de quantos estados positivos tenha.
 
-**Como é calculado.** O ciclone recebe uma unidade, reparte-a igualmente entre seus `n_j` estados positivos, e cada estado reparte a sua parte entre suas células. Se $n_j$ é o número adimensional de estados q95-positivos do ciclone $j$, cada célula recebe
+**Como é calculado.** O ciclone recebe uma unidade, reparte-a igualmente entre seus `M_c` estados positivos, e cada estado reparte a própria parte entre suas células. Em *equal-cyclone* — `EC` nas equações —, a célula `k` do estado `s` recebe
 
 $$
-w_{jt\mathrm{cell}} = \frac{1}{n_j m_{jt}}.
+u_{sk}^{(EC)}=\frac{1}{M_{c(s)}N_s}.
 $$
 
-As células de cada estado somam $1/n_j$, e todos os estados do ciclone somam uma unidade. A distribuição agregada é normalizada entre os 1.757 ciclones q95-positivos. Dentro de cada fase, $n_j$ conta apenas estados positivos daquela fase; assim, a análise estratificada também compara ciclones com peso total igual no estrato.
+A contribuição desse estado ao bin `i` é
+
+$$w_{si}^{(EC)}=\sum_{k\,\in\,(s,i)}u_{sk}^{(EC)}
+=\frac{n_{si}}{M_{c(s)}N_s},
+\qquad \sum_i w_{si}^{(EC)}=\frac{1}{M_{c(s)}}.$$
+
+As células de cada estado somam `1/M_c`, e todos os estados do ciclone somam uma unidade. A distribuição agregada é normalizada entre os 1.757 ciclones q95-positivos. Dentro de cada fase, `M_c` conta apenas os estados positivos daquele ciclone na fase; assim, a análise estratificada também compara ciclones com peso total igual no estrato.
 
 <div class="method-box reading">
 
-A fórmula é a de *equal-state* dividida por `n_j`. Esse único fator é toda a diferença entre os dois experimentos: ele remove a vantagem de participação que um ciclone longo tinha por aparecer muitas vezes.
+A fórmula é a de *equal-state* dividida por `M_c`. Esse único fator é toda a diferença entre os dois esquemas: ele remove a vantagem de participação que um ciclone longo tinha por aparecer muitas vezes.
 
 </div>
 
 **O que sai.** Um peso por célula; o peso total de cada ciclone é um, por construção.
 
-### Exemplo concreto: a mesma população sob os dois weightings
+**Agregação comum aos dois esquemas.** Se `g` identifica o esquema `ES` ou `EC`, os estados são somados e o mapa é normalizado:
+
+$$W_i^{(g)}=\sum_s w_{si}^{(g)},
+\qquad
+p_i^{(g)}=\frac{W_i^{(g)}}{\sum_b W_b^{(g)}}.$$
+
+No denominador, `b` percorre os mesmos 1.936 bins que `i`; outra letra é usada apenas para não confundir o bin específico do numerador com a soma sobre todos os bins. Em ambos os esquemas, $\sum_i p_i^{(g)}=1$.
+
+#### Exemplo concreto: a mesma população sob os dois weightings
 
 <div class="method-box example">
 
 Considere uma população reduzida a dois ciclones:
 
-- **Ciclone A** — estado `A1` com 4 células q95 e estado `A2` com 2 células q95, portanto `n_A = 2`;
-- **Ciclone B** — estado `B1` com 3 células q95, portanto `n_B = 1`.
+- **Ciclone A** — estado `A1` com `N_A1 = 4` células q95 e estado `A2` com `N_A2 = 2`, portanto `M_A = 2` estados positivos;
+- **Ciclone B** — estado `B1` com `N_B1 = 3` células q95, portanto `M_B = 1` estado positivo.
 
 **Sob *equal-state*,** cada estado vale um. As células de `A1` recebem `1/4 = 0,25`; as de `A2` recebem `1/2 = 0,50`; as de `B1` recebem `1/3 ≈ 0,3333`. Os pesos totais ficam `A = 1 + 1 = 2` e `B = 1`. Sobre o total de 3, o ciclone A contribui com **66,7%** do mapa e o ciclone B com **33,3%**.
 
@@ -179,7 +206,7 @@ O exemplo mostra o mecanismo, não a magnitude. Na amostra real, nenhum ciclone 
 
 </div>
 
-## Diagnóstico de contribuição dos ciclones
+### Diagnóstico de contribuição dos ciclones
 
 <div class="method-box idea">
 
@@ -197,7 +224,7 @@ Entre os ciclones positivos, a mediana foi 8 estados; P25 = 5, P75 = 13, P90 = 1
 | 5% superior | 88 | 12,69% | 5,01% |
 | 10% superior | 176 | 22,52% | 10,02% |
 
-### Concentração entre ciclones: HHI e número efetivo
+#### Concentração entre ciclones: HHI e número efetivo
 
 **Pergunta que respondem.** A massa do mapa está repartida entre muitos ciclones ou concentrada em poucos?
 
@@ -205,13 +232,13 @@ Entre os ciclones positivos, a mediana foi 8 estados; P25 = 5, P75 = 13, P90 = 1
 
 **Cálculo verbal.** Para cada ciclone, calcula-se a fração da massa global que ele recebeu; essas frações são elevadas ao quadrado e somadas, produzindo o índice de Herfindahl. O número efetivo é o inverso dessa soma.
 
-**Formalização.** Seja $a_j$ a fração adimensional da massa global recebida pelo ciclone $j$, com $\sum_j a_j=1$ e $n$ ciclones q95-positivos. Então
+**Formalização.** Seja $a_c$ a fração adimensional do peso global recebida pelo ciclone $c$, com $\sum_c a_c=1$ e $C$ ciclones q95-positivos. Então
 
 $$
-HHI=\sum_j a_j^2, \qquad N_{eff}=\frac{1}{HHI}.
+HHI=\sum_c a_c^2, \qquad N_{eff}=\frac{1}{HHI}.
 $$
 
-`HHI` é adimensional e varia entre $1/n$ — todos os ciclones com a mesma fração — e $1$ — um único ciclone com toda a massa. `N_eff` é adimensional, tem unidade conceitual de “número de ciclones” e varia entre $1$ e $n$; ele não precisa ser inteiro.
+`HHI` é adimensional e varia entre $1/C$ — todos os ciclones com a mesma fração — e $1$ — um único ciclone com todo o peso. `N_eff` é adimensional, tem unidade conceitual de “número de ciclones” e varia entre $1$ e $C$; ele não precisa ser inteiro.
 
 <div class="method-box example">
 
@@ -233,7 +260,7 @@ exatamente o número de ciclones da população — o valor teórico máximo, al
 
 **O que não medem.** `HHI` e `N_eff` descrevem apenas como o peso se reparte **entre** ciclones. Não dizem **onde**, no espaço, esse peso cai; não medem a influência de um ciclone sobre uma métrica específica — isso exigiria remoção ou *leave-one-cyclone-out*, não executados aqui; e não distinguem duração física de participação, já que o número de estados positivos combina duração, suporte, heading e ocorrência q95.
 
-### Participação temporal e contribuição acumulada
+#### Participação temporal e contribuição acumulada
 
 A figura pergunta se poucos ciclones dominam pela quantidade de estados positivos. O eixo horizontal mostra estados por ciclone; o vertical, número de ciclones, e a linha marca a mediana.
 
@@ -253,13 +280,13 @@ A próxima figura ordena os ciclones do maior para o menor peso. O eixo horizont
 
 **Observação:** os 10% superiores concentram 22,52% da massa *equal-state*. **Interpretação:** $N_{eff}$ cai 26,6% em relação aos 1.757 ciclones positivos, uma desigualdade material, porém distribuída. **Limitação:** a curva mede contribuição, não influência causal de cada ciclone sobre uma métrica específica.
 
-## Métricas
+### Métricas
 
 As definições são idênticas às de E-001, incluindo o que cada métrica **não** mede; o tratamento completo de cada uma está em [métodos de avaliação e métricas de E-001](e001_orientation.md#métodos-de-avaliação-e-métricas). A entropia de Shannon $H=-\sum_i p_i\ln p_i$, em nat, resume quão espalhada está a massa entre bins; $i$ identifica um bin e $p_i$ é sua massa adimensional normalizada, com $\sum_i p_i=1$. A50, A75 e A90 são o número mínimo de bins necessários para atingir 50%, 75% e 90% da massa multiplicado por 2.500 km². RMS é a raiz da distância quadrática média ao centroide, em km. A distância do centroide ao centro, em km, e a razão entre eixos principais da covariância, adimensional, são diagnósticos de deslocamento e anisotropia; não entram na decisão principal.
 
 Essas métricas descrevem **cada** distribuição isoladamente. E-002 precisa também de uma medida do quanto o próprio weighting mudou o mapa.
 
-### Distância de variação total
+#### Distância de variação total
 
 **Pergunta que responde.** Quanto de peso teria de ser movido de um bin para outro para transformar o mapa *equal-state* no mapa *equal-cyclone*?
 
@@ -283,7 +310,11 @@ O primeiro bin perdeu `0,10` de massa e os outros dois ganharam `0,05` cada; a s
 
 **O que não mede.** TV não diz **para onde** a massa se moveu, não distingue um deslocamento curto de um deslocamento longo — mover peso para o bin vizinho e para o outro extremo do domínio contam igual — e não ordena qualidade científica: um TV alto não torna um weighting melhor nem pior que o outro.
 
-## Critério de decisão
+### Em resumo: o que este método faz?
+
+E-002 congela tudo o que E-001 fixou — população, threshold, suporte, geometria e bins — e mexe em um único parâmetro: quem recebe uma unidade de peso. Sob *equal-state*, cada estado com excedência vale um, de modo que ciclones com muitos estados participam muitas vezes. Sob *equal-cyclone*, cada ciclone vale um e reparte esse valor entre os próprios estados. As duas escolhas produzem mapas espaciais diferentes sobre exatamente a mesma grade. Comparando as métricas de concentração entre os dois mapas, o experimento mede quanto da estrutura observada em E-001 vinha da participação desigual dos ciclones mais longos; comparando as orientações dentro de cada weighting, verifica se a conclusão de E-001 depende dessa escolha.
+
+### Critério de decisão
 
 O critério foi registrado no protocolo antes da execução. E-001 seria **robusto ao weighting** se, sob *equal-cyclone*, A50 continuasse em sentido oposto a A75, A90 e RMS e as cinco métricas de concentração não favorecessem consistentemente uma representação. Seria **sensível** se todas as cinco passassem a apontar para a mesma representação, com IC95% de H e A75 excluindo zero no mesmo sentido, ou se o critério simétrico de E-001 sustentasse claramente uma representação. Situações intermediárias seriam **parcialmente sensíveis**.
 
@@ -292,6 +323,8 @@ O critério foi registrado no protocolo antes da execução. E-001 seria **robus
 Esse critério avalia a conclusão sobre orientação; ele não exige que todos os efeitos do weighting sejam numericamente pequenos. Um weighting pode deslocar muito peso e ainda assim preservar a comparação entre orientações, e é exatamente essa distinção que o critério isola.
 
 ## Resultados
+
+### Resultados globais
 
 As quatro distribuições principais produziram:
 
@@ -304,7 +337,7 @@ As quatro distribuições principais produziram:
 
 As duas linhas *equal-state* reproduziram as áreas de E-001 exatamente e as métricas contínuas com diferença absoluta inferior a $10^{-6}$; os resumos bootstrap de E-001 também foram reproduzidos dentro de $10^{-6}$.
 
-## Efeito do weighting
+### Efeito do weighting
 
 Diferenças abaixo são *equal-cyclone minus equal-state*. Valores positivos de H, área ou RMS representam maior dispersão sob peso igual por ciclone.
 
@@ -331,7 +364,7 @@ O mapa *motion-relative* usa direita/frente como eixos e mantém a mesma leitura
 
 **Observação:** a magnitude global da redistribuição é quase igual à de *centered*, embora A90 diminua 2.500 km². **Interpretação:** a sensibilidade ao weighting não depende apenas da orientação. **Limitação:** TV não informa se uma redistribuição é fisicamente preferível.
 
-## Robustez da conclusão de E-001
+### Robustez da conclusão de E-001
 
 A comparação *motion-relative minus centered* foi:
 
@@ -347,7 +380,7 @@ A comparação *motion-relative minus centered* foi:
 
 **Observação:** o conflito núcleo–cauda permanece, embora as diferenças de área diminuam. **Interpretação:** a conclusão de E-001 não foi produzida pela participação desproporcional dos ciclones mais longos. **Limitação:** robustez a este weighting não implica robustez a thresholds, tamanho do ciclone ou novas amostras.
 
-## Resultado por fase
+### Resultado por fase
 
 A tabela mostra *equal-cyclone minus equal-state* dentro das quatro fases principais; valores de H, áreas e RMS têm as mesmas unidades da análise global.
 
@@ -364,7 +397,7 @@ A tabela mostra *equal-cyclone minus equal-state* dentro das quatro fases princi
 
 O $N_{eff}$ *equal-state* foi 767,3 de 1.051 ciclones positivos na fase incipiente, 1.132,9 de 1.611 na intensificação, 735,8 de 923 na madura e 873,3 de 1.296 no decaimento. A perda relativa foi maior no decaimento, seguido de intensificação. O efeito espacial não foi homogêneo: peso igual aumentou áreas na intensificação, reduziu-as no decaimento e produziu sinais mistos na fase madura. Como esta estratificação é secundária e não recebeu bootstrap próprio, ela localiza heterogeneidade, mas não domina a conclusão global.
 
-## Incerteza
+### Incerteza
 
 <div class="method-box idea">
 
@@ -380,7 +413,7 @@ As diferenças acima são um número só. Falta saber se elas sobreviveriam a ou
 
 **Qual é a unidade de reamostragem.** O sorteio é feito sobre `track_id`. Com uma população reduzida a `C1 C2 C3 C4`, uma réplica poderia ser `C2 C2 C4 C1`: `C3` fica de fora e `C2` conta em dobro, sempre com todos os seus estados e células juntos. O esquema completo está ilustrado em [E-001](e001_orientation.md#comparação-pareada-e-incerteza).
 
-**Por que não reamostrar estados nem células.** Estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos, e células vizinhas pertencem ao mesmo campo de vento. Tratá-los como observações independentes produziria intervalos artificialmente estreitos. Em E-002 há um motivo adicional: `n_j`, o número de estados positivos do ciclone, é justamente a quantidade que distingue os dois weightings. Reamostrar estados alteraria `n_j` e destruiria o contraste sob teste.
+**Por que não reamostrar estados nem células.** Estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos, e células vizinhas pertencem ao mesmo campo de vento. Tratá-los como observações independentes produziria intervalos artificialmente estreitos. Em E-002 há um motivo adicional: `M_c`, o número de estados positivos do ciclone `c`, é justamente a quantidade que distingue os dois weightings. Reamostrar estados alteraria `M_c` e destruiria o contraste sob teste.
 
 **Por que os dois weightings são recalculados na mesma réplica.** Dentro de cada réplica, a mesma população sorteada alimenta *equal-state* e *equal-cyclone*, de modo que a variação observada reflete a troca de ciclones e não uma diferença de amostra entre os dois braços.
 
@@ -411,17 +444,15 @@ Foram geradas 500 réplicas com semente 20260921. Em cada uma, os 1.784 ciclones
 
 **Observação:** os IC das áreas e de H para o efeito do weighting incluem zero, mas o aumento de RMS é consistente nas duas representações. Sob *equal-cyclone*, A50 favorece *motion-relative*, enquanto A90 e RMS favorecem *centered*; H inclui zero e A75 toca zero. **Interpretação:** há evidência de maior dispersão radial entre ciclones igualmente ponderados, mas não de uma mudança coerente em todas as medidas de concentração. **Limitação:** o bootstrap quantifica incerteza interna deste experimento; não substitui análise de influência, remoção de ciclones ou validação fora da amostra.
 
-## Em resumo: o que este método faz?
+## Conclusões e considerações
 
-E-002 congela tudo o que E-001 fixou — população, threshold, suporte, geometria e bins — e mexe em um único parâmetro: quem recebe uma unidade de peso. Sob *equal-state*, cada estado com excedência vale um, de modo que ciclones com muitos estados participam muitas vezes. Sob *equal-cyclone*, cada ciclone vale um e reparte esse valor entre seus próprios estados. As duas escolhas produzem mapas espaciais diferentes sobre exatamente a mesma grade. Comparando as métricas de concentração entre os dois mapas, o experimento mede quanto da estrutura observada em E-001 vinha da participação desigual dos ciclones mais longos; comparando as orientações dentro de cada weighting, verifica se a conclusão de E-001 depende dessa escolha.
-
-## Interpretação
+### Interpretação
 
 O esquema *equal-state* não foi dominado por um ciclone ou por um grupo minúsculo, mas deu influência agregada material aos sistemas com mais estados positivos: os 10% superiores receberam 22,52% da massa, e $N_{eff}$ caiu de 1.757 para 1.288,8. Remover essa desigualdade deslocou cerca de 8% da massa espacial e aumentou RMS em aproximadamente 41 km.
 
 Essas mudanças quantitativas não alteraram a narrativa de orientação. Sob ambos os estimandos, *motion-relative* concentra A50 e dispersa A75, A90 e RMS em relação a *centered*. E-002 é, portanto, **ROBUSTO AO WEIGHTING** segundo o critério registrado.
 
-## Limitações
+### Limitações
 
 - q95 permaneceu fixo; q90, q99 e thresholds físicos não foram testados.
 - O produto de vento é um recorte condicionado de 2010–2020 e não uma climatologia completa.
@@ -430,21 +461,21 @@ Essas mudanças quantitativas não alteraram a narrativa de orientação. Sob am
 - Não houve remoção de ciclones influentes, *leave-one-cyclone-out* nem validação em grupos não usados na construção.
 - A análise compara distribuições condicionadas à ocorrência; não estima *coverage probability*, magnitude condicional, *footprint* probabilístico ou hazard geográfico.
 
-## Conclusão
+### Conclusão
 
 O weighting altera de forma mensurável a distribuição — TV próxima de 0,079 e RMS cerca de 41 km maior sob peso igual por ciclone — mas não muda qualitativamente a comparação entre orientações. A conclusão de E-001 permanece `INCONCLUSIVE` sob seu protocolo original e mostrou-se **ROBUSTA AO WEIGHTING** em E-002.
 
-## Consequência para o projeto
+### Consequência para o projeto
 
 Nenhum weighting foi eleito universalmente principal. Conforme [D-006](decisions.md#d-006--usar-o-weighting-que-corresponde-ao-estimando-declarado), *equal-state* deve ser usado quando a pergunta-alvo é sobre a população de estados q95-positivos; *equal-cyclone*, quando a pergunta é sobre a população de ciclones q95-positivos. O estimando deve ser declarado e o outro weighting deve permanecer como análise de sensibilidade quando pertinente.
 
 Também não foi adotada uma orientação espacial superior. O próximo teste independente é a sensibilidade ao threshold; lifecycle versus intensidade, estabilidade e generalização por ciclone e o modelo probabilístico completo permanecem futuros.
 
-## Reprodutibilidade
+### Reprodutibilidade
 
 O protocolo congelado está em `scripts/04_e002_weighting/protocol.json`; o código e os testes, em `scripts/04_e002_weighting/`; e os produtos, em `outputs/04_e002_weighting/`. `summary.json` registra hashes das entradas, protocolo, script e resumo de E-001, além da semente. `cyclone_contributions.csv`, `metrics.csv`, `metric_comparisons.csv`, `bootstrap_differences.csv`, `spatial_distributions.csv` e `contribution_concentration_by_phase.csv` preservam os resultados tabulares. A sequência de execução está em [proveniência e reprodutibilidade](reproducibility.md#e-002--sensibilidade-ao-weighting).
 
-## Respostas finais de E-002
+### Respostas finais de E-002
 
 1. **Ciclones com muitos estados dominavam materialmente E-001?** Havia desigualdade material agregada, mas não domínio por poucos eventos: os 10% superiores reuniam 22,52% da massa, o maior ciclone apenas 0,21%, e $N_{eff}=1.288,8$ entre 1.757 ciclones positivos.
 2. **Dar peso igual a cada ciclone altera de forma cientificamente relevante a estrutura?** Sim, de forma moderada: cerca de 8% da massa foi redistribuída e RMS aumentou aproximadamente 41 km. A maior parte dos IC para H e áreas inclui zero, portanto a mudança não é coerente em todas as métricas.

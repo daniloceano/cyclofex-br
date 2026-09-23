@@ -80,16 +80,19 @@ Magnitude condicional e hazard geográfico permanecem etapas separadas e posteri
 
 Copie a estrutura abaixo e substitua todas as instruções. Se uma seção não se aplicar, explique por quê; não a remova silenciosamente.
 
-Duas exigências permanentes valem para todo experimento formal, conforme [como explicar metodologia](documentation_guidelines.md#como-explicar-metodologia):
+Duas exigências metodológicas e uma exigência estrutural permanentes valem para todo experimento formal, conforme [como explicar metodologia](documentation_guidelines.md#como-explicar-metodologia) e [hierarquia de tópicos, subtópicos e menu lateral](documentation_guidelines.md#hierarquia-de-tópicos-subtópicos-e-menu-lateral):
 
 1. **O método é descrito na ordem cognitiva** — intuição, depois procedimento, depois formalização, depois exemplo concreto. A seção de método é dividida nas subseções abaixo; não é um bloco único de equações.
 2. **Todo `E-XXX` possui um fluxograma científico-metodológico**, salvo justificativa explícita registrada na página. O fluxograma representa o protocolo real, usa linguagem científica em vez de nomes de scripts, aparece antes da descrição matemática detalhada, é acompanhado da leitura textual etapa por etapa, é atualizado se o protocolo mudar antes da execução e permanece congelado depois da conclusão, exceto por correções editoriais.
+3. **A página possui exatamente quatro tópicos de nível 2** — Introdução, Metodologia, Resultados e Conclusões e considerações. Seus subtópicos usam nível 3; divisões mais finas usam nível 4 ou inferior. O menu lateral mostra automaticamente apenas tópicos e subtópicos.
 
 ### E-XXX — Título científico
 
 - **Status:** `PLANNED | RUNNING | ADOPTED | REJECTED | INCONCLUSIVE | SUPERSEDED`
 - **Datas:** planejamento, início, encerramento
 - **Questões e decisões relacionadas:** IDs persistentes
+
+### Tópico 1 — Introdução
 
 #### Contexto
 
@@ -111,6 +114,12 @@ Registre mecanismos ou artefatos que também poderiam produzir o resultado.
 
 Explique por que o teste é necessário antes do próximo passo.
 
+### Tópico 2 — Metodologia
+
+#### Método — visão geral e fluxograma
+
+Apresente o fluxograma metodológico e, logo abaixo, uma seção **“Como ler o fluxo do experimento”** que explique cada etapa em uma ou duas frases. O leitor deve ver o mapa inteiro antes de percorrer qualquer detalhe matemático. Declare aqui qual é o objeto de entrada do experimento e qual é o produto final do método.
+
 #### Dados
 
 Identifique população, amostra, período, versão, unidade de análise e critérios de inclusão e exclusão.
@@ -118,10 +127,6 @@ Identifique população, amostra, período, versão, unidade de análise e crit�
 #### Representação e variáveis
 
 Defina todas as variáveis, unidades, domínios, transformações e tratamento de ausências.
-
-#### Método — visão geral e fluxograma
-
-Apresente o fluxograma metodológico e, logo abaixo, uma seção **“Como ler o fluxo do experimento”** que explique cada etapa em uma ou duas frases. O leitor deve ver o mapa inteiro antes de percorrer qualquer detalhe matemático. Declare aqui qual é o objeto de entrada do experimento e qual é o produto final do método.
 
 #### Método — passo a passo
 
@@ -131,7 +136,7 @@ Quando o método atravessar níveis — ciclone, estado ciclone–tempo, célula
 
 #### Método — formalização
 
-Introduza as equações progressivamente, já depois da explicação verbal do passo correspondente. Defina todo símbolo antes ou imediatamente ao aparecer, com unidade, natureza e domínio. Siga cada equação relevante de uma leitura em linguagem comum. Reserve a fórmula compacta para o papel de síntese, nunca de primeiro contato.
+Introduza as equações progressivamente, já depois da explicação verbal do passo correspondente. Defina todo símbolo antes ou imediatamente ao aparecer, com unidade, natureza e domínio. Reutilize obrigatoriamente a [convenção global de índices e pesos](documentation_guidelines.md#convenção-global-de-índices-e-pesos) quando o experimento manipular ciclones, estados, células, bins ou seus pesos. Siga cada equação relevante de uma leitura em linguagem comum. Reserve a fórmula compacta para o papel de síntese, nunca de primeiro contato.
 
 #### Método — exemplo concreto
 
@@ -153,17 +158,21 @@ Feche o método com três a seis frases **sem equações**, sob o título “Em 
 
 Registre, antes do resultado, o que contará como evidência favorável, contrária ou inconclusiva.
 
+### Tópico 3 — Resultados
+
 #### Resultado
 
 Apresente observações, números, tabelas e figuras sem antecipar a interpretação.
 
-#### Interpretação
-
-Explique o significado científico dentro do alcance do desenho.
-
 #### Robustez e diagnósticos
 
 Registre verificações, sensibilidades, falhas e resultados negativos.
+
+### Tópico 4 — Conclusões e considerações
+
+#### Interpretação
+
+Explique o significado científico dentro do alcance do desenho.
 
 #### Limitações
 
