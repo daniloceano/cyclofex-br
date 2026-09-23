@@ -93,19 +93,21 @@ MD_LINK = re.compile(r'href="([^"]+\.md)(#[^"]*)?"')
 
 
 class SectionParser(HTMLParser):
-    """Collect second-level headings and their Pandoc-generated anchors."""
+    """Collect topic and sub-topic headings with Pandoc-generated anchors."""
 
     def __init__(self) -> None:
         super().__init__()
-        self.sections: list[tuple[str, str]] = []
+        self.sections: list[tuple[int, str, str]] = []
+        self._heading_level: int | None = None
         self._heading_id: str | None = None
         self._heading_text: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag != "h2":
+        if tag not in {"h2", "h3"}:
             return
         heading_id = dict(attrs).get("id")
         if heading_id:
+            self._heading_level = int(tag[1])
             self._heading_id = heading_id
             self._heading_text = []
 
@@ -114,33 +116,49 @@ class SectionParser(HTMLParser):
             self._heading_text.append(data)
 
     def handle_endtag(self, tag: str) -> None:
-        if tag != "h2" or self._heading_id is None:
+        if self._heading_level is None or tag != f"h{self._heading_level}" or self._heading_id is None:
             return
         title = " ".join("".join(self._heading_text).split())
         if title:
-            self.sections.append((self._heading_id, title))
+            self.sections.append((self._heading_level, self._heading_id, title))
+        self._heading_level = None
         self._heading_id = None
         self._heading_text = []
 
 
-def page_sections(html: str) -> list[tuple[str, str]]:
-    """Return the main sections shown in the contextual sidebar summary."""
+def page_sections(html: str) -> list[tuple[int, str, str]]:
+    """Return topics and sub-topics shown in the contextual sidebar."""
     parser = SectionParser()
     parser.feed(html)
     return parser.sections
 
 
-def section_navigation(sections: list[tuple[str, str]]) -> str:
-    """Render links to the sections of the current page only."""
-    section_links = "".join(
-        f'<a class="page-toc-link" href="#{escape(section_id, quote=True)}">'
-        f"{escape(section_title)}</a>"
-        for section_id, section_title in sections
-    )
+def section_navigation(sections: list[tuple[int, str, str]]) -> str:
+    """Render grouped topic and sub-topic links for the current page."""
+    topic_groups: list[str] = []
+    current_links: list[str] = []
+
+    def flush_group() -> None:
+        if current_links:
+            topic_groups.append('<div class="page-toc-topic-group">' + "".join(current_links) + "</div>")
+            current_links.clear()
+
+    for level, section_id, section_title in sections:
+        if level == 2:
+            flush_group()
+            link_class = "page-toc-link page-toc-topic"
+        else:
+            link_class = "page-toc-link page-toc-subtopic"
+        current_links.append(
+            f'<a class="{link_class}" href="#{escape(section_id, quote=True)}">'
+            f"{escape(section_title)}</a>"
+        )
+    flush_group()
+
     return (
         '<nav class="page-toc" aria-label="Seções desta página">'
         '<p class="page-toc-label">Nesta página</p>'
-        f"{section_links}"
+        f'{"".join(topic_groups)}'
         "</nav>"
     )
 
@@ -198,7 +216,7 @@ def rewrite_media_links(html: str, output_name: str) -> str:
 def navigation(
     current_source: str,
     current_output: str,
-    sections: list[tuple[str, str]],
+    sections: list[tuple[int, str, str]],
 ) -> str:
     groups = []
     current_page_in_navigation = False

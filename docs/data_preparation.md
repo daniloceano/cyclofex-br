@@ -12,6 +12,12 @@ O catálogo horário do Zenodo é preservado como fonte dos centros e das fases.
 
 ## Regra temporal
 
+<ul class="method-io">
+<li>catálogo horário de centros de ciclone, uma linha por <code>track_id</code> e hora</li>
+<li>associação ao campo ERA5 de 6 h mais próximo, com tolerância e regra de desempate</li>
+<li>estados ciclone–tempo, uma linha por <code>track_id + time</code> de 6 h</li>
+</ul>
+
 Para cada hora de track:
 
 1. localiza-se o campo ERA5 de 6 h mais próximo;
@@ -22,11 +28,44 @@ Para cada hora de track:
 
 O horário original, o horário ERA5 escolhido e sua diferença permanecem registrados. Assim, a associação é auditável e não implica interpolação da posição do centro.
 
+A diferença registrada é sempre **hora original da track menos hora do campo ERA5**, no campo `track_minus_era5_hours`. Um valor negativo significa que o centro foi observado **antes** do campo associado; um valor positivo, depois. Por causa da regra 3, a diferença `−3 h` não existe: todo empate de três horas é resolvido para o campo anterior e aparece como `+3 h`.
+
+<div class="method-box example">
+
+Um centro registrado às `13:00 UTC` está a 1 h do campo das `12:00` e a 5 h do campo das `18:00`. Ele é associado ao campo das `12:00`, com diferença `+1 h`. Um centro das `16:00` está a 4 h das `12:00` e a 2 h das `18:00`: vai para as `18:00`, com diferença `−2 h`. Um centro das `15:00` está a exatamente 3 h dos dois campos; o desempate leva ao campo anterior, das `12:00`, com diferença `+3 h`.
+
+Se as horas `13:00` e `14:00` da mesma track caírem no campo das `12:00`, apenas a de menor diferença absoluta — `13:00` — sobrevive, para que o estado ciclone–tempo continue único.
+
+</div>
+
 ## Regra espacial
+
+<ul class="method-io">
+<li>centro do ciclone de um estado e a grade regular de 0,25° do domínio</li>
+<li>contagem geométrica das células do domínio situadas até 1.100 km do centro</li>
+<li>número de células observáveis e classe de suporte: completo, parcial ou ausente</li>
+</ul>
 
 Para cada estado ciclone–tempo, contam-se as células da grade regular de 0,25° no domínio 65°S–10°S e 85°W–15°W cuja distância ao centro é menor ou igual a 1.100 km. A distância é calculada sobre uma esfera com raio de 6.371 km.
 
 O resultado recebe um de três estados de suporte: completo, parcial ou sem suporte. Suporte parcial é uma observação espacial truncada, não uma observação ausente; sem suporte significa que nenhuma posição do domínio pôde ser avaliada.
+
+<div class="method-box example">
+
+Três estados do mesmo ciclone ilustram as três classes. Com o centro no meio do domínio, o disco de 1.100 km cabe inteiro nele e o estado tem **suporte completo**. Conforme o ciclone se aproxima da borda leste, parte do disco passa a cair fora do recorte: as células restantes continuam observáveis e o estado tem **suporte parcial**, com um denominador espacial menor. Se o centro sai do domínio o bastante para que nenhuma célula do recorte fique a menos de 1.100 km, o estado fica **sem suporte** e não possui denominador — por isso ele nunca é convertido em zero de excedência.
+
+```
+suporte completo    suporte parcial     sem suporte
++---------+         +---------+         +---------+
+|  # # #  |         |     # # | · ·     |         |  · · ·
+|  # C #  |         |     # C | · ·     |         |  · C ·
+|  # # #  |         |     # # | · ·     |         |  · · ·
++---------+         +---------+         +---------+
+```
+
+O retângulo é o domínio, `C` é o centro do ciclone, `#` é uma célula do domínio situada a até 1.100 km do centro — portanto observável — e `·` é uma posição dentro de 1.100 km mas fora do domínio, que não foi observada e não pode ser lida como não-excedência. Esquema conceitual: número de células, densidade e tamanho do disco não estão em escala.
+
+</div>
 
 ## Relação com o recorte condicionado de vento
 

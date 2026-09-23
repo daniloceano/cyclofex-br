@@ -181,6 +181,12 @@ O exemplo mostra o mecanismo, não a magnitude. Na amostra real, nenhum ciclone 
 
 ## Diagnóstico de contribuição dos ciclones
 
+<div class="method-box idea">
+
+O exemplo anterior mostrou o **mecanismo** do weighting em dois ciclones. Falta saber qual é a sua magnitude na amostra real: os 1.757 ciclones q95-positivos participam de forma parecida do mapa *equal-state*, ou uma minoria de sistemas longos concentra boa parte da massa? Esta seção mede essa desigualdade antes de qualquer resultado espacial, porque ela determina o quanto o weighting **pode** mudar.
+
+</div>
+
 Para cada `track_id`, o produto reprodutível registra estados elegíveis, estados q95-positivos, duração representada em blocos de 6 h, intervalo entre primeiro e último estado e fração de massa nos dois weightings. A duração de observação é o número de estados multiplicado por 6 h; o intervalo temporal também é fornecido porque uma sequência pode conter lacunas de elegibilidade.
 
 Entre os ciclones positivos, a mediana foi 8 estados; P25 = 5, P75 = 13, P90 = 18, P95 = 20, P99 = 26 e o máximo = 35. O ciclone de maior peso recebeu 0,2068% da massa *equal-state*, contra 0,0569% sob peso igual.
@@ -191,7 +197,43 @@ Entre os ciclones positivos, a mediana foi 8 estados; P25 = 5, P75 = 13, P90 = 1
 | 5% superior | 88 | 12,69% | 5,01% |
 | 10% superior | 176 | 22,52% | 10,02% |
 
-O índice de Herfindahl é $HHI=\sum_j a_j^2$, onde $a_j$ é a fração adimensional da massa global do ciclone $j$ e $\sum_j a_j=1$. O número efetivo $N_{eff}=1/HHI$ informa quantos ciclones igualmente ponderados produziriam a mesma concentração. *Equal-state* teve HHI = 0,0007759 e $N_{eff}=1.288,8$; *equal-cyclone*, HHI = 0,0005692 e $N_{eff}=1.757$, seu valor teórico. Para os grupos superiores, 1%, 5% e 10% foram convertidos em número de ciclones pelo teto, resultando em 18, 88 e 176 eventos.
+### Concentração entre ciclones: HHI e número efetivo
+
+**Pergunta que respondem.** A massa do mapa está repartida entre muitos ciclones ou concentrada em poucos?
+
+**Intuição.** A tabela acima responde por faixas — quanto cabe aos 1%, 5% e 10% maiores —, mas não resume a desigualdade inteira num número. Somar os **quadrados** das frações faz isso: elevar ao quadrado penaliza contribuições grandes muito mais do que pequenas, de modo que a soma cresce quando poucos ciclones dominam. Como esse valor é difícil de ler diretamente, ele é invertido e passa a responder a uma pergunta concreta: *quantos ciclones de peso idêntico produziriam essa mesma concentração?*
+
+**Cálculo verbal.** Para cada ciclone, calcula-se a fração da massa global que ele recebeu; essas frações são elevadas ao quadrado e somadas, produzindo o índice de Herfindahl. O número efetivo é o inverso dessa soma.
+
+**Formalização.** Seja $a_j$ a fração adimensional da massa global recebida pelo ciclone $j$, com $\sum_j a_j=1$ e $n$ ciclones q95-positivos. Então
+
+$$
+HHI=\sum_j a_j^2, \qquad N_{eff}=\frac{1}{HHI}.
+$$
+
+`HHI` é adimensional e varia entre $1/n$ — todos os ciclones com a mesma fração — e $1$ — um único ciclone com toda a massa. `N_eff` é adimensional, tem unidade conceitual de “número de ciclones” e varia entre $1$ e $n$; ele não precisa ser inteiro.
+
+<div class="method-box example">
+
+Retomando a população reduzida de dois ciclones da seção anterior, sob *equal-state* o ciclone A recebeu `2/3` da massa e o ciclone B, `1/3`:
+
+$$HHI=\left(\tfrac{2}{3}\right)^2+\left(\tfrac{1}{3}\right)^2=\tfrac{5}{9}=0{,}5556, \qquad N_{eff}=\frac{1}{0{,}5556}=1{,}8.$$
+
+Ou seja, dois ciclones desiguais concentram a massa como se fossem apenas 1,8 ciclones iguais. Sob *equal-cyclone*, cada um recebe `0,5`:
+
+$$HHI=0{,}25+0{,}25=0{,}50, \qquad N_{eff}=2{,}0,$$
+
+exatamente o número de ciclones da população — o valor teórico máximo, alcançado por construção quando todos têm peso igual.
+
+</div>
+
+**Valores observados.** *Equal-state* teve HHI = 0,0007759 e $N_{eff}=1.288,8$; *equal-cyclone*, HHI = 0,0005692 e $N_{eff}=1.757$, seu valor teórico. Para os grupos superiores, 1%, 5% e 10% foram convertidos em número de ciclones pelo teto, resultando em 18, 88 e 176 eventos.
+
+**Como interpretar.** `N_eff` próximo do número de ciclones positivos indica participação quase equilibrada; valores muito menores indicam que a massa se comporta como se viesse de uma população menor do que a realmente observada. A queda de 1.757 para 1.288,8 significa que o estimando por estado se apoia efetivamente em cerca de 73% dos ciclones disponíveis.
+
+**O que não medem.** `HHI` e `N_eff` descrevem apenas como o peso se reparte **entre** ciclones. Não dizem **onde**, no espaço, esse peso cai; não medem a influência de um ciclone sobre uma métrica específica — isso exigiria remoção ou *leave-one-cyclone-out*, não executados aqui; e não distinguem duração física de participação, já que o número de estados positivos combina duração, suporte, heading e ocorrência q95.
+
+### Participação temporal e contribuição acumulada
 
 A figura pergunta se poucos ciclones dominam pela quantidade de estados positivos. O eixo horizontal mostra estados por ciclone; o vertical, número de ciclones, e a linha marca a mediana.
 
@@ -229,7 +271,13 @@ $$
 TV=\frac{1}{2}\sum_i\left|p_i^{(ciclone)}-p_i^{(estado)}\right|,
 $$
 
-onde $i$ identifica um bin de 50 km e cada $p_i$ é sua massa adimensional normalizada.
+onde $i$ identifica um bin de 50 km e cada $p_i$ é sua massa adimensional normalizada. O expoente entre parênteses nomeia o weighting, não uma potência.
+
+**Exemplo simples.** Suponha uma grade reduzida a três bins. Sob *equal-state*, as massas são `(0,50; 0,30; 0,20)`; sob *equal-cyclone*, `(0,40; 0,35; 0,25)`. As diferenças absolutas são `0,10`, `0,05` e `0,05`, de modo que
+
+$$TV=\tfrac{1}{2}\,(0{,}10+0{,}05+0{,}05)=0{,}10.$$
+
+O primeiro bin perdeu `0,10` de massa e os outros dois ganharam `0,05` cada; a soma bruta conta essa mesma transferência duas vezes, e por isso ela é dividida por dois. Ler o resultado como “10% da massa mudou de bin” é exatamente o que a métrica afirma. Os números são didáticos e não são um resultado de E-002.
 
 **Interpretação.** TV varia de 0 a 1: zero representa mapas idênticos; o valor também é a fração mínima de massa que precisaria ser redistribuída para igualá-los. Um TV de 0,08 significa que cerca de 8% do peso está em bins diferentes nos dois mapas, enquanto 92% coincide.
 

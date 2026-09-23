@@ -5,7 +5,9 @@
 - **Hipótese:** H2 — usar quadrantes rotacionados pelo movimento reduz a dispersão espacial das excedências em relação aos quadrantes geograficamente fixos.
 - **Questões e decisões relacionadas:** [Q-007](open_questions.md#q-007--a-orientação-pelo-movimento-organiza-melhor-as-excedências) e [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001).
 
-## Contexto
+## Introdução
+
+### Contexto
 
 Campos de vento de ciclones diferentes podem compartilhar uma organização física e, ainda assim, parecer difusos quando são sobrepostos com o norte geográfico sempre para cima. Isso acontece se a posição preferencial dos extremos acompanha a direção de deslocamento de cada sistema. A representação de **quadrantes rotacionados pelo movimento** (*motion-relative*) gira cada estado para colocar todos os movimentos na mesma direção; a representação de **quadrantes fixos** (*centered*) apenas desloca o centro do ciclone para a origem.
 
@@ -13,19 +15,21 @@ Esses nomes indicam o sistema de referência, não uma divisão da análise em a
 
 E-001 é o primeiro teste formal dessa hipótese de representação. Ele não estima *coverage probability*, *footprint* probabilístico ou hazard geográfico. O objeto comparado é mais simples: a distribuição espacial normalizada das ocorrências de excedência do q95 local.
 
-## Pergunta
+### Pergunta
 
 Mantendo os mesmos ciclones, estados, células, flags de excedência, pesos e bins, os quadrantes rotacionados pelo movimento concentram espacialmente as excedências q95 mais do que os quadrantes fixos?
 
-## Hipótese
+### Hipótese
 
 H2 previa menor entropia e menor área necessária para concentrar frações fixas do peso normalizado das ocorrências q95 nos quadrantes rotacionados. Fisicamente, esse resultado indicaria que parte da variabilidade aparente em coordenadas geográficas era apenas variabilidade de orientação entre tempestades.
 
-## Hipóteses alternativas e explicações concorrentes
+### Hipóteses alternativas e explicações concorrentes
 
 A rotação poderia não ajudar se os extremos fossem organizados sobretudo por fatores geográficos, estrutura interna variável, intensidade ou estágio do ciclone. Também poderia concentrar apenas o núcleo e dispersar a cauda, ou revelar assimetria sem reduzir a dispersão total. Perda de observações perto dos limites do suporte espacial poderia produzir uma mudança artificial; por isso o suporte foi reconstruído e diagnosticado separadamente.
 
-## Visão geral do desenho experimental
+## Metodologia
+
+### Visão geral do desenho experimental
 
 O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A comparação é pareada: depois de definida a população elegível, ela se divide em duas análises — quadrantes fixos e quadrantes rotacionados — que usam os mesmos bins, pesos, flags q95 e unidades amostrais. A avaliação volta a separar as perguntas feitas à distribuição, porque cada métrica descreve um aspecto diferente.
 
@@ -34,7 +38,7 @@ O fluxograma abaixo resume a cadeia lógica de E-001, da pergunta à decisão. A
   <figcaption>Esquema metodológico, não um resultado. Os dois braços diferem somente pela orientação e são processados com a mesma grade. Na avaliação, cada célula explicita a pergunta respondida por uma família de métricas; o bootstrap posterior reamostra ciclones inteiros de forma pareada.</figcaption>
 </figure>
 
-## Como ler o fluxo do experimento
+### Como ler o fluxo do experimento
 
 Cada caixa do fluxograma corresponde a uma etapa científica, não a um script.
 
@@ -49,7 +53,7 @@ Cada caixa do fluxograma corresponde a uma etapa científica, não a um script.
 
 O fluxograma é um mapa de leitura. As seções seguintes percorrem as mesmas etapas em detalhe, começando pelos dados e pela geometria.
 
-## Dados utilizados
+### Dados utilizados
 
 A população partiu do catálogo canônico de estados ERA5 de 6 h derivado do Zenodo 18133432 e do Parquet de vento de 2010–2020. Foram elegíveis os estados no período comparável com suporte espacial — completo ou parcial — e direção de movimento confiável. Estados sem suporte não foram convertidos em zeros.
 
@@ -67,9 +71,9 @@ O q95 local foi fixado antes das métricas principais. A verificação prévia e
 | Células q95 excedentes | 9.090.570 |
 | Células de suporte efetivamente avaliadas | 136.177.047 |
 
-## Representações comparadas
+### Representações comparadas
 
-### Quadrantes fixos (*centered*)
+#### Quadrantes fixos (*centered*)
 
 <div class="method-box idea">
 
@@ -119,7 +123,7 @@ A projeção preserva a distância radial `d` ao centro e evita tratar graus de 
 
 **Saída desta etapa.** Cada célula q95 de cada estado passa a ter uma posição `(x, y)` em km relativa ao centro do seu próprio ciclone. Essa é a entrada da etapa seguinte.
 
-### Quadrantes rotacionados pelo movimento (*motion-relative*)
+#### Quadrantes rotacionados pelo movimento (*motion-relative*)
 
 <div class="method-box idea">
 
@@ -162,7 +166,7 @@ A figura esquemática mostra um ciclone movendo-se para sudeste. À esquerda, os
   <figcaption>Exemplo conceitual, não um resultado de E-001. “Quadrantes fixos” e “quadrantes rotacionados” nomeiam os eixos de referência; as posições permanecem contínuas, e não são reduzidas a quatro categorias.</figcaption>
 </figure>
 
-## Estimativa da direção de movimento
+### Estimativa da direção de movimento
 
 <div class="method-box idea">
 
@@ -197,7 +201,7 @@ Em linguagem comum, a direção do ciclone num dado instante é estimada traçan
   <figcaption>Distribuição usada para auditar o corte de heading. A linha vermelha marca 5 km/h; 284 de 23.334 estados com suporte ficaram abaixo do corte.</figcaption>
 </figure>
 
-## Método
+### Método
 
 As duas representações usaram exatamente os mesmos 23.050 estados, as mesmas células, as mesmas flags q95 e uma grade de 44 × 44 bins de 50 km no domínio `[-1.100, 1.100] km` em cada eixo. Não houve suavização nem máscara mínima de cobertura na análise principal. Cada estado q95-positivo recebeu peso estatístico total igual a um, dividido igualmente entre suas células excedentes. Esse “peso” não é massa física nem magnitude do vento: é apenas a contribuição normalizada do estado para a distribuição espacial. Estados sem q95 permaneceram nas contagens e na auditoria de suporte, mas não definem posição numa distribuição condicionada à ocorrência.
 
@@ -209,7 +213,7 @@ O restante desta seção percorre duas transformações, nesta ordem: primeiro a
 
 Em E-001, **o nível que recebe peso é o estado**: cada estado q95-positivo vale um. O nível agregado é o bin. O nível que serve de unidade inferencial no bootstrap é o ciclone. Manter os três separados é essencial para ler corretamente as métricas.
 
-### Discretização espacial e definição dos bins
+#### Discretização espacial e definição dos bins
 
 <div class="method-box idea">
 
@@ -248,7 +252,7 @@ A figura abaixo mostra primeiro a grade completa. As 44 colunas multiplicadas pe
   <figcaption>Escala real da discretização. No estado em intensificação do ciclone 20100059 em 22 de janeiro de 2010 às 12 UTC, 15 células q95 ocuparam seis bins; cada ponto contribuiu com 1/15 = 6,67% do peso desse estado. No experimento completo, 1.600 dos 1.936 bins tiveram ao menos uma célula q95 entre os 16.921 estados q95-positivos. Os bins restantes ficam principalmente nos cantos externos ao suporte circular.</figcaption>
 </figure>
 
-### Peso por estado e distribuição espacial
+#### Peso por estado e distribuição espacial
 
 <div class="method-box idea">
 
@@ -302,7 +306,7 @@ Portanto, `p_i = 0,02` significa que o bin contém 2% do peso estatístico norma
 
 **Saída desta etapa.** Um vetor de 1.936 proporções por representação. Todas as métricas da próxima seção são calculadas exclusivamente a partir desse vetor.
 
-#### Exemplo com um estado real
+##### Exemplo com um estado real
 
 O estado mostrado na figura anterior, `track_id = 20100059` em `2010-01-22 12:00 UTC`, estava em intensificação, tinha suporte completo e 15 células q95:
 
@@ -329,26 +333,34 @@ $$\sum_i w_{si}=\frac{4+4+3+2+1+1}{15}=\frac{15}{15}=1.$$
 
 Consequentemente, um estado com 20 células excedentes e outro com 2.000 têm o mesmo peso total igual a um; apenas a distribuição espacial desse peso muda. Estados sem nenhuma célula q95 não entram em `p_i`, pois não têm posição numa distribuição condicionada à excedência, mas continuam contabilizados na auditoria da população e do suporte. Como a ponderação é por estado e não por ciclone, sistemas com mais estados q95-positivos ainda podem contribuir mais vezes.
 
-O exemplo seguinte isola apenas o comportamento da entropia. É uma grade esquemática de 4 × 4 — não a grade real de 44 × 44 — e as cores mais escuras indicam maior proporção `p_i` do peso normalizado.
-
-<figure class="result-figure">
-  <img src="../outputs/03_e001_orientation/binning_entropy_example.png" alt="Exemplo esquemático em duas grades de quatro por quatro: uma distribuição de peso concentrada com entropia 0,940 nat e uma distribuição uniforme com entropia 1,386 nat.">
-  <figcaption>Exemplo esquemático, não um resultado de E-001 e não uma representação da resolução real. Em A, um bin concentra 70% do peso; em B, quatro bins recebem 25% cada. A entropia aumenta porque as proporções ficam mais uniformes; ela não mede a distância física entre os bins.</figcaption>
-</figure>
-
-## Métodos de avaliação e métricas
+### Métodos de avaliação e métricas
 
 Nenhuma métrica isolada descreve simultaneamente núcleo, cauda, escala, posição e forma. Por isso E-001 combinou medidas complementares, todas calculadas a partir da mesma distribuição `p_i`. As métricas primárias de decisão foram entropia e áreas de concentração; RMS, centroide, covariância e suporte ajudaram a explicar eventuais diferenças.
 
-### Entropia espacial
+#### Entropia espacial
 
-**Problema que resolve.** É necessário resumir em um único número quão espalhado está o peso normalizado das ocorrências q95 pelos bins, sem escolher previamente um centro ou uma direção preferencial.
+**Pergunta que responde.** Quão espalhado está o peso normalizado das ocorrências q95 entre os bins da grade, sem que seja preciso escolher previamente um centro ou uma direção de referência?
 
-**Cálculo.** Para os bins com `p_i > 0`, a entropia de Shannon é
+**Intuição.** A distribuição `p_i` reparte uma unidade de peso entre 1.936 bins. Se quase tudo cair num punhado de bins, essa repartição é muito desigual; se todos os bins ocupados receberem valores parecidos, ela é quase uniforme. A entropia mede exatamente essa desigualdade entre as proporções, num único número: quanto mais parecidas as proporções, maior a entropia.
+
+**Cálculo verbal.** Para cada bin ocupado, multiplicamos sua proporção pelo logaritmo dessa mesma proporção, somamos sobre todos os bins e trocamos o sinal do resultado. Bins vazios não contribuem.
+
+**Formalização.** Para os bins com `p_i > 0`, a entropia de Shannon é
 
 $$H = -\sum_i p_i\log(p_i), \qquad \sum_i p_i = 1.$$
 
-Foi usado o logaritmo natural; portanto, a unidade é o *nat*. Bins vazios contribuem zero pelo limite de `p log(p)`. Se `K` bins têm `p_i > 0`, `H` varia entre zero — todo o peso em um único bin — e `ln(K)` — peso perfeitamente uniforme entre os `K` bins.
+Aqui, `i` percorre os bins da grade; `p_i` é a proporção adimensional do peso normalizado no bin `i`; `K` é o número de bins com `p_i > 0`; e `H` é a entropia resultante. Foi usado o logaritmo natural; portanto, a unidade é o *nat*. Bins vazios contribuem zero pelo limite de `p log(p)`. `H` varia entre zero — todo o peso em um único bin — e `ln(K)` — peso perfeitamente uniforme entre os `K` bins ocupados.
+
+**Exemplo simples.** O esquema abaixo isola apenas o comportamento da entropia. É uma grade de 4 × 4 — não a grade real de 44 × 44 — e as cores mais escuras indicam maior proporção `p_i`. A distribuição compacta atribui pesos `[0,70; 0,10; 0,10; 0,10]` e tem
+
+$$H = -\left[0{,}70\ln 0{,}70 + 3\times 0{,}10\ln 0{,}10\right] = 0{,}940\ \text{nat};$$
+
+a distribuição uniforme atribui `0,25` a cada um de quatro bins e tem `H = ln 4 = 1,386 nat`. O peso total é idêntico nos dois casos; só a uniformidade muda. Se os mesmos quatro valores fossem apenas deslocados para outras posições da grade, `H` não mudaria. Esses valores apenas ilustram o cálculo e não entram nos resultados de E-001.
+
+<figure class="result-figure">
+  <img src="../outputs/03_e001_orientation/binning_entropy_example.png" alt="Exemplo esquemático em duas grades de quatro por quatro: uma distribuição de peso concentrada com entropia 0,940 nat e uma distribuição uniforme com entropia 1,386 nat.">
+  <figcaption>Esquema metodológico, não um resultado de E-001 e não uma representação da resolução real. Em A, um bin concentra 70% do peso; em B, quatro bins recebem 25% cada. A entropia aumenta porque as proporções ficam mais uniformes; ela não mede a distância física entre os bins.</figcaption>
+</figure>
 
 **Como interpretar.** Na mesma grade, menor `H` significa maior concentração global. A diferença reportada é
 
@@ -358,9 +370,7 @@ Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os q
 
 **O que não mede.** A entropia não informa **onde** o peso está, não distingue núcleo de cauda e não diz se os bins ocupados formam uma região conectada: permutar os mesmos valores entre bins distantes não altera `H`. Ela também depende do tamanho dos bins; por isso a resolução foi congelada e mantida igual nas duas representações.
 
-**Exemplo didático.** Na figura anterior, a distribuição compacta atribui pesos `[0,70; 0,10; 0,10; 0,10]` e tem `H = 0,940 nat`; a distribuição uniforme atribui `0,25` a cada um de quatro bins e tem `H = 1,386 nat`. O peso total é idêntico, mas a segunda distribuição é mais uniforme. Se os mesmos quatro valores fossem apenas deslocados para outras posições, `H` não mudaria. Esses valores apenas ilustram o cálculo e não entram nos resultados de E-001.
-
-### Área mínima de cobertura A<sub>q</sub>: A50, A75 e A90
+#### Área mínima de cobertura A<sub>q</sub>: A50, A75 e A90
 
 **Pergunta que responde.** Qual é a menor área da grade capaz de reunir uma proporção previamente escolhida do peso espacial? Duas distribuições podem ter entropias parecidas e ainda exigir áreas muito diferentes para conter seu núcleo ou sua cauda.
 
@@ -415,7 +425,7 @@ No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha 
   <figcaption>Exemplo didático, não um resultado de E-001. Com pesos ordenados de 0,30, 0,20, 0,15, 0,10, 0,10, 0,05, 0,05 e 0,05, obtêm-se A50 = 5.000 km², A75 = 10.000 km² e A90 = 15.000 km².</figcaption>
 </figure>
 
-### Dispersão RMS em torno do centroide
+#### Dispersão RMS em torno do centroide
 
 **Pergunta que responde.** A que distância típica do seu próprio centro espacial está distribuído o peso normalizado das ocorrências q95? Entropia e `A_q` descrevem uniformidade entre bins e área necessária para determinada cobertura, mas nenhuma delas fornece diretamente uma escala de dispersão em quilômetros.
 
@@ -430,9 +440,9 @@ No exemplo abaixo, as barras mostram pesos hipotéticos já ordenados e a linha 
 - `d_μ = ||μ|| = √(μ_x² + μ_y²)` é a distância escalar, sempre não negativa, entre o centro do ciclone e o centroide;
 - `d_i` é a distância euclidiana, em quilômetros, entre o centro do bin `i` e o centroide.
 
-Portanto, a sua interpretação está correta quando aplicada ao **par**: o vetor `μ` descreve o deslocamento do centro do ciclone até o centroide. O que precisava ser corrigido é que `μ_x` e `μ_y`, isoladamente, são componentes desse vetor, não vetores de distância independentes.
+Somente o par `(μ_x, μ_y)` forma o vetor deslocamento `μ`; cada componente isolada é um escalar assinado ao longo de um eixo, e não um vetor de distância independente. A mesma distinção vale para `r_i = (x_i, y_i)`.
 
-Embora o esquema abaixo mostre um ciclone na origem para tornar a geometria concreta, a RMS de E-001 **não é calculada separadamente para um estado `s`**. Cada estado contribui para `p_i`, mas o centroide e a RMS são calculados depois da agregação de todos os estados elegíveis. Desenhar o padrão como se pertencesse a um único estado real sugeriria uma unidade de cálculo incorreta. Nos dois painéis, os eixos estão em quilômetros, as cores representam pesos `p_i` hipotéticos e a origem é o centro comum dos ciclones após a centralização. O contorno laranja destaca um bin `i`; a seta azul é `r_i`, a vermelha é `μ`, o segmento roxo é `d_i` e o círculo tracejado tem raio igual à RMS.
+**Em qual nível a métrica vive.** O esquema abaixo mostra um ciclone na origem para tornar a geometria concreta, mas a RMS de E-001 **não é calculada separadamente para um estado `s`**. Cada estado contribui para `p_i`, e o centroide e a RMS são calculados apenas depois da agregação de todos os estados elegíveis: a métrica descreve a distribuição agregada, não um estado individual. Nos dois painéis, os eixos estão em quilômetros, as cores representam pesos `p_i` hipotéticos e a origem é o centro comum dos ciclones após a centralização. O contorno laranja destaca um bin `i`; a seta azul é `r_i`, a vermelha é `μ`, o segmento roxo é `d_i` e o círculo tracejado tem raio igual à RMS.
 
 <figure class="result-figure">
   <img src="../outputs/03_e001_orientation/rms_vector_geometry.png" alt="Dois sistemas de coordenadas relativos ao centro do ciclone. Em cada painel, um bin i destacado mostra o vetor posição r_i e suas componentes x_i e y_i; o centroide mostra o vetor mu e suas componentes mu_x e mu_y; d_i liga o centroide ao bin. O padrão compacto tem círculo RMS menor que o padrão disperso, embora ambos tenham o mesmo centroide.">
@@ -494,9 +504,11 @@ Valor negativo favorece os quadrantes rotacionados; valor positivo favorece os q
 
 **O que não mede.** A RMS não mede a distância ao centro do ciclone: ela usa como referência o **centroide da própria distribuição**, que pode estar deslocado da origem. Também não informa qual proporção do peso está dentro de um círculo de raio RMS; esse círculo não é equivalente a `A50`, `A75` ou `A90` e não possui cobertura probabilística fixa. A RMS não distingue direções, forma, conectividade ou multimodalidade — uma nuvem alongada e uma circular podem ter a mesma RMS — e não localiza o padrão. Como se usam centros de bins, cada posição é aproximada pelo centro do quadrado que a contém, com deslocamento posicional máximo de meia diagonal do bin, aproximadamente `35,4 km`; a comparação pareada na mesma grade limita, mas não elimina, essa discretização.
 
-### Centroide e deslocamento do padrão
+#### Centroide e deslocamento do padrão
 
-**Problema que resolve.** Uma rotação pode deslocar a posição média do padrão sem torná-lo mais ou menos concentrado. O centroide separa localização de dispersão.
+**Pergunta que responde.** Onde fica, em média, o peso normalizado das ocorrências q95 em relação ao centro do ciclone?
+
+**Intuição.** Uma rotação pode deslocar a posição média do padrão sem torná-lo mais ou menos concentrado. O centroide separa **localização** de **dispersão**: ele diz para que lado o peso pende, enquanto a RMS diz o quanto ele se espalha ao redor desse ponto.
 
 **Cálculo.** Como na definição da RMS, `i` percorre os bins, `r_i = (x_i, y_i)` é o vetor posição do centro geométrico do bin `i` e `p_i` é sua proporção do peso normalizado. O vetor deslocamento do centroide é `μ = (μ_x, μ_y)`; `μ_x` e `μ_y` são suas componentes escalares, e sua magnitude `d_μ` é a distância entre a origem — o centro do ciclone — e o centroide:
 
@@ -508,21 +520,45 @@ $$\boldsymbol{\mu}=\sum_i p_i\mathbf{r}_i
 
 **O que não mede.** O centroide não mede concentração: um valor próximo de zero significa apenas equilíbrio médio em torno da origem e é compatível tanto com uma nuvem compacta quanto com duas concentrações opostas que se cancelam.
 
-### Covariância espacial e anisotropia
+#### Covariância espacial e anisotropia
 
-**Problema que resolvem.** RMS resume a escala total, mas não distingue uma nuvem aproximadamente circular de uma nuvem alongada. A matriz de covariância descreve a dispersão por direção.
+**Pergunta que respondem.** A distribuição se espalha igualmente em todas as direções ou é mais alongada ao longo de um eixo?
 
-**Cálculo.**
+**Intuição.** A RMS resume a escala total num único raio e, por isso, uma nuvem aproximadamente circular e uma nuvem alongada podem receber o mesmo valor. Para separá-las, é preciso medir a dispersão **direção por direção**: quanto o peso se afasta do centroide no sentido leste–oeste, quanto no sentido norte–sul e se esses dois afastamentos ocorrem juntos. A matriz de covariância guarda exatamente essas três quantidades, e a razão entre seus eixos principais traduz o alongamento num único número.
+
+**Cálculo verbal.** Para cada bin, tomamos seu deslocamento em relação ao centroide, formamos os produtos das componentes desse deslocamento e fazemos a média ponderada por `p_i`. Em seguida, procuramos as duas direções perpendiculares em que essa dispersão é máxima e mínima — os autovetores — e comparamos as dispersões correspondentes.
+
+**Formalização.**
 
 $$\mathbf{C}=\sum_i p_i
 \begin{bmatrix}x_i-\mu_x\\y_i-\mu_y\end{bmatrix}
 \begin{bmatrix}x_i-\mu_x&y_i-\mu_y\end{bmatrix}.$$
 
-Se `λ₁ ≥ λ₂` são os autovalores de `C`, a razão de anisotropia é
+`C` é uma matriz simétrica de 2 × 2 cujas entradas têm unidade de km²: as da diagonal, `C_xx` e `C_yy`, são as variâncias ponderadas ao longo de cada eixo, e a de fora da diagonal, `C_xy`, é a covariância entre eles:
+
+$$\mathbf{C}=\begin{bmatrix}C_{xx}&C_{xy}\\C_{xy}&C_{yy}\end{bmatrix}.$$
+
+**De onde vêm `λ₁` e `λ₂`.** Não são parâmetros escolhidos nem calculados diretamente dos bins. Depois que `C` foi obtida, procuramos uma direção não nula `v` que não mude de orientação quando multiplicada pela matriz, mudando apenas de escala:
+
+$$\mathbf{C}\mathbf{v}=\lambda\mathbf{v}.$$
+
+As direções `v` que satisfazem essa equação são os **autovetores**, isto é, os eixos principais da dispersão; o fator `λ` associado a cada direção é o **autovalor**, a variância ponderada ao longo daquele eixo. Para a matriz 2 × 2 acima, os dois valores são obtidos explicitamente por
+
+$$\lambda_{1,2}=\frac{C_{xx}+C_{yy}\ \pm\ \sqrt{(C_{xx}-C_{yy})^2+4C_{xy}^2}}{2},$$
+
+onde `λ₁` usa o sinal `+` e é a maior variância direcional, enquanto `λ₂` usa o sinal `−` e é a menor. Como `C` é uma matriz de covariância, `λ₁ ≥ λ₂ ≥ 0`, ambos em km². As escalas lineares dos dois eixos são proporcionais a `√λ₁` e `√λ₂`; por isso a razão de anisotropia é
 
 $$\rho=\sqrt{\frac{\lambda_1}{\lambda_2}}.$$
 
-**Como interpretar.** `ρ = 1`, adimensional, corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante.
+`ρ` é adimensional e vale no mínimo um; a raiz quadrada converte a razão entre variâncias numa razão entre comprimentos.
+
+**Exemplo simples.** Suponha quatro bins com peso `0,25` cada, nas posições `(−150, 0)`, `(+150, 0)`, `(0, −50)` e `(0, +50)` km. O centroide fica na origem, e as variâncias ponderadas são `C_xx = 0,25(150²) + 0,25(150²) = 11.250 km²` e `C_yy = 0,25(50²) + 0,25(50²) = 1.250 km²`, com `C_xy = 0`. Nesse caso, `C` já é diagonal e seus autovalores são simplesmente os dois elementos da diagonal: `λ₁ = 11.250` e `λ₂ = 1.250`. Portanto,
+
+$$\rho=\sqrt{\frac{11\,250}{1\,250}}=\sqrt{9}=3,$$
+
+ou seja, o padrão é três vezes mais longo na direção leste–oeste do que na norte–sul. Os números são didáticos e não são um resultado de E-001.
+
+**Como interpretar.** `ρ = 1` corresponde a segundos momentos iguais nas duas direções; valores maiores indicam alongamento mais forte ao longo do autovetor principal. A direção desse autovetor identifica o eixo dominante.
 
 **O que não mede.** A métrica resume somente segundos momentos. Ela não demonstra que a distribuição seja elíptica, unimodal ou conectada, e não distingue um alongamento genuíno de duas concentrações separadas alinhadas na mesma direção.
 
@@ -533,15 +569,17 @@ A figura seguinte reúne RMS, centroide e anisotropia numa nuvem hipotética. Os
   <figcaption>Exemplo didático, não um resultado de E-001. O centroide descreve posição, o raio RMS descreve escala ao redor desse centroide e a razão entre os eixos principais descreve alongamento; nenhuma dessas quantidades substitui as demais.</figcaption>
 </figure>
 
-### Métricas de suporte
+#### Métricas de suporte
 
-**Problema que resolvem.** A rotação pode alterar quais regiões do domínio têm células efetivamente observadas, principalmente perto do limite radial ou dos limites geográficos da base ERA5 disponível. Uma aparente concentração q95 poderia, portanto, ser apenas mudança de suporte.
+**Pergunta que respondem.** A mudança observada na distribuição q95 poderia ser apenas uma mudança em **onde foi possível observar**, e não em onde os extremos ocorrem?
+
+**Intuição.** A rotação altera quais regiões do domínio têm células efetivamente avaliadas, principalmente perto do limite radial ou dos limites geográficos da base ERA5 disponível. Se a cobertura observacional se concentrasse exatamente como o sinal q95, a aparente concentração poderia ser um artefato. Por isso o mesmo procedimento aplicado às excedências é aplicado também a **todas** as células avaliadas, e os dois resultados são comparados.
 
 **Cálculo e interpretação.** As mesmas operações de binning e entropia foram aplicadas às 136.177.047 células avaliadas, independentemente de excederem q95. Também foram registrados, por bin e representação, estados elegíveis, estados com suporte, células avaliadas e excedências. Mudança q95 acompanhada por mudança semelhante no suporte seria um alerta contra interpretação física; mudança q95 sem equivalente no suporte é menos compatível com artefato de cobertura.
 
 **O que não mede.** O diagnóstico de suporte indica se a cobertura observacional mudou junto com o sinal q95, mas não prova ausência de artefato: ele não corrige viés de seleção da amostra nem avalia a qualidade da estimativa local de q95.
 
-### Comparação pareada e incerteza
+#### Comparação pareada e incerteza
 
 <div class="method-box idea">
 
@@ -557,20 +595,30 @@ As métricas acima produzem um número por representação, e a diferença entre
 
 **Qual é a unidade de reamostragem.** O sorteio é feito sobre `track_id`, não sobre estados nem sobre células. Cada ciclone sorteado entra inteiro: todos os seus estados e todas as suas células acompanham o sorteio. Se o mesmo `track_id` sai duas vezes, sua contribuição conta em dobro; ciclones não sorteados ficam de fora daquela réplica.
 
+**Quantos ciclones são sorteados em cada réplica.** Seja `N` o número de ciclones do estrato. Cada réplica faz **exatamente `N` sorteios independentes com reposição** entre esses mesmos `N` ciclones. Na análise global, `N = 1.784`: cada réplica contém 1.784 posições sorteadas, mas normalmente bem menos que 1.784 ciclones distintos. Se `m_c` é o número de vezes que o ciclone `c` foi sorteado, então
+
+$$
+(m_1,\ldots,m_N)\sim\operatorname{Multinomial}
+\left(N;\frac{1}{N},\ldots,\frac{1}{N}\right),
+\qquad \sum_{c=1}^{N}m_c=N.
+$$
+
+Portanto, **não** se remove exatamente um ciclone para repetir exatamente outro; isso seria um procedimento diferente, próximo de uma perturbação leave-one-out. Numa réplica bootstrap, vários ciclones podem ter `m_c = 0`, vários podem ter `m_c = 2` e alguns podem aparecer três ou mais vezes. Em média, uma amostra bootstrap grande contém cerca de `63,2%` dos ciclones originais como identificadores distintos e deixa cerca de `36,8%` ausentes, embora continue tendo `N` posições sorteadas.
+
 <div class="method-box example">
 
-Com uma população reduzida a quatro ciclones `C1 C2 C3 C4`, uma réplica poderia ser `C2 C2 C4 C1`. Nessa réplica, `C3` não participa e `C2` entra duas vezes, com todos os seus estados nas duas vezes. As métricas são recalculadas sobre essa população reconstruída e a diferença rotacionados − fixos é armazenada. Repetindo 500 vezes, obtém-se uma distribuição de diferenças; seus percentis 2,5 e 97,5 formam o intervalo de 95%.
+Com uma população reduzida a quatro ciclones `C1 C2 C3 C4`, uma réplica poderia ser `C2 C2 C4 C1`: `C3` não participa e `C2` entra duas vezes. Mas `C2 C2 C2 C4` também é uma réplica válida: `C1` e `C3` ficam ausentes e `C2` entra três vezes. Em ambos os casos há quatro sorteios, porque a população original tem `N = 4`; não existe a regra “retirar um e duplicar um”. As métricas são recalculadas sobre cada população reconstruída e a diferença rotacionados − fixos é armazenada. Repetindo o processo 500 vezes, obtém-se uma distribuição de diferenças; seus percentis 2,5 e 97,5 formam o intervalo de 95%.
 
 </div>
 
 <figure class="result-figure">
-  <img src="../outputs/03_e001_orientation/bootstrap_scheme.png" alt="Esquema didático do bootstrap por ciclone: uma população de quatro ciclones com números diferentes de estados e três réplicas sorteadas com reposição, ao lado de um histograma ilustrativo de 500 diferenças com os percentis 2,5 e 97,5 marcados.">
-  <figcaption>Esquema metodológico, não um resultado de E-001. À esquerda, a reamostragem mantém juntos todos os estados de cada ciclone sorteado; à direita, o histograma é ilustrativo e apenas mostra como os percentis 2,5 e 97,5 delimitam o intervalo. Os valores de E-001 estão nas tabelas de resultados.</figcaption>
+  <img src="../outputs/03_e001_orientation/bootstrap_scheme.png" alt="Esquema didático do bootstrap por ciclone: uma população de quatro ciclones e três réplicas de quatro sorteios com reposição, incluindo casos com um, dois ou nenhum ciclone ausente, ao lado de um histograma ilustrativo de 500 diferenças com os percentis 2,5 e 97,5 marcados.">
+  <figcaption>Esquema metodológico, não um resultado de E-001. Cada réplica faz <code>N</code> sorteios com reposição: pode omitir vários ciclones e repetir outro mais de duas vezes, sempre mantendo juntos todos os estados do ciclone sorteado. À direita, o histograma é ilustrativo e apenas mostra como os percentis 2,5 e 97,5 delimitam o intervalo. Os valores de E-001 estão nas tabelas de resultados.</figcaption>
 </figure>
 
 **Por que não reamostrar células.** As 9.090.570 células excedentes não são observações independentes: células vizinhas do mesmo estado pertencem ao mesmo campo de vento, e estados sucessivos do mesmo ciclone descrevem o mesmo sistema em instantes próximos. Reamostrar células trataria essa dependência como informação nova e produziria intervalos artificialmente estreitos. O ciclone é o nível em que as observações podem ser consideradas aproximadamente trocáveis.
 
-**Por que a comparação é pareada.** Todas as diferenças seguem a convenção `quadrantes rotacionados − quadrantes fixos`, armazenada nos produtos como `motion_relative − centered`. Em cada réplica, exatamente as mesmas multiplicidades de ciclones são usadas nas duas orientações; `p_i` e todas as métricas são recalculados dentro da réplica, e só então a diferença é obtida. Assim, a variação entre réplicas reflete a troca de ciclones, e não uma diferença de amostra entre os dois braços.
+**Por que a comparação é pareada.** “Pareada” não significa formar pares entre ciclones. Significa que, dentro de cada réplica, exatamente o mesmo vetor de multiplicidades `(m₁, …, m_N)` é aplicado aos quadrantes fixos e aos rotacionados. Todas as diferenças seguem a convenção `quadrantes rotacionados − quadrantes fixos`, armazenada nos produtos como `motion_relative − centered`; `p_i` e todas as métricas são recalculados nos dois braços com a mesma amostra, e só então a diferença é obtida. Assim, a variação entre réplicas reflete quais ciclones foram sorteados, e não uma diferença de composição entre os braços.
 
 <div class="method-box caution">
 
@@ -578,11 +626,11 @@ O intervalo expressa variação entre ciclones da amostra. Ele **não** corrige 
 
 </div>
 
-## Em resumo: o que este método faz?
+### Em resumo: o que este método faz?
 
 Cada estado de ciclone com pelo menos uma excedência q95 é reexpresso em quilômetros relativos ao seu próprio centro, de duas maneiras: mantendo o norte para cima e girando até que o movimento aponte para a frente. As posições resultantes são jogadas numa grade comum de quadrados de 50 km. Cada estado contribui com a mesma quantidade total de peso, repartida entre os quadrados que suas células excedentes ocuparam, e a soma sobre todos os estados é normalizada para formar uma distribuição espacial. As mesmas seis métricas descrevem essa distribuição nas duas representações, e a diferença entre elas é o resultado do experimento. Reamostrar ciclones inteiros 500 vezes indica quanto dessa diferença sobreviveria a outra seleção de eventos.
 
-## Critério de decisão
+### Critério de decisão
 
 Antes dos resultados, evidência a favor dos quadrantes rotacionados exigia conjuntamente: entropia e A75 menores com intervalos bootstrap pareados de 95% inteiramente abaixo de zero; A50 e A90 no mesmo sentido; pelo menos três das quatro fases no mesmo sentido; menos de 10% de perda por heading; e ausência de mudança comparável na distribuição do suporte. O padrão simétrico favoreceria os quadrantes fixos. Qualquer combinação restante seria inconclusiva. Não foi exigido um tamanho de efeito mínimo arbitrário.
 
@@ -590,7 +638,9 @@ Antes dos resultados, evidência a favor dos quadrantes rotacionados exigia conj
 
 O critério foi registrado no protocolo congelado antes da execução e não foi reescrito depois dos resultados.
 
-## Resultados globais
+## Resultados
+
+### Resultados globais
 
 | Métrica | Quadrantes fixos (`centered`) | Quadrantes rotacionados (`motion_relative`) | Diferença rotacionados − fixos | IC bootstrap 95% da diferença |
 | --- | ---: | ---: | ---: | ---: |
@@ -609,7 +659,7 @@ O núcleo de 50% ficou 32.500 km² menor após a rotação. Porém, A75 aumentou
   <figcaption>Distribuições não suavizadas na mesma grade, domínio e escala para os dois primeiros painéis. A expressão “massa q95” preservada no rótulo da figura significa apenas a proporção `p_i` do peso normalizado de ocorrências, não massa física ou magnitude do vento. O terceiro painel mostra onde a rotação redistribui esse peso; ele não é uma coverage probability nem um footprint probabilístico.</figcaption>
 </figure>
 
-## Resultado por fase
+### Resultado por fase
 
 | Fase | Δ entropia (IC 95%) | Δ A75 em km² (IC 95%) | Leitura conjunta |
 | --- | ---: | ---: | --- |
@@ -625,13 +675,13 @@ Apenas a intensificação teve entropia e A75 pontualmente menores. A fase incip
   <figcaption>Cada linha usa a mesma escala entre as duas representações daquela fase. Os rótulos com sufixo 2 foram agregados nos quatro estratos preregistrados; métricas pelos rótulos literais continuam nos produtos tabulares.</figcaption>
 </figure>
 
-## Incerteza e bootstrap por ciclone
+### Incerteza e bootstrap por ciclone
 
-Foram produzidas 500 réplicas pareadas com semente fixa. Em cada réplica, `track_id` foi reamostrado com reposição e todos os estados e células do ciclone sorteado foram mantidos. A diferença foi sempre calculada entre representações dentro da mesma réplica. Isso evita tratar 9 milhões de células como unidades independentes e quantifica a estabilidade entre ciclones.
+Foram produzidas 500 réplicas pareadas com semente fixa. Em cada réplica global foram feitos exatamente 1.784 sorteios de `track_id` com reposição, mantendo todos os estados e células de cada ciclone sorteado. Na sequência efetivamente gerada pela semente `20260921`, cada réplica conteve entre 1.086 e 1.167 ciclones distintos, com média de 1.128,2; portanto, entre 617 e 698 ciclones ficaram ausentes por réplica. Ao longo das 500 réplicas, um mesmo ciclone chegou a ser sorteado até oito vezes numa réplica. A soma das multiplicidades permaneceu sempre igual a 1.784. A diferença foi calculada entre representações usando essas mesmas multiplicidades nos dois braços. Isso evita tratar 9 milhões de células como unidades independentes e quantifica a estabilidade entre ciclones.
 
 Os intervalos confirmam o conflito: A50 favorece os quadrantes rotacionados, mas A75, A90 e RMS favorecem os quadrantes fixos. Para entropia, 68,2% das réplicas tiveram diferença negativa, insuficiente para excluir ausência de efeito.
 
-## Robustez, suporte e verificações de sanidade
+### Robustez, suporte e verificações de sanidade
 
 A reconstrução reproduziu exatamente as 136.177.047 células de suporte dos estados incluídos. Para cada bin e representação, `spatial_bins.csv` registra o total de estados elegíveis, estados com suporte efetivo, células avaliadas e excedências q95. Como o diagnóstico não indicou bins de suporte escasso dominando os resultados, nenhuma máscara pós-resultado foi introduzida. A entropia do suporte foi 7,34174 nos quadrantes fixos e 7,34253 nos rotacionados, diferença de apenas +0,00079 nat e em sentido oposto à pequena redução da entropia q95. Restringir a comparação aos 15.437 estados com suporte completo preservou o conflito: ΔH = −0,00463, ΔA75 = +35.000 km², ΔA90 = +80.000 km² e ΔRMS = +4,70 km.
 
@@ -642,13 +692,15 @@ Os testes automatizados verificaram origem, sinais cardeais, frente/direita, pre
   <figcaption>Verificação visual em velocidades próximas aos quartis 25, 50 e 75. O centro amarelo permanece na origem e a seta de movimento fica orientada para a frente no painel de quadrantes rotacionados.</figcaption>
 </figure>
 
-## Interpretação
+## Conclusões e considerações
+
+### Interpretação
 
 A orientação pelo movimento revela uma estrutura visual diferente e desloca o centroide para uma posição média atrás e à esquerda do movimento (`x_m = −136 km`, `y_m = −139 km`). Isso é evidência de assimetria relativa ao movimento, mas não de maior concentração global. O núcleo ficou mais compacto, enquanto as regiões necessárias para acumular 75% e 90% do peso ocuparam áreas maiores.
 
 Esse comportamento mostra por que um mapa isolado ou uma única métrica teria sido enganoso. E-001 não sustenta a hipótese H2 no sentido amplo definido antes da análise.
 
-## Limitações
+### Limitações
 
 - q95 foi adequado para este teste, mas não se torna por isso o threshold definitivo do projeto.
 - Cada estado q95-positivo tem peso igual; ciclones longos contribuem com mais estados.
@@ -659,20 +711,20 @@ Esse comportamento mostra por que um mapa isolado ou uma única métrica teria s
 - O bootstrap quantifica estabilidade por ciclone, mas não substitui validação fora da amostra ou estudo completo de robustez.
 - Centroide e covariância resumem a distribuição e não demonstram uma forma elíptica ou unimodal.
 
-## Conclusão
+### Conclusão
 
 E-001 é **inconclusivo** quanto à escolha de representação. Os quadrantes rotacionados melhoram a concentração do núcleo A50, mas pioram A75, A90 e RMS; a variação de entropia é pequena e seu intervalo inclui zero; e as fases não concordam. H2 não recebeu o conjunto de evidências exigido.
 
-## Consequência para o projeto
+### Consequência para o projeto
 
 Não há base para promover os quadrantes rotacionados a representação principal nem para declarar os quadrantes fixos cientificamente superiores. A escolha permanece aberta conforme [D-005](decisions.md#d-005--manter-aberta-a-escolha-entre-centered-e-motion-relative-após-e-001). Até novo teste preregistrado, os quadrantes fixos podem funcionar como referência transparente e os rotacionados como representação diagnóstica de assimetria; isso não equivale a uma decisão definitiva.
 
 E-001 não avançou para weighting alternativo, threshold sensitivity, normalização por tamanho ou modelagem probabilística.
 
-## Reprodutibilidade
+### Reprodutibilidade
 
 O protocolo congelado está em `scripts/03_e001_orientation/protocol.json`; a implementação e os testes, em `scripts/03_e001_orientation/`; e os produtos, em `outputs/03_e001_orientation/`. O resumo reprodutível contém hashes das três entradas, do protocolo e do script, além da semente bootstrap. A sequência de execução está em [proveniência e reprodutibilidade](reproducibility.md#e-001--orientação-pelo-movimento).
 
-## Resposta final de E-001
+### Resposta final de E-001
 
 **Não de forma consistente.** Depois de controlar apenas pela orientação do movimento, sem mudar estados, células, flags, pesos ou bins, as excedências q95 formaram um núcleo 32.500 km² menor em A50, mas exigiram 45.000 km² a mais em A75 e 97.500 km² a mais em A90; a RMS aumentou 7,69 km e a diferença de entropia foi −0,0023 nat com IC 95% de −0,0105 a +0,0057. A orientação revela assimetria, porém não tornou a distribuição globalmente mais organizada segundo o critério preregistrado.

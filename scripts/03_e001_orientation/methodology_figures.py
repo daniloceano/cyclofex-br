@@ -684,9 +684,9 @@ def bootstrap_scheme_figure() -> None:
     ]
     colors = {"C1": BLUE, "C2": TEAL, "C3": PURPLE, "C4": ORANGE}
     replicas = [
-        ["C2", "C2", "C4", "C1"],
-        ["C1", "C3", "C3", "C4"],
-        ["C4", "C1", "C2", "C2"],
+        (["C2", "C2", "C4", "C1"], "C2 × 2\n1 ausente"),
+        (["C2", "C2", "C2", "C4"], "C2 × 3\n2 ausentes"),
+        (["C1", "C2", "C3", "C4"], "0 ausentes"),
     ]
     sizes = dict(population)
 
@@ -710,7 +710,12 @@ def bootstrap_scheme_figure() -> None:
     axis.axis("off")
 
     def draw_row(y: float, label: str, entries: list[str], note: str) -> None:
-        axis.text(0.0, y + 0.30, label, ha="left", va="center", color=INK, fontsize=11, fontweight="bold")
+        axis.text(
+            0.0, y + 0.30, label,
+            ha="left", va="center", color=INK,
+            fontsize=9.5 if "\n" in label else 11,
+            fontweight="bold", linespacing=1.25,
+        )
         x = 2.55
         for name in entries:
             width = sizes[name] * 0.52
@@ -733,13 +738,13 @@ def bootstrap_scheme_figure() -> None:
         axis.text(16.3, y + 0.30, note, ha="right", va="center", color=MUTED, fontsize=9.6)
 
     draw_row(5.05, "População", [name for name, _ in population], "cada bloco = um estado do ciclone")
-    for index, replica in enumerate(replicas):
-        draw_row(3.75 - index * 1.25, f"Réplica {index + 1}", replica, "sorteio com reposição")
+    for index, (replica, note) in enumerate(replicas):
+        draw_row(3.75 - index * 1.25, f"Réplica {index + 1}\n{note}", replica, "")
 
     axis.text(
         0.0, 0.33,
-        "Um ciclone sorteado entra inteiro: todos os seus estados e todas as suas células vão juntos.\n"
-        "C3 pode não entrar numa réplica; C2 pode entrar duas vezes e contar em dobro.",
+        "Cada réplica faz N = 4 sorteios com reposição — não retira exatamente um ciclone.\n"
+        "Quando um ciclone é sorteado, todos os seus estados e células entram juntos.",
         ha="left", va="center", color=INK, fontsize=10.4, linespacing=1.45,
     )
 

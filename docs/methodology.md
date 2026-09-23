@@ -2,7 +2,9 @@
 
 ## Escopo
 
-Esta página descreve somente métodos efetivamente usados e decisões vigentes. Não existe metodologia adotada para estimar *footprints* probabilísticos ou hazard. [E-001](e001_orientation.md) comparou duas orientações e foi inconclusivo; [E-002](e002_weighting.md) mostrou que essa conclusão é robusta a weighting por estado versus por ciclone. Nenhuma orientação foi promovida a representação principal.
+Esta página é uma **síntese**: ela declara quais métodos estão efetivamente em uso e quais decisões estão vigentes, sem repetir a construção de cada procedimento. A descrição metodológica completa — ideia, passo a passo, formalização, exemplo concreto, métricas e incerteza, na ordem exigida por [como explicar metodologia](documentation_guidelines.md#como-explicar-metodologia) — fica nas páginas dos experimentos e em [preparação dos dados](data_preparation.md).
+
+Não existe metodologia adotada para estimar *footprints* probabilísticos ou hazard. [E-001](e001_orientation.md) comparou duas orientações e foi inconclusivo; [E-002](e002_weighting.md) mostrou que essa conclusão é robusta a weighting por estado versus por ciclone. Nenhuma orientação foi promovida a representação principal.
 
 ## Unidade de análise
 

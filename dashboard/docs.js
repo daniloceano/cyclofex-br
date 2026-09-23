@@ -9,9 +9,32 @@
   }
 
   let opener = null;
+  let scrollPosition = { left: 0, top: 0 };
+
+  const lockPagePosition = () => {
+    scrollPosition = { left: window.scrollX, top: window.scrollY };
+    document.body.style.left = `-${scrollPosition.left}px`;
+    document.body.style.top = `-${scrollPosition.top}px`;
+    document.body.classList.add("lightbox-open");
+  };
+
+  const restorePagePosition = () => {
+    const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = "auto";
+    document.body.classList.remove("lightbox-open");
+    document.body.style.removeProperty("left");
+    document.body.style.removeProperty("top");
+    window.scrollTo(scrollPosition.left, scrollPosition.top);
+    opener?.focus({ preventScroll: true });
+    requestAnimationFrame(() => {
+      window.scrollTo(scrollPosition.left, scrollPosition.top);
+      document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    });
+  };
 
   const openImage = (image) => {
     opener = image;
+    lockPagePosition();
     dialogImage.src = image.currentSrc || image.src;
     dialogImage.alt = image.alt || "";
 
@@ -21,7 +44,6 @@
       dialogCaption.append(...Array.from(sourceCaption.childNodes, (node) => node.cloneNode(true)));
     }
 
-    document.body.classList.add("lightbox-open");
     dialog.showModal();
     closeButton.focus();
   };
@@ -57,11 +79,10 @@
   });
 
   dialog.addEventListener("close", () => {
-    document.body.classList.remove("lightbox-open");
     dialogImage.removeAttribute("src");
     dialogImage.alt = "";
     dialogCaption.replaceChildren();
-    opener?.focus();
+    restorePagePosition();
     opener = null;
   });
 })();

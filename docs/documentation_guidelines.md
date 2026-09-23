@@ -239,6 +239,16 @@ A síntese consolida o raciocínio: qual objeto entra, quais transformações ac
 
 Ser didático não autoriza omitir detalhes, evitar matemática, arredondar conceitos, esconder exceções ou converter metodologia em divulgação. Casos especiais, tolerâncias numéricas, tratamentos de borda e exclusões continuam documentados. O objetivo é apresentar o mesmo conteúdo numa sequência compreensível.
 
+### Aplicação retroativa e congelamento científico
+
+Quando estas regras mudam, as páginas metodológicas já publicadas são revistas **com moderação e apenas editorialmente**. A revisão procura trechos cuja leitura esteja claramente abaixo do padrão, na seguinte ordem de prioridade: weighting, transformação de coordenadas, heading, binning, métricas e incerteza.
+
+Reescrever uma seção que já é compreensível não é melhoria: é ruído no histórico. Altere um texto antigo somente quando a mudança aumentar de fato a interpretabilidade — ordem invertida entre ideia e fórmula, símbolo usado antes de definido, etapa sem entrada e saída, abstração sem exemplo, métrica sem "o que não mede".
+
+Uma revisão retroativa **nunca** altera o conteúdo científico de um experimento concluído. Permanecem congelados o protocolo, o critério de decisão registrado antes do resultado, os números, as tabelas, as figuras de resultado, a interpretação, a conclusão e o status. Também não se recalcula resultado, não se muda threshold, weighting ou critério, e não se reinterpreta um experimento anterior a pretexto de clareza.
+
+Se a revisão editorial levantar suspeita de inconsistência científica — um número que não fecha, uma convenção ambígua, uma definição em conflito entre páginas —, **registre a suspeita em [questões abertas](open_questions.md) ou em [decisões](decisions.md) em vez de corrigi-la silenciosamente no texto**. Preencher uma lacuna de documentação a partir da fonte reproduzível, como declarar explicitamente a convenção de sinal de uma variável já registrada, é revisão editorial; mudar o valor, a regra ou a leitura do resultado não é.
+
 ### Auditoria metodológica
 
 Antes de considerar pronta uma página com conteúdo metodológico, confirme as quinze respostas:
@@ -340,6 +350,8 @@ O relatório principal responde “o que, por quê, como cientificamente, o que 
 Procure parágrafos sem contexto, termos indefinidos, código no meio da narrativa, força excessiva de conclusão, figuras ou tabelas sem leitura, equações sem definição, duplicação, inconsistência terminológica, unidade não explicada e fatos científicos escondidos apenas na camada técnica.
 
 Em conteúdo metodológico, procure também: fórmula antes da ideia, símbolo usado antes de definido, várias transformações no mesmo parágrafo, etapa sem entrada e saída declaradas, abstração sem exemplo numérico, nível hierárquico ambíguo, métrica sem “o que não mede”, bootstrap sem unidade de reamostragem, ausência de fluxograma e ausência de síntese final. A checagem completa está em [auditoria metodológica](#auditoria-metodológica).
+
+Ao revisar uma página antiga sob regras novas, aplique também os limites de [aplicação retroativa e congelamento científico](#aplicação-retroativa-e-congelamento-científico): a revisão é editorial, seletiva e nunca toca protocolo, números, critério de decisão, interpretação ou conclusão.
 
 ## Teste de auditoria humana
 
